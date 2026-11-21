@@ -15,19 +15,19 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#00020c">
 <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/archivo-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* fonts are self-hosted (latin only, SIL Open Font License), so nothing waits on Google Fonts */
 @font-face { font-family: "Anton"; font-weight: 400; font-display: swap; src: url(assets/fonts/anton-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url(assets/fonts/inter-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Inter"; font-weight: 500; font-display: swap; src: url(assets/fonts/inter-latin-500-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Archivo"; font-weight: 400; font-display: swap; src: url(assets/fonts/archivo-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Archivo"; font-weight: 500; font-display: swap; src: url(assets/fonts/archivo-latin-500-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: swap; src: url(assets/fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 :root {
   /* Neon blue on deep navy. Same hue as before (about 230), pushed bright enough to read on black:
      --accent is for fills (white text on it is 5.9:1), --accent-hi is for text and strokes on the background (5.5:1). */
   --bg: #00020c; --bg-2: #01051a; --ink: #f2f4fb; --grey: #7f87a6; --line: rgba(90,110,255,.18);
   --accent: #2a4bff; --accent-hi: #5b78ff; --accent-ink: #ffffff; --glow: rgba(42,75,255,.55);
-  --display: "Anton", "Impact", sans-serif; --text: "Inter", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+  --display: "Anton", "Impact", sans-serif; --text: "Archivo", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
   --gut: clamp(20px, 2.4vw, 32px); --max: 1440px;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -75,8 +75,8 @@ p { margin: 0; }
    Each row is ONE video (10 edits stitched side by side) shown twice, so the loop is seamless and only 4 videos decode. */
 .reel { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .reel__rows { position: absolute; left: -15%; right: -15%; top: 50%; display: grid; gap: 14px; opacity: .55; transform: translateY(-58%) rotate(-5deg); transform-origin: 50% 50%; will-change: transform; }
-.reel__track { display: flex; width: max-content; animation: drift 120s linear infinite; }
-.reel__track--b { animation-duration: 140s; animation-direction: reverse; }
+.reel__track { display: flex; width: max-content; animation: drift 55s linear infinite; }
+.reel__track--b { animation-duration: 65s; animation-direction: reverse; }
 .reel video { display: block; height: clamp(120px, 14vw, 240px); width: auto; aspect-ratio: 2560 / 240; background: var(--bg-2); }
 .reel.is-off .reel__track { animation-play-state: paused; }
 @keyframes drift { to { transform: translateX(-50%); } }
@@ -129,21 +129,21 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .warp__stats span { display: block; margin-top: 10px; color: var(--grey); font-size: 15px; max-width: 26ch; }
 .warp__stats span strong { color: var(--ink); font-weight: 500; }
 
-.warp--live { height: 300vh; padding: 0; }
+.warp--live { height: 230vh; padding: 0; }
 .warp--live .warp__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .warp--live .warp__stars { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
 .warp--live .warp__center { position: absolute; left: 50%; top: 50%; width: min(92vw, 1100px); transform: translate(-50%, -50%); will-change: transform, opacity; opacity: 0; }
 .warp--live .warp__stats { margin-top: 0; display: block; }
 .warp--live .warp__stats li { position: absolute; left: 50%; top: 50%; width: min(42vw, 300px); border: 0; padding: 0; opacity: 0; will-change: transform, opacity; }
-.warp--live .warp__stats li.is-left { text-align: right; }
-.warp--live .warp__stats li.is-left span { margin-left: auto; }
+.warp--live .warp__stats li.is-right { text-align: right; }
+.warp--live .warp__stats li.is-right span, .warp--live .warp__stats li.is-right .more { margin-left: auto; }
 .warp--live .warp__stats .num { animation: bob var(--bob, 9s) ease-in-out infinite; animation-play-state: paused; }
 .warp--live.is-on .warp__stats .num { animation-play-state: running; }
 .warp--live .warp__stats li:nth-child(2) .num { --bob: 11s; animation-delay: -3s; }
 .warp--live .warp__stats li:nth-child(3) .num { --bob: 10s; animation-delay: -6s; }
 .warp--live .warp__stats li:nth-child(4) .num { --bob: 12s; animation-delay: -2s; }
 @keyframes bob { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(4px, -7px); } 66% { transform: translate(-5px, 4px); } }
-@media (max-width: 640px) { .warp--live { height: 280vh; } .warp--live .warp__stats b { font-size: 40px; } .warp--live .warp__stats span { font-size: 13px; } }
+@media (max-width: 640px) { .warp--live { height: 210vh; } .warp--live .warp__stats b { font-size: 40px; } .warp--live .warp__stats span { font-size: 13px; } }
 
 /* campaign results (after the Broke Records services block): a card that starts full screen and shrinks as you scroll,
    uncovering columns of edit stills that slide up and down. Each number opens the drawer.
@@ -151,26 +151,39 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph { position: relative; padding: clamp(72px, 10vw, 140px) 0; overflow: clip; }
 .morph__stage { position: relative; }
 .morph__cols { display: none; }
-.morph__card { position: relative; z-index: 1; width: min(100% - 2 * var(--gut), 1100px); margin-inline: auto; padding: clamp(40px, 7vw, 96px) 20px; background: var(--bg); border: 1px solid var(--line); text-align: center; }
+.morph__card { position: relative; z-index: 1; width: min(100% - 2 * var(--gut), 1100px); margin-inline: auto; padding: clamp(40px, 7vw, 96px) 20px; text-align: center; }
 .morph__label { margin: 0; font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); }
 .morph__list { list-style: none; margin: clamp(28px, 5vw, 56px) 0 0; padding: 0; display: grid; gap: 6px; justify-items: center; }
-.morph__item { position: relative; overflow: hidden; font: 400 clamp(40px, 7.4vw, 104px)/.86 var(--display); text-transform: uppercase; letter-spacing: -.005em; transition: opacity .3s ease; }
-.morph__roll { display: grid; }
+.morph__item { position: relative; font: 400 clamp(40px, 7.4vw, 104px)/.86 var(--display); text-transform: uppercase; letter-spacing: -.005em; transition: opacity .3s ease; }
+.morph__roll { display: grid; overflow: hidden; }
 .morph__roll > span { grid-area: 1 / 1; transition: transform .35s cubic-bezier(.65,0,.35,1); white-space: nowrap; }
 .morph__roll > span + span { transform: translateY(100%); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }
 .morph__item:hover .morph__roll > span:first-child, .morph__item:focus-visible .morph__roll > span:first-child { transform: translateY(-100%); }
 .morph__item:hover .morph__roll > span + span, .morph__item:focus-visible .morph__roll > span + span { transform: translateY(0); }
 .morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
-.morph__hint { margin-top: clamp(28px, 4vw, 48px); color: var(--grey); font-size: 14px; }
 
-.morph--live { height: 340vh; padding: 0; }
+/* "Show more stats": tells people a number opens more. Appears on hover, always visible on touch screens */
+.more { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 5px; border-radius: 999px; background: var(--accent); color: #fff; font: 400 11px/1 var(--mono); font-style: normal; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; pointer-events: none; }
+.morph__item .more { position: absolute; left: calc(100% + 18px); top: 50%; font-size: 16px; padding: 9px 16px 8px; opacity: 0; transform: translate(-8px, -50%); transition: opacity .25s ease, transform .25s ease; }
+.morph__item:hover .more, .morph__item:focus-visible .more { opacity: 1; transform: translate(0, -50%); }
+.warp__stats .more { display: flex; margin-top: 12px; width: max-content; opacity: 0; transform: translateY(4px); transition: opacity .25s ease, transform .25s ease; }
+.warp__stats .num:hover .more, .warp__stats .num:focus-visible .more { opacity: 1; transform: none; }
+@media (hover: none) {
+  .warp__stats .more { opacity: 1; transform: none; }
+  .morph__item .more { position: static; display: flex; width: max-content; margin: 8px auto 10px; opacity: 1; transform: none; }
+}
+
+.morph--live { height: 300vh; padding: 0; }
 .morph--live .morph__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-.morph--live .morph__cols { position: absolute; left: 50%; top: 50%; display: flex; gap: 20px; transform: translate(-50%, -50%) scale(1.25); }
-.morph__col { display: flex; flex-direction: column; gap: 20px; will-change: transform; }
+.morph--live .morph__cols { position: absolute; left: 50%; top: 50%; display: flex; gap: 18px; transform: translate(-50%, -50%) scale(1.2); }
+.morph__col { display: flex; flex-direction: column; gap: 18px; will-change: transform; }
 .morph__col:nth-child(even) { margin-top: -160px; }
-.morph__col img { display: block; width: clamp(140px, 17vw, 270px); height: auto; aspect-ratio: 1; object-fit: cover; background: var(--bg-2); filter: brightness(1.05) saturate(.9); }
-.morph--live .morph__card { position: absolute; inset: 0; width: auto; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; box-shadow: 0 0 60px rgba(42,75,255,.25); will-change: transform; }
-@media (max-width: 640px) { .morph--live { height: 280vh; } .morph__col:nth-child(n + 4) { display: none; } }
+.morph__col video { display: block; width: clamp(140px, 17vw, 270px); height: auto; aspect-ratio: 1; object-fit: cover; background: var(--bg-2); }
+/* the card is a soft dark centre, not a box: the edits stay visible around and through the edges */
+.morph--live .morph__card { position: absolute; inset: 0; width: auto; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(closest-side, rgba(0,2,12,.94) 0%, rgba(0,2,12,.88) 50%, rgba(0,2,12,.5) 80%, rgba(0,2,12,0) 100%); will-change: transform; }
+.morph--live .morph__cols::after { content: ""; position: absolute; inset: -200px 0; background: rgba(0,2,12,.4); }   /* one dim layer over all clips, cheaper than a filter on each video */
+@media (max-width: 640px) { .morph--live { height: 240vh; } .morph__col:nth-child(n + 4) { display: none; } }
 
 /* drawer: slides in from the right, "Go back" closes it (after the Broke Records service panels) */
 .drawer { position: fixed; inset: 0 0 0 auto; width: min(100%, 720px); max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; border-left: 1px solid var(--accent); background: var(--bg-2); color: var(--ink); transform: translateX(100%); transition: transform .55s cubic-bezier(.2,.8,.2,1); }
@@ -194,46 +207,40 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .tile { position: relative; margin: 0; aspect-ratio: 1; overflow: hidden; background: var(--bg-2); }
 .tile video { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(.2) brightness(.9); transition: transform .6s cubic-bezier(.25,1,.5,1), filter .6s ease; }
 .tile:hover video { transform: scale(1.03); filter: none; }
-.tile figcaption { position: absolute; inset: auto 0 0; display: grid; gap: 2px; padding: 40px 14px 14px; background: linear-gradient(rgba(0,2,12,0), rgba(0,2,12,.92)); pointer-events: none; }
-.tile figcaption b { font: 400 17px/1.1 var(--display); text-transform: uppercase; letter-spacing: .01em; font-weight: 400; }
-.tile figcaption span { font-size: 12px; color: var(--grey); }
 @media (max-width: 760px) { .edits { grid-template-columns: repeat(2, 1fr); } .tile:nth-child(n + 7) { display: none; } }
 
 /* split */
-.split { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
-.split figure { margin: 0; aspect-ratio: 4 / 5; overflow: hidden; }
-.split figure img { width: 100%; height: 100%; object-fit: cover; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
 .split .lede { margin-top: 24px; }
-.facts { margin-top: 40px; }
-.facts div { padding: 20px 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 200px 1fr; gap: 16px; }
-.facts div:last-child { border-bottom: 1px solid var(--line); }
-.facts h3 { font: 400 20px/1.1 var(--display); text-transform: uppercase; margin: 0; }
-.facts p { color: var(--grey); font-size: 15px; }
-@media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split figure { aspect-ratio: 4 / 3; } }
-@media (max-width: 560px) { .facts div { grid-template-columns: 1fr; gap: 6px; } }
+.facts { margin-top: clamp(28px, 4vw, 44px); border-top: 1px solid var(--line); }
+.facts div { padding: clamp(18px, 2.2vw, 26px) 0; border-bottom: 1px solid var(--line); }
+.facts h3 { font: 400 clamp(26px, 2.6vw, 38px)/1 var(--display); text-transform: uppercase; margin: 0; }
+.facts p { margin-top: 8px; max-width: 44ch; color: var(--grey); font-size: 16px; }
+.mark { position: sticky; top: 96px; display: grid; place-items: center; aspect-ratio: 1; background: radial-gradient(closest-side, rgba(42,75,255,.16), rgba(42,75,255,0)); }
+.mark svg { width: 42%; height: auto; filter: drop-shadow(0 0 30px var(--glow)); }
+@media (max-width: 900px) { .split { grid-template-columns: 1fr; } .mark { display: none; } }
 
-/* who we sign */
-.rows { border-top: 1px solid var(--line); }
-.row { display: grid; grid-template-columns: 70px minmax(0, 1fr) minmax(0, 1.1fr); gap: 24px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid var(--line); transition: background-color .2s; }
-.row:hover { background: rgba(42,75,255,.08); }
-.row .label { color: var(--accent-hi); }
-.row h3 { font: 400 clamp(30px, 3.6vw, 52px)/.95 var(--display); text-transform: uppercase; margin: 0; }
-.row p:not(.label) { color: var(--grey); font-size: 16px; }
-@media (max-width: 760px) { .row { grid-template-columns: 1fr; gap: 8px; } }
+/* what we sign */
+.sign { text-align: center; }
+.sign .lede { margin: 16px auto 0; }
+.genres { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: clamp(36px, 5vw, 64px); border-top: 1px solid var(--line); }
+.genres div { padding: clamp(24px, 3vw, 40px) clamp(12px, 2vw, 28px); }
+.genres div + div { border-left: 1px solid var(--line); }
+.genres h3 { font: 400 clamp(32px, 3.6vw, 52px)/.95 var(--display); text-transform: uppercase; margin: 0; }
+.genres p { margin: 12px auto 0; max-width: 30ch; color: var(--grey); font-size: 16px; }
+@media (max-width: 760px) { .genres { grid-template-columns: 1fr; } .genres div + div { border-left: 0; border-top: 1px solid var(--line); } }
 
 /* demo form */
 .demo { background: var(--bg-2); border-block: 1px solid var(--line); }
 .form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .field { display: grid; gap: 8px; }
 .field--full { grid-column: 1 / -1; }
-.field label { font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); }
+.field label { font-size: 15px; color: #c4c9de; }
 .field input, .field select { height: 52px; padding: 0 16px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: 400 16px var(--text); border-radius: 0; appearance: none; width: 100%; }
 .field select { background-image: linear-gradient(45deg, transparent 50%, var(--grey) 50%), linear-gradient(135deg, var(--grey) 50%, transparent 50%); background-position: calc(100% - 22px) 23px, calc(100% - 17px) 23px; background-size: 5px 5px; background-repeat: no-repeat; }
 .field input::placeholder { color: #4e5677; }
 .field input:focus, .field select:focus { border-color: var(--accent-hi); outline: none; }
 .field__hint { font-size: 13px; color: var(--grey); text-transform: none; letter-spacing: 0; font-family: var(--text); }
-.form__group { grid-column: 1 / -1; padding-top: 12px; border-top: 1px solid var(--line); }
-.form__group:first-child { border-top: 0; padding-top: 0; }
 .check { grid-column: 1 / -1; display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start; font-size: 14px; color: var(--grey); cursor: pointer; }
 .check input { accent-color: var(--accent-hi); width: 18px; height: 18px; margin: 2px 0 0; }
 .form .btn { justify-self: start; }
@@ -325,28 +332,27 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
           data-kind="Our creator base" data-num="142B" data-title="views"
           data-text="Views on every post our creators made for our campaigns since February 2025. Rejected posts are not counted."
           data-note="Platform data, November 2026">142B <span class="outline">views</span></button></h2>
-        <p class="warp__sub">from the creator base behind Overnite. Tap any number to see what it means.</p>
+        <p class="warp__sub">from the creator base behind Overnite.</p>
       </div>
       <ul class="wrap warp__stats">
         <li data-x="-1" data-y="-0.62"><button class="num" type="button" data-kind="Our creator base" data-num="3,500+" data-title="campaigns"
           data-text="Campaigns our team has run with our creator base, for labels, artists and brands. Every one is a song or clip pushed by real creators on their own pages, not ads."
-          data-note="Our own count"><b>3,500+</b><span>campaigns run with our creator base</span></button></li>
+          data-note="Our own count"><b>3,500+</b><span>campaigns run</span><em class="more">Show more stats</em></button></li>
         <li data-x="1" data-y="-0.62"><button class="num" type="button" data-kind="Our creator base" data-num="9.8M" data-title="posts submitted"
           data-text="Videos creators submitted to our campaigns since February 2025. Each one is a creator posting the song or clip on their own TikTok, Instagram or YouTube."
-          data-note="Platform data, November 2026"><b>9.8M</b><span>posts submitted</span></button></li>
+          data-note="Platform data, November 2026"><b>9.8M</b><span>posts submitted</span><em class="more">Show more stats</em></button></li>
         <li data-x="-1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="136K" data-title="creators"
           data-text="Different creators who have posted at least one video that made it through review. That is the network a song goes out to when we sign it."
-          data-note="Platform data, November 2026"><b>136K</b><span>creators who posted</span></button></li>
+          data-note="Platform data, November 2026"><b>136K</b><span>creators who posted</span><em class="more">Show more stats</em></button></li>
         <li data-x="1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="300K+" data-title="accounts"
           data-text="Social accounts those creators posted from. Plenty of creators run more than one page, so one campaign lands on a lot of different feeds."
-          data-note="Platform data, November 2026"><b>300K+</b><span>accounts posting</span></button></li>
+          data-note="Platform data, November 2026"><b>300K+</b><span>accounts posting</span><em class="more">Show more stats</em></button></li>
       </ul>
     </div>
   </section>
 
-  <section id="how" aria-labelledby="how-h">
+  <section id="how" aria-label="How it works">
     <div class="wrap">
-      <div class="head"><h2 class="label" id="how-h">How it works</h2></div>
       <div class="steps">
         <div class="step"><div class="step__n">1</div><h3>Send us your track</h3><p>Fill out the form with your song and where we can DM you. We listen to everything.</p></div>
         <div class="step"><div class="step__n">2</div><h3>We talk through the deal</h3><p>If we want the song, we reach out and go over the contract with you. You sign when you're happy with it.</p></div>
@@ -356,46 +362,45 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   </section>
 
   <div class="edits" role="region" aria-label="Edits from the scene">
-    <figure class="tile"><video data-src="assets/edits/arcane-jinx.mp4" poster="assets/edits/arcane-jinx.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Arcane edit of Jinx"></video><figcaption><b>Series</b><span>Arcane</span></figcaption></figure>
-    <figure class="tile"><video data-src="assets/edits/montagem-uranium.mp4" poster="assets/edits/montagem-uranium.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Rurouni Kenshin edit"></video><figcaption><b>Movie</b><span>Sound: Montagem Uranium (Slowed), ZAYLO</span></figcaption></figure>
-    <figure class="tile"><video data-src="assets/edits/spider-man.mp4" poster="assets/edits/spider-man.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Spider-Man edit"></video><figcaption><b>Movie</b><span>Spider-Man</span></figcaption></figure>
-    <figure class="tile"><video data-src="assets/edits/chemical.mp4" poster="assets/edits/chemical.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Tokyo Ghoul anime edit"></video><figcaption><b>Anime</b><span>Sound: chemical, blood nose</span></figcaption></figure>
-    <figure class="tile"><video data-src="assets/edits/jungwon.mp4" poster="assets/edits/jungwon.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="ENHYPEN Jungwon edit"></video><figcaption><b>K-pop</b><span>ENHYPEN</span></figcaption></figure>
-    <figure class="tile"><video data-src="assets/edits/make-u-whole.mp4" poster="assets/edits/make-u-whole.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Movie meme edit"></video><figcaption><b>Movie</b><span>Sound: Make U Whole, GEEMIX</span></figcaption></figure>
-    <figure class="tile"><video data-src="assets/edits/kante.mp4" poster="assets/edits/kante.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Football edit of N'Golo Kante"></video><figcaption><b>Football</b><span>Chelsea</span></figcaption></figure>
-    <figure class="tile"><video data-src="assets/edits/bond.mp4" poster="assets/edits/bond.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="James Bond edit"></video><figcaption><b>Movie</b><span>James Bond</span></figcaption></figure>
+    <figure class="tile"><video data-src="assets/edits/arcane-jinx.mp4" poster="assets/edits/arcane-jinx.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Arcane edit of Jinx"></video></figure>
+    <figure class="tile"><video data-src="assets/edits/montagem-uranium.mp4" poster="assets/edits/montagem-uranium.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Rurouni Kenshin edit"></video></figure>
+    <figure class="tile"><video data-src="assets/edits/spider-man.mp4" poster="assets/edits/spider-man.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Spider-Man edit"></video></figure>
+    <figure class="tile"><video data-src="assets/edits/chemical.mp4" poster="assets/edits/chemical.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Tokyo Ghoul anime edit"></video></figure>
+    <figure class="tile"><video data-src="assets/edits/jungwon.mp4" poster="assets/edits/jungwon.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="ENHYPEN Jungwon edit"></video></figure>
+    <figure class="tile"><video data-src="assets/edits/make-u-whole.mp4" poster="assets/edits/make-u-whole.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Movie meme edit"></video></figure>
+    <figure class="tile"><video data-src="assets/edits/kante.mp4" poster="assets/edits/kante.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Football edit of N'Golo Kante"></video></figure>
+    <figure class="tile"><video data-src="assets/edits/bond.mp4" poster="assets/edits/bond.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="James Bond edit"></video></figure>
   </div>
 
 
   <section class="morph" id="results" aria-labelledby="results-h">
     <div class="morph__stage">
       <div class="morph__cols" aria-hidden="true">
-          <div class="morph__col"><img data-src="assets/wall/w06.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w38.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w29.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w09.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w34.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w16.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w20.webp" width="360" height="360" alt="" decoding="async"></div>
-          <div class="morph__col"><img data-src="assets/wall/w12.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w28.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w31.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w13.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w01.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w37.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w15.webp" width="360" height="360" alt="" decoding="async"></div>
-          <div class="morph__col"><img data-src="assets/wall/w11.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w22.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w35.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w27.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w32.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w18.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w23.webp" width="360" height="360" alt="" decoding="async"></div>
-          <div class="morph__col"><img data-src="assets/wall/w08.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w36.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w25.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w14.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w03.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w30.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w33.webp" width="360" height="360" alt="" decoding="async"></div>
-          <div class="morph__col"><img data-src="assets/wall/w17.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w02.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w19.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w24.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w07.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w05.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w04.webp" width="360" height="360" alt="" decoding="async"></div>
+        <div class="morph__col"><video data-src="assets/morph/m05.mp4" data-poster="assets/wall/w05.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m06.mp4" data-poster="assets/wall/w06.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m14.mp4" data-poster="assets/wall/w14.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m09.mp4" data-poster="assets/wall/w09.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m08.mp4" data-poster="assets/wall/w08.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m07.mp4" data-poster="assets/wall/w07.webp" width="320" height="320" muted loop playsinline preload="none"></video></div>
+        <div class="morph__col"><video data-src="assets/morph/m09.mp4" data-poster="assets/wall/w09.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m19.mp4" data-poster="assets/wall/w19.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m01.mp4" data-poster="assets/wall/w01.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m18.mp4" data-poster="assets/wall/w18.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m08.mp4" data-poster="assets/wall/w08.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m16.mp4" data-poster="assets/wall/w16.webp" width="320" height="320" muted loop playsinline preload="none"></video></div>
+        <div class="morph__col"><video data-src="assets/morph/m03.mp4" data-poster="assets/wall/w03.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m13.mp4" data-poster="assets/wall/w13.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m11.mp4" data-poster="assets/wall/w11.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m04.mp4" data-poster="assets/wall/w04.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m15.mp4" data-poster="assets/wall/w15.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m02.mp4" data-poster="assets/wall/w02.webp" width="320" height="320" muted loop playsinline preload="none"></video></div>
+        <div class="morph__col"><video data-src="assets/morph/m18.mp4" data-poster="assets/wall/w18.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m03.mp4" data-poster="assets/wall/w03.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m05.mp4" data-poster="assets/wall/w05.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m10.mp4" data-poster="assets/wall/w10.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m15.mp4" data-poster="assets/wall/w15.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m04.mp4" data-poster="assets/wall/w04.webp" width="320" height="320" muted loop playsinline preload="none"></video></div>
+        <div class="morph__col"><video data-src="assets/morph/m06.mp4" data-poster="assets/wall/w06.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m12.mp4" data-poster="assets/wall/w12.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m01.mp4" data-poster="assets/wall/w01.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m02.mp4" data-poster="assets/wall/w02.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m16.mp4" data-poster="assets/wall/w16.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m17.mp4" data-poster="assets/wall/w17.webp" width="320" height="320" muted loop playsinline preload="none"></video></div>
       </div>
       <div class="morph__card">
         <h2 class="morph__label" id="results-h">Campaign results</h2>
         <ul class="morph__list">
           <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="9.2B" data-title="Spotify streams"
             data-text="Spotify streams the songs picked up from the day a campaign launched until six weeks after it ended, tracked with Chartex across 1,309 songs. Other promotion running at the same time counts in there too."
-            data-note="Chartex, August 2025 to November 2026" data-media="spider-man,montagem-uranium,chemical"><span class="morph__roll"><span>9.2B Spotify streams</span><span aria-hidden="true">9.2B Spotify streams</span></span></button></li>
+            data-note="Chartex, August 2025 to November 2026" data-media="spider-man,montagem-uranium,chemical"><span class="morph__roll"><span>9.2B Spotify streams</span><span aria-hidden="true">9.2B Spotify streams</span></span><em class="more">Show more stats</em></button></li>
           <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="85M" data-title="TikTok creates"
             data-text="New TikTok videos made with the songs' sounds over the same windows. Almost all of them are people picking the sound up on their own, not posts we paid for."
-            data-note="Chartex, August 2025 to November 2026" data-media="jungwon,arcane-jinx,kante"><span class="morph__roll"><span>85M TikTok creates</span><span aria-hidden="true">85M TikTok creates</span></span></button></li>
+            data-note="Chartex, August 2025 to November 2026" data-media="jungwon,arcane-jinx,kante"><span class="morph__roll"><span>85M TikTok creates</span><span aria-hidden="true">85M TikTok creates</span></span><em class="more">Show more stats</em></button></li>
           <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="15B" data-title="Music views"
             data-text="Views on posts from 1,668 music campaigns since February 2025. Rejected posts are not counted."
-            data-note="Platform data, November 2026" data-media="bond,make-u-whole,spider-man"><span class="morph__roll"><span>15B Music views</span><span aria-hidden="true">15B Music views</span></span></button></li>
+            data-note="Platform data, November 2026" data-media="bond,make-u-whole,spider-man"><span class="morph__roll"><span>15B Music views</span><span aria-hidden="true">15B Music views</span></span><em class="more">Show more stats</em></button></li>
           <li><button class="num morph__item" type="button" data-kind="Independent artists" data-num="722M" data-title="Indie views"
             data-text="Views across 76 campaigns for 8 independent artists. No major label behind any of them. One of those artists alone did 530M views over 43 campaigns."
-            data-note="Platform data, November 2026" data-media="chemical,arcane-jinx,montagem-uranium"><span class="morph__roll"><span>722M Indie views</span><span aria-hidden="true">722M Indie views</span></span></button></li>
+            data-note="Platform data, November 2026" data-media="chemical,arcane-jinx,montagem-uranium"><span class="morph__roll"><span>722M Indie views</span><span aria-hidden="true">722M Indie views</span></span><em class="more">Show more stats</em></button></li>
           <li><button class="num morph__item" type="button" data-kind="Independent artists" data-num="55M" data-title="In one round"
             data-text="A single campaign round for one independent artist's song. One round, 55M views."
-            data-note="Platform data, November 2026" data-media="kante,jungwon,bond"><span class="morph__roll"><span>55M In one round</span><span aria-hidden="true">55M In one round</span></span></button></li>
+            data-note="Platform data, November 2026" data-media="kante,jungwon,bond"><span class="morph__roll"><span>55M In one round</span><span aria-hidden="true">55M In one round</span></span><em class="more">Show more stats</em></button></li>
         </ul>
-        <p class="morph__hint">No names, just what the campaigns did. Tap a number.</p>
       </div>
     </div>
   </section>
@@ -411,20 +416,22 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
           <div><h3>We don't sign everything</h3><p>We only sign songs we'd put our own money behind. Then we do.</p></div>
         </div>
       </div>
-      <figure><img src="assets/img/photo-f77805477.jpg" srcset="assets/img/photo-f77805477-500.jpg 500w, assets/img/photo-f77805477-960.jpg 960w, assets/img/photo-f77805477.jpg 1280w" sizes="(max-width: 900px) 100vw, 45vw" alt="A packed arena under blue stage lights" loading="lazy" style="object-position: 45% 50%"></figure>
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="4" fill="#f2f4fb"/><circle cx="17" cy="7" r="4" fill="#f2f4fb"/><circle cx="7" cy="17" r="4" fill="#f2f4fb"/><rect x="13" y="13" width="8" height="8" fill="#2a4bff"/></svg>
+      </div>
     </div>
   </section>
 
   <section id="artists" aria-labelledby="artists-h">
     <div class="wrap">
-      <div class="head">
+      <div class="sign">
         <h2 class="display h2" id="artists-h">What we sign</h2>
         <p class="lede">Phonk and Hardtekk first. If it works in edits, send it too.</p>
-      </div>
-      <div class="rows">
-        <div class="row"><p class="label">01</p><h3>Phonk</h3><p>Brazilian phonk, funk, montagem, all of it. From anywhere in the world.</p></div>
-        <div class="row"><p class="label">02</p><h3>Hardtekk</h3><p>Jumpstyle and Hardtekk remixes. Huge on TikTok right now.</p></div>
-        <div class="row"><p class="label">03</p><h3>Internet music</h3><p>Doesn't matter what genre. If people would edit to it, we want to hear it.</p></div>
+        <div class="genres">
+          <div><h3>Phonk</h3><p>Brazilian phonk, funk, montagem, all of it. From anywhere in the world.</p></div>
+          <div><h3>Hardtekk</h3><p>Jumpstyle and Hardtekk remixes. Huge on TikTok right now.</p></div>
+          <div><h3>Internet music</h3><p>Doesn't matter what genre. If people would edit to it, we want to hear it.</p></div>
+        </div>
       </div>
     </div>
   </section>
@@ -436,11 +443,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
         <p class="lede">We listen to every demo and reach out if we want to work together.</p>
       </div>
       <form class="form" action="mailto:demos@overnite.example" method="post" enctype="text/plain">
-        <p class="label form__group">About you</p>
         <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" placeholder="Artist name or real name" required></div>
         <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></div>
         <div class="field field--full"><label for="f-dm">Where can we DM you?</label><input id="f-dm" name="contact" type="text" placeholder="Instagram, Discord or WhatsApp" required></div>
-        <p class="label form__group">The song</p>
         <div class="field"><label for="f-title">Song title</label><input id="f-title" name="title" type="text" placeholder="Just the title" required></div>
         <div class="field"><label for="f-genre">Genre</label>
           <select id="f-genre" name="genre" required>
@@ -448,7 +453,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
           </select></div>
         <div class="field field--full"><label for="f-link">Your track</label><input id="f-link" name="link" type="url" inputmode="url" placeholder="https://" required><span class="field__hint">Link or audio file. Send the original, not slowed or sped up.</span></div>
         <div class="field field--full"><label for="f-tt">Already moving on TikTok? (optional)</label><input id="f-tt" name="tiktok" type="url" inputmode="url" placeholder="https://www.tiktok.com/..."><span class="field__hint">Paste the video or sound.</span></div>
-        <p class="label form__group">Before you send</p>
         <label class="check"><input type="checkbox" name="samples" required> All samples and vocals on this track are mine or cleared.</label>
         <label class="check"><input type="checkbox" name="consent" required> I agree that Overnite can use my submission to review the demo and contact me about it.</label>
         <button class="btn" type="submit">Send demo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
@@ -477,7 +481,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 <footer class="foot">
   <div class="wrap">
     <span class="label">&copy; 2026 Overnite Records</span>
-    <nav class="label" aria-label="Footer"><a href="#how">How it works</a><a href="#artists">Artists</a><a href="#questions">Questions</a><a href="credits.html">Photo credits</a></nav>
+    <nav class="label" aria-label="Footer"><a href="#how">How it works</a><a href="#artists">Artists</a><a href="#questions">Questions</a></nav>
   </div>
 </footer>
 
@@ -580,7 +584,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     const x = parseFloat(el.dataset.x), y = parseFloat(el.dataset.y);
     el.classList.add(x < -0.1 ? 'is-left' : 'is-right');
     el.style.transformOrigin = x < -0.1 ? '100% 50%' : '0 50%';
-    return { el, x, y, w: 0, h: 0, start: 0.12 + i * (0.5 / (all.length - 1)) };
+    return { el, x, y, w: 0, h: 0, start: 0.03 + i * (0.3 / (all.length - 1)) };
   });
   const canvas = warp.querySelector('.warp__stars');
   const ctx = canvas.getContext('2d');
@@ -607,12 +611,27 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   new IntersectionObserver(([e]) => { heroOn = e.isIntersecting; kick(); }).observe(hero);
   new IntersectionObserver(([e]) => { warpOn = e.isIntersecting; warp.classList.toggle('is-on', warpOn); kick(); }).observe(warp);
   new IntersectionObserver(([e]) => { morphOn = e.isIntersecting; kick(); }).observe(morph);
-  const loadStills = new IntersectionObserver(([e]) => {
+  /* the edits behind the results: posters load shortly before the section, and only the clips on screen play,
+     capped so a phone never decodes more than a handful at once */
+  const morphVids = [...morph.querySelectorAll('.morph__col video')];
+  const cap = innerWidth < 768 ? 4 : 8;
+  const live = new Set();
+  const morphIO = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      const v = e.target;
+      if (e.isIntersecting && !document.hidden && playable && live.size < cap) {
+        if (!v.src) v.src = v.dataset.src;
+        live.add(v); const p = v.play(); if (p) p.catch(() => {});
+      } else if (!e.isIntersecting && live.has(v)) { live.delete(v); v.pause(); }
+    }
+  });
+  const loadPosters = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return;
-    morph.querySelectorAll('img[data-src]').forEach((img) => { img.src = img.dataset.src; img.removeAttribute('data-src'); });
-    loadStills.disconnect();
+    morphVids.forEach((v) => { v.poster = v.dataset.poster; morphIO.observe(v); });
+    loadPosters.disconnect();
   }, { rootMargin: '1200px 0px' });
-  loadStills.observe(morph);
+  loadPosters.observe(morph);
+  document.addEventListener('visibilitychange', () => { live.forEach((v) => (document.hidden ? v.pause() : v.play().catch(() => {}))); });
   addEventListener('scroll', kick, { passive: true });
 
   function drawStars(p, speed, t) {
@@ -644,15 +663,15 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     }
     if (warpOn) {
       const target = progress(warp), prev = warpP;
-      warpP += (target - warpP) * 0.12;                      /* smoothing, so the zoom glides instead of jumping */
+      warpP += (target - warpP) * 0.18;                      /* smoothing, so the zoom glides instead of jumping */
       if (Math.abs(target - warpP) < 0.0005) warpP = target; else again = true;
       drawStars(warpP, Math.abs(warpP - prev), t);
-      const inK = easeOut(clamp(warpP / 0.1));
+      const inK = easeOut(clamp(warpP / 0.06));
       center.style.opacity = inK;
       center.style.transform = `translate(-50%, -50%) scale(${0.55 + inK * 0.45})`;
       const m = Math.max(20, W * 0.06), ry = H * 0.5;
       for (const s of stats) {
-        const q = clamp((warpP - s.start) / 0.22);           /* 0 = still in the centre, 1 = settled in its corner */
+        const q = clamp((warpP - s.start) / 0.14);           /* 0 = still in the centre, 1 = settled in its corner */
         const come = easeOut(q);
         const w = s.w, h = s.h;
         let left;                                            /* x of the element's left edge, relative to the centre */
@@ -693,7 +712,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     if (!shown) { shown = true; pos.x = target.x; pos.y = target.y; document.documentElement.classList.add('has-cursor'); }
     const t = e.target;
     onLink = !!t.closest('a, button, summary, select, label, [role="button"]');
-    onPhoto = !onLink && !!t.closest('.tile, .split figure');
+    onPhoto = !onLink && !!t.closest('.tile');
     el.classList.toggle('is-text', !!t.closest('input'));
     el.classList.toggle('is-link', onLink);
     el.classList.toggle('is-photo', onPhoto);
