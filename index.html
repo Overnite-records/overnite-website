@@ -615,15 +615,23 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
      capped so a phone never decodes more than a handful at once */
   const morphVids = [...morph.querySelectorAll('.morph__col video')];
   const cap = innerWidth < 768 ? 4 : 8;
-  const live = new Set();
+  const seen = new Set(), live = new Set();
+  function fillMorph() {                                     /* start on-screen clips up to the cap, in DOM order */
+    if (document.hidden || !playable) return;
+    for (const v of seen) {
+      if (live.size >= cap) break;
+      if (live.has(v)) continue;
+      if (!v.src) v.src = v.dataset.src;
+      live.add(v); const p = v.play(); if (p) p.catch(() => {});
+    }
+  }
   const morphIO = new IntersectionObserver((entries) => {
     for (const e of entries) {
       const v = e.target;
-      if (e.isIntersecting && !document.hidden && playable && live.size < cap) {
-        if (!v.src) v.src = v.dataset.src;
-        live.add(v); const p = v.play(); if (p) p.catch(() => {});
-      } else if (!e.isIntersecting && live.has(v)) { live.delete(v); v.pause(); }
+      if (e.isIntersecting) seen.add(v);
+      else { seen.delete(v); if (live.delete(v)) v.pause(); }
     }
+    fillMorph();
   });
   const loadPosters = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return;
@@ -631,7 +639,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     loadPosters.disconnect();
   }, { rootMargin: '1200px 0px' });
   loadPosters.observe(morph);
-  document.addEventListener('visibilitychange', () => { live.forEach((v) => (document.hidden ? v.pause() : v.play().catch(() => {}))); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { live.forEach((v) => v.pause()); live.clear(); } else fillMorph();
+  });
   addEventListener('scroll', kick, { passive: true });
 
   function drawStars(p, speed, t) {
