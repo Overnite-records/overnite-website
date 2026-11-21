@@ -19,8 +19,4 @@ Preview locally by opening `index.html` in a browser, or run `python -m http.ser
 
 ## Deploy
 
-Hosted on Vercel (project `overnite-records`). From this folder:
-
-```
-npx vercel@latest deploy --prod
-```
+Hosted on Vercel (project `overnite-records`). Every push to `main` goes live automatically within about a minute. Other branches get their own preview URL.
