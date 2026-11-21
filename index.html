@@ -126,24 +126,22 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .num--title:hover .outline { -webkit-text-stroke-color: var(--ink); }
 .warp__stats .num:hover b { color: var(--ink); }
 .warp__stats b { display: block; transition: color .15s; font: 400 clamp(44px, 5vw, 72px)/.9 var(--display); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }
-.warp__stats span { display: block; margin-top: 10px; color: var(--grey); font-size: 15px; max-width: 26ch; }
-.warp__stats span strong { color: var(--ink); font-weight: 500; }
+.warp__stats span { display: block; margin-top: 10px; color: var(--grey); font-size: 15px; }
 
-.warp--live { height: 230vh; padding: 0; }
+.warp--live { height: 170vh; padding: 0; }
 .warp--live .warp__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .warp--live .warp__stars { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
 .warp--live .warp__center { position: absolute; left: 50%; top: 50%; width: min(92vw, 1100px); transform: translate(-50%, -50%); will-change: transform, opacity; opacity: 0; }
 .warp--live .warp__stats { margin-top: 0; display: block; }
-.warp--live .warp__stats li { position: absolute; left: 50%; top: 50%; width: min(42vw, 300px); border: 0; padding: 0; opacity: 0; will-change: transform, opacity; }
-.warp--live .warp__stats li.is-right { text-align: right; }
-.warp--live .warp__stats li.is-right span, .warp--live .warp__stats li.is-right .more { margin-left: auto; }
+/* each corner stat is one centred block: number, label and hint share the same middle line */
+.warp--live .warp__stats li { position: absolute; left: 50%; top: 50%; width: max-content; max-width: 44vw; border: 0; padding: 0; text-align: center; opacity: 0; will-change: transform, opacity; }
 .warp--live .warp__stats .num { animation: bob var(--bob, 9s) ease-in-out infinite; animation-play-state: paused; }
 .warp--live.is-on .warp__stats .num { animation-play-state: running; }
 .warp--live .warp__stats li:nth-child(2) .num { --bob: 11s; animation-delay: -3s; }
 .warp--live .warp__stats li:nth-child(3) .num { --bob: 10s; animation-delay: -6s; }
 .warp--live .warp__stats li:nth-child(4) .num { --bob: 12s; animation-delay: -2s; }
 @keyframes bob { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(4px, -7px); } 66% { transform: translate(-5px, 4px); } }
-@media (max-width: 640px) { .warp--live { height: 210vh; } .warp--live .warp__stats b { font-size: 40px; } .warp--live .warp__stats span { font-size: 13px; } }
+@media (max-width: 640px) { .warp--live { height: 160vh; } .warp--live .warp__stats b { font-size: 40px; } .warp--live .warp__stats span { font-size: 13px; } }
 
 /* campaign results (after the Broke Records services block): a card that starts full screen and shrinks as you scroll,
    uncovering columns of edit stills that slide up and down. Each number opens the drawer.
@@ -161,12 +159,13 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph__item:hover .morph__roll > span:first-child, .morph__item:focus-visible .morph__roll > span:first-child { transform: translateY(-100%); }
 .morph__item:hover .morph__roll > span + span, .morph__item:focus-visible .morph__roll > span + span { transform: translateY(0); }
 .morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
+@media (hover: hover) { .morph__list { gap: clamp(14px, 2.8vw, 40px); } }   /* room for the hint under the hovered line */
 
-/* "Show more stats": tells people a number opens more. Appears on hover, always visible on touch screens */
+/* "Press to show more stats": tells people a number opens more. Appears on hover, always visible on touch screens */
 .more { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 5px; border-radius: 999px; background: var(--accent); color: #fff; font: 400 11px/1 var(--mono); font-style: normal; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; pointer-events: none; }
-.morph__item .more { position: absolute; left: calc(100% + 18px); top: 50%; font-size: 16px; padding: 9px 16px 8px; opacity: 0; transform: translate(-8px, -50%); transition: opacity .25s ease, transform .25s ease; }
-.morph__item:hover .more, .morph__item:focus-visible .more { opacity: 1; transform: translate(0, -50%); }
-.warp__stats .more { display: flex; margin-top: 12px; width: max-content; opacity: 0; transform: translateY(4px); transition: opacity .25s ease, transform .25s ease; }
+.morph__item .more { position: absolute; left: 50%; top: 100%; z-index: 1; font-size: 14px; padding: 8px 14px 7px; opacity: 0; transform: translate(-50%, -4px); transition: opacity .25s ease, transform .25s ease; }
+.morph__item:hover .more, .morph__item:focus-visible .more { opacity: 1; transform: translate(-50%, 2px); }
+.warp__stats .more { display: flex; margin: 12px auto 0; width: max-content; opacity: 0; transform: translateY(4px); transition: opacity .25s ease, transform .25s ease; }
 .warp__stats .num:hover .more, .warp__stats .num:focus-visible .more { opacity: 1; transform: none; }
 @media (hover: none) {
   .warp__stats .more { opacity: 1; transform: none; }
@@ -202,13 +201,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .drawer__back:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 3px; }
 .is-locked { overflow: hidden; }
 
-/* edits wall: full-bleed grid of edits, like the release wall on 99Eyes. Videos load and play only while on screen */
-.edits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; border-block: 1px solid var(--line); background: var(--line); }
-.tile { position: relative; margin: 0; aspect-ratio: 1; overflow: hidden; background: var(--bg-2); }
-.tile video { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(.2) brightness(.9); transition: transform .6s cubic-bezier(.25,1,.5,1), filter .6s ease; }
-.tile:hover video { transform: scale(1.03); filter: none; }
-@media (max-width: 760px) { .edits { grid-template-columns: repeat(2, 1fr); } .tile:nth-child(n + 7) { display: none; } }
-
 /* split */
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
 .split .lede { margin-top: 24px; }
@@ -216,13 +208,12 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .facts div { padding: clamp(18px, 2.2vw, 26px) 0; border-bottom: 1px solid var(--line); }
 .facts h3 { font: 400 clamp(26px, 2.6vw, 38px)/1 var(--display); text-transform: uppercase; margin: 0; }
 .facts p { margin-top: 8px; max-width: 44ch; color: var(--grey); font-size: 16px; }
-.mark { position: sticky; top: 96px; display: grid; place-items: center; aspect-ratio: 1; background: radial-gradient(closest-side, rgba(42,75,255,.16), rgba(42,75,255,0)); }
-.mark svg { width: 42%; height: auto; filter: drop-shadow(0 0 30px var(--glow)); }
+.mark { align-self: center; display: grid; place-items: center; aspect-ratio: 1; background: radial-gradient(closest-side, rgba(42,75,255,.16), rgba(42,75,255,0)); }
+.mark svg { width: 56%; height: auto; filter: drop-shadow(0 0 30px var(--glow)); }
 @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .mark { display: none; } }
 
 /* what we sign */
 .sign { text-align: center; }
-.sign .lede { margin: 16px auto 0; }
 .genres { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: clamp(36px, 5vw, 64px); border-top: 1px solid var(--line); }
 .genres div { padding: clamp(24px, 3vw, 40px) clamp(12px, 2vw, 28px); }
 .genres div + div { border-left: 1px solid var(--line); }
@@ -236,11 +227,22 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .field { display: grid; gap: 8px; }
 .field--full { grid-column: 1 / -1; }
 .field label { font-size: 15px; color: #c4c9de; }
+.field textarea { min-height: 96px; padding: 14px 16px; resize: vertical; line-height: 1.5; }
 .field input, .field select { height: 52px; padding: 0 16px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: 400 16px var(--text); border-radius: 0; appearance: none; width: 100%; }
 .field select { background-image: linear-gradient(45deg, transparent 50%, var(--grey) 50%), linear-gradient(135deg, var(--grey) 50%, transparent 50%); background-position: calc(100% - 22px) 23px, calc(100% - 17px) 23px; background-size: 5px 5px; background-repeat: no-repeat; }
-.field input::placeholder { color: #4e5677; }
-.field input:focus, .field select:focus { border-color: var(--accent-hi); outline: none; }
-.field__hint { font-size: 13px; color: var(--grey); text-transform: none; letter-spacing: 0; font-family: var(--text); }
+.field textarea { background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: 400 16px/1.5 var(--text); border-radius: 0; width: 100%; }
+.field input::placeholder, .field textarea::placeholder { color: #4e5677; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent-hi); outline: none; }
+/* file picker: the native input stays in the page (keyboard and screen readers use it), the label is what people see */
+.files { justify-items: start; }
+.files__label { font-size: 15px; color: #c4c9de; }
+.files input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.files__pick { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border: 1px dashed var(--accent-hi); color: var(--ink); font-size: 15px; cursor: pointer; transition: background-color .15s; }
+.files__pick:hover, .files input:focus-visible + .files__pick { background: rgba(42,75,255,.14); }
+.files__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14px; color: var(--grey); }
+.form__msg { grid-column: 1 / -1; font-size: 15px; color: var(--accent-hi); }
+.form__msg:empty { display: none; }
+.field__hint { font-size: 13px; color: var(--grey); }
 .check { grid-column: 1 / -1; display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start; font-size: 14px; color: var(--grey); cursor: pointer; }
 .check input { accent-color: var(--accent-hi); width: 18px; height: 18px; margin: 2px 0 0; }
 .form .btn { justify-self: start; }
@@ -261,14 +263,12 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .cursor span { position: absolute; left: 0; top: 0; width: var(--size, 14px); height: var(--size, 14px); border-radius: 50%; transform: translate(-50%, -50%); background: #fff; mix-blend-mode: difference; transition: width .22s ease, height .22s ease; }
 @supports ((backdrop-filter: invert(1)) or (-webkit-backdrop-filter: invert(1))) {
   .cursor span { background: transparent; mix-blend-mode: normal; -webkit-backdrop-filter: grayscale(1) brightness(1.5) contrast(9999) invert(1); backdrop-filter: grayscale(1) brightness(1.5) contrast(9999) invert(1); }
-  .cursor.is-photo span { -webkit-backdrop-filter: invert(1) grayscale(1); backdrop-filter: invert(1) grayscale(1); }
 }
 .has-cursor .cursor { opacity: 1; }
 .has-cursor, .has-cursor a, .has-cursor button, .has-cursor summary, .has-cursor select, .has-cursor label { cursor: none; }
 .has-cursor .drawer, .has-cursor .drawer * { cursor: auto; }
 .has-cursor input { cursor: text; }
 .cursor.is-link { --size: 52px; }
-.cursor.is-photo { --size: 110px; }
 .cursor.is-text { opacity: 0; }
 
 /* close + footer */
@@ -337,16 +337,16 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       <ul class="wrap warp__stats">
         <li data-x="-1" data-y="-0.62"><button class="num" type="button" data-kind="Our creator base" data-num="3,500+" data-title="campaigns"
           data-text="Campaigns our team has run with our creator base, for labels, artists and brands. Every one is a song or clip pushed by real creators on their own pages, not ads."
-          data-note="Our own count"><b>3,500+</b><span>campaigns run</span><em class="more">Show more stats</em></button></li>
+          data-note="Our own count"><b>3,500+</b><span>campaigns run</span><em class="more">Press to show more stats</em></button></li>
         <li data-x="1" data-y="-0.62"><button class="num" type="button" data-kind="Our creator base" data-num="9.8M" data-title="posts submitted"
           data-text="Videos creators submitted to our campaigns since February 2025. Each one is a creator posting the song or clip on their own TikTok, Instagram or YouTube."
-          data-note="Platform data, November 2026"><b>9.8M</b><span>posts submitted</span><em class="more">Show more stats</em></button></li>
-        <li data-x="-1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="136K" data-title="creators"
-          data-text="Different creators who have posted at least one video that made it through review. That is the network a song goes out to when we sign it."
-          data-note="Platform data, November 2026"><b>136K</b><span>creators who posted</span><em class="more">Show more stats</em></button></li>
-        <li data-x="1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="300K+" data-title="accounts"
-          data-text="Social accounts those creators posted from. Plenty of creators run more than one page, so one campaign lands on a lot of different feeds."
-          data-note="Platform data, November 2026"><b>300K+</b><span>accounts posting</span><em class="more">Show more stats</em></button></li>
+          data-note="Platform data, November 2026"><b>9.8M</b><span>posts submitted</span><em class="more">Press to show more stats</em></button></li>
+        <li data-x="-1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="2B+" data-title="followers"
+          data-text="Followers across the social accounts our creators have linked right now. That is the audience a song can reach when we sign it."
+          data-note="Platform data, November 2026"><b>2B+</b><span>combined followers</span><em class="more">Press to show more stats</em></button></li>
+        <li data-x="1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="500K+" data-title="accounts"
+          data-text="Different social accounts creators have linked to post for our campaigns since early 2025. Plenty of creators run more than one page, so one campaign lands on a lot of different feeds."
+          data-note="Platform data, November 2026"><b>500K+</b><span>accounts linked</span><em class="more">Press to show more stats</em></button></li>
       </ul>
     </div>
   </section>
@@ -360,17 +360,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       </div>
     </div>
   </section>
-
-  <div class="edits" role="region" aria-label="Edits from the scene">
-    <figure class="tile"><video data-src="assets/edits/arcane-jinx.mp4" poster="assets/edits/arcane-jinx.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Arcane edit of Jinx"></video></figure>
-    <figure class="tile"><video data-src="assets/edits/montagem-uranium.mp4" poster="assets/edits/montagem-uranium.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Rurouni Kenshin edit"></video></figure>
-    <figure class="tile"><video data-src="assets/edits/spider-man.mp4" poster="assets/edits/spider-man.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Spider-Man edit"></video></figure>
-    <figure class="tile"><video data-src="assets/edits/chemical.mp4" poster="assets/edits/chemical.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Tokyo Ghoul anime edit"></video></figure>
-    <figure class="tile"><video data-src="assets/edits/jungwon.mp4" poster="assets/edits/jungwon.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="ENHYPEN Jungwon edit"></video></figure>
-    <figure class="tile"><video data-src="assets/edits/make-u-whole.mp4" poster="assets/edits/make-u-whole.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Movie meme edit"></video></figure>
-    <figure class="tile"><video data-src="assets/edits/kante.mp4" poster="assets/edits/kante.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Football edit of N'Golo Kante"></video></figure>
-    <figure class="tile"><video data-src="assets/edits/bond.mp4" poster="assets/edits/bond.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="James Bond edit"></video></figure>
-  </div>
 
 
   <section class="morph" id="results" aria-labelledby="results-h">
@@ -387,19 +376,16 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
         <ul class="morph__list">
           <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="9.2B" data-title="Spotify streams"
             data-text="Spotify streams the songs picked up from the day a campaign launched until six weeks after it ended, tracked with Chartex across 1,309 songs. Other promotion running at the same time counts in there too."
-            data-note="Chartex, August 2025 to November 2026" data-media="spider-man,montagem-uranium,chemical"><span class="morph__roll"><span>9.2B Spotify streams</span><span aria-hidden="true">9.2B Spotify streams</span></span><em class="more">Show more stats</em></button></li>
+            data-note="Chartex, August 2025 to November 2026" data-media="spider-man,montagem-uranium,chemical"><span class="morph__roll"><span>9.2B Spotify streams</span><span aria-hidden="true">9.2B Spotify streams</span></span><em class="more">Press to show more stats</em></button></li>
           <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="85M" data-title="TikTok creates"
             data-text="New TikTok videos made with the songs' sounds over the same windows. Almost all of them are people picking the sound up on their own, not posts we paid for."
-            data-note="Chartex, August 2025 to November 2026" data-media="jungwon,arcane-jinx,kante"><span class="morph__roll"><span>85M TikTok creates</span><span aria-hidden="true">85M TikTok creates</span></span><em class="more">Show more stats</em></button></li>
+            data-note="Chartex, August 2025 to November 2026" data-media="jungwon,arcane-jinx,kante"><span class="morph__roll"><span>85M TikTok creates</span><span aria-hidden="true">85M TikTok creates</span></span><em class="more">Press to show more stats</em></button></li>
           <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="15B" data-title="Music views"
             data-text="Views on posts from 1,668 music campaigns since February 2025. Rejected posts are not counted."
-            data-note="Platform data, November 2026" data-media="bond,make-u-whole,spider-man"><span class="morph__roll"><span>15B Music views</span><span aria-hidden="true">15B Music views</span></span><em class="more">Show more stats</em></button></li>
+            data-note="Platform data, November 2026" data-media="bond,make-u-whole,spider-man"><span class="morph__roll"><span>15B Music views</span><span aria-hidden="true">15B Music views</span></span><em class="more">Press to show more stats</em></button></li>
           <li><button class="num morph__item" type="button" data-kind="Independent artists" data-num="722M" data-title="Indie views"
             data-text="Views across 76 campaigns for 8 independent artists. No major label behind any of them. One of those artists alone did 530M views over 43 campaigns."
-            data-note="Platform data, November 2026" data-media="chemical,arcane-jinx,montagem-uranium"><span class="morph__roll"><span>722M Indie views</span><span aria-hidden="true">722M Indie views</span></span><em class="more">Show more stats</em></button></li>
-          <li><button class="num morph__item" type="button" data-kind="Independent artists" data-num="55M" data-title="In one round"
-            data-text="A single campaign round for one independent artist's song. One round, 55M views."
-            data-note="Platform data, November 2026" data-media="kante,jungwon,bond"><span class="morph__roll"><span>55M In one round</span><span aria-hidden="true">55M In one round</span></span><em class="more">Show more stats</em></button></li>
+            data-note="Platform data, November 2026" data-media="chemical,arcane-jinx,montagem-uranium"><span class="morph__roll"><span>722M Indie views</span><span aria-hidden="true">722M Indie views</span></span><em class="more">Press to show more stats</em></button></li>
         </ul>
       </div>
     </div>
@@ -408,7 +394,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   <section id="campaign" aria-labelledby="campaign-h">
     <div class="wrap split">
       <div>
-        <h2 class="display h2" id="campaign-h">Why Overnite</h2>
+        <h2 class="display h2" id="campaign-h">Why Overnite?</h2>
         <div class="facts">
           <div><h3><span class="accent">3,500+</span> edit campaigns</h3><p>The team behind Overnite has run over 3,500 edit campaigns. We've seen what takes off and what doesn't.</p></div>
           <div><h3>More editors than anyone</h3><p>The biggest editor network in the scene. When they post your song, other editors pick it up.</p></div>
@@ -426,7 +412,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     <div class="wrap">
       <div class="sign">
         <h2 class="display h2" id="artists-h">What we sign</h2>
-        <p class="lede">Phonk and Hardtekk first. If it works in edits, send it too.</p>
         <div class="genres">
           <div><h3>Phonk</h3><p>Brazilian phonk, funk, montagem, all of it. From anywhere in the world.</p></div>
           <div><h3>Hardtekk</h3><p>Jumpstyle and Hardtekk remixes. Huge on TikTok right now.</p></div>
@@ -442,7 +427,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
         <h2 class="display h2" id="demo-h">Send us a <span class="outline">demo</span></h2>
         <p class="lede">We listen to every demo and reach out if we want to work together.</p>
       </div>
-      <form class="form" action="mailto:demos@overnite.example" method="post" enctype="text/plain">
+      <form class="form" id="demo-form" data-to="demos@overnite.example" data-endpoint="" novalidate>
         <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" placeholder="Artist name or real name" required></div>
         <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></div>
         <div class="field field--full"><label for="f-dm">Where can we DM you?</label><input id="f-dm" name="contact" type="text" placeholder="Instagram, Discord or WhatsApp" required></div>
@@ -451,10 +436,15 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
           <select id="f-genre" name="genre" required>
             <option value="">Choose one</option><option>Phonk</option><option>Brazilian phonk</option><option>Funk</option><option>Hardtekk</option><option>Something else</option>
           </select></div>
-        <div class="field field--full"><label for="f-link">Your track</label><input id="f-link" name="link" type="url" inputmode="url" placeholder="https://" required><span class="field__hint">Link or audio file. Send the original, not slowed or sped up.</span></div>
-        <div class="field field--full"><label for="f-tt">Already moving on TikTok? (optional)</label><input id="f-tt" name="tiktok" type="url" inputmode="url" placeholder="https://www.tiktok.com/..."><span class="field__hint">Paste the video or sound.</span></div>
+        <div class="field field--full"><label for="f-link">Your tracks</label><textarea id="f-link" name="links" rows="3" autocomplete="url" placeholder="Paste links here, one per line (SoundCloud, Drive, Dropbox...)"></textarea></div>
+        <div class="field field--full files"><span class="files__label">Or upload the files</span>
+          <input id="f-files" name="files" type="file" accept=".mp3,.wav,audio/mpeg,audio/wav,audio/x-wav" multiple><label class="files__pick" for="f-files">Add MP3 or WAV</label>
+          <ul class="files__list" aria-live="polite"></ul>
+          <span class="field__hint">You can add more than one, like the original and a slowed version.</span></div>
+        <div class="field field--full"><label for="f-tt">Already moving on TikTok? (optional)</label><input id="f-tt" name="tiktok" type="text" inputmode="url" autocomplete="url" placeholder="https://www.tiktok.com/..."><span class="field__hint">Paste the video or sound.</span></div>
         <label class="check"><input type="checkbox" name="samples" required> All samples and vocals on this track are mine or cleared.</label>
         <label class="check"><input type="checkbox" name="consent" required> I agree that Overnite can use my submission to review the demo and contact me about it.</label>
+        <p class="form__msg" role="status"></p>
         <button class="btn" type="submit">Send demo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
       </form>
     </div>
@@ -516,7 +506,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     const p = v.play(); if (p) p.catch(() => {});
   };
   const onScreen = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
-  const videos = [...document.querySelectorAll('.reel video, .edits video')];
+  const videos = [...document.querySelectorAll('.reel video')];
   if (playable && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) e.isIntersecting && !document.hidden ? play(e.target) : e.target.pause();
@@ -582,9 +572,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   const center = warp.querySelector('.warp__center');
   const stats = [...warp.querySelectorAll('.warp__stats li')].map((el, i, all) => {
     const x = parseFloat(el.dataset.x), y = parseFloat(el.dataset.y);
-    el.classList.add(x < -0.1 ? 'is-left' : 'is-right');
-    el.style.transformOrigin = x < -0.1 ? '100% 50%' : '0 50%';
-    return { el, x, y, w: 0, h: 0, start: 0.03 + i * (0.3 / (all.length - 1)) };
+    return { el, x, y, w: 0, h: 0, start: 0.04 + i * (0.48 / (all.length - 1)) };   /* the last one has settled by about 3/4 of the run */
   });
   const canvas = warp.querySelector('.warp__stars');
   const ctx = canvas.getContext('2d');
@@ -611,10 +599,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   new IntersectionObserver(([e]) => { heroOn = e.isIntersecting; kick(); }).observe(hero);
   new IntersectionObserver(([e]) => { warpOn = e.isIntersecting; warp.classList.toggle('is-on', warpOn); kick(); }).observe(warp);
   new IntersectionObserver(([e]) => { morphOn = e.isIntersecting; kick(); }).observe(morph);
-  /* the edits behind the results: posters load shortly before the section, and only the clips on screen play,
-     capped so a phone never decodes more than a handful at once */
+  /* the edits behind the results: posters load well before the section, clips load just before they come on screen,
+     and every clip on screen plays (they are small 320px loops). The cap is only a safety net for phones */
   const morphVids = [...morph.querySelectorAll('.morph__col video')];
-  const cap = innerWidth < 768 ? 4 : 8;
+  const cap = innerWidth < 768 ? 12 : 24;
   const seen = new Set(), live = new Set();
   function fillMorph() {                                     /* start on-screen clips up to the cap, in DOM order */
     if (document.hidden || !playable) return;
@@ -632,7 +620,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       else { seen.delete(v); if (live.delete(v)) v.pause(); }
     }
     fillMorph();
-  });
+  }, { rootMargin: '200px 0px' });
   const loadPosters = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return;
     morphVids.forEach((v) => { v.poster = v.dataset.poster; morphIO.observe(v); });
@@ -676,17 +664,16 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       warpP += (target - warpP) * 0.18;                      /* smoothing, so the zoom glides instead of jumping */
       if (Math.abs(target - warpP) < 0.0005) warpP = target; else again = true;
       drawStars(warpP, Math.abs(warpP - prev), t);
-      const inK = easeOut(clamp(warpP / 0.06));
+      const inK = easeOut(clamp(warpP / 0.08));
       center.style.opacity = inK;
       center.style.transform = `translate(-50%, -50%) scale(${0.55 + inK * 0.45})`;
       const m = Math.max(20, W * 0.06), ry = H * 0.5;
       for (const s of stats) {
-        const q = clamp((warpP - s.start) / 0.14);           /* 0 = still in the centre, 1 = settled in its corner */
+        const q = clamp((warpP - s.start) / 0.22);           /* 0 = still in the centre, 1 = settled in its corner */
         const come = easeOut(q);
         const w = s.w, h = s.h;
-        let left;                                            /* x of the element's left edge, relative to the centre */
-        if (s.x < -0.1) left = (-(W / 2 - m) + w) * come - w;
-        else left = (W / 2 - m - w) * come;
+        const end = s.x < 0 ? -(W / 2 - m) : W / 2 - m - w;   /* x of the block's left edge once it sits in its corner */
+        const left = end * come - (w / 2) * (1 - come);      /* starts centred on the middle of the screen */
         const top = (s.y * ry - h / 2) * come - (1 - come) * h / 2;
         s.el.style.opacity = clamp(q / 0.4);
         s.el.style.visibility = q > 0 ? 'visible' : 'hidden';
@@ -716,16 +703,14 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   if (!fine) return;
   const el = document.querySelector('.cursor');
   const target = { x: innerWidth / 2, y: innerHeight / 2 }, pos = { ...target };
-  let shown = false, onLink = false, onPhoto = false, running = false;
+  let shown = false, onLink = false, running = false;
   addEventListener('mousemove', (e) => {
     target.x = e.clientX; target.y = e.clientY;
     if (!shown) { shown = true; pos.x = target.x; pos.y = target.y; document.documentElement.classList.add('has-cursor'); }
     const t = e.target;
     onLink = !!t.closest('a, button, summary, select, label, [role="button"]');
-    onPhoto = !onLink && !!t.closest('.tile');
     el.classList.toggle('is-text', !!t.closest('input'));
     el.classList.toggle('is-link', onLink);
-    el.classList.toggle('is-photo', onPhoto);
     if (!running) { running = true; requestAnimationFrame(frame); }
   }, { passive: true });
   document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
@@ -734,10 +719,41 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     pos.x += (target.x - pos.x) * ease; pos.y += (target.y - pos.y) * ease;
     const dx = pos.x - px, dy = pos.y - py, speed = Math.hypot(dx, dy);
     const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    const stretch = calm || onLink || onPhoto ? 1 : Math.min(1 + speed * 0.045, 1.9);
+    const stretch = calm || onLink ? 1 : Math.min(1 + speed * 0.045, 1.9);
     el.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${angle}deg) scale(${stretch}, ${1 / Math.sqrt(stretch)})`;
     if (Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3) requestAnimationFrame(frame); else running = false;
   }
+})();
+/* 5. Demo form. Sends to data-endpoint (a form service that takes audio files) once one is set.
+      Until then it opens an email to data-to with the details, and people attach their files there.
+      No mailto action on the form itself: Chrome flags that as "not secure" and turns autofill off. */
+(() => {
+  const form = document.getElementById('demo-form');
+  const links = form.querySelector('#f-link'), files = form.querySelector('#f-files'), list = form.querySelector('.files__list'), msg = form.querySelector('.form__msg');
+  files.addEventListener('change', () => {
+    list.replaceChildren(...[...files.files].map((f) => { const li = document.createElement('li'); li.textContent = f.name; return li; }));
+    links.setCustomValidity('');
+  });
+  links.addEventListener('input', () => links.setCustomValidity(''));
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    links.setCustomValidity(links.value.trim() || files.files.length ? '' : 'Paste a link or add a file.');
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    if (form.dataset.endpoint) {
+      msg.textContent = 'Sending...';
+      try {
+        const r = await fetch(form.dataset.endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        if (!r.ok) throw new Error(r.status);
+        form.reset(); list.replaceChildren(); msg.textContent = 'Got it. We listen to everything and reach out if we want to work together.';
+      } catch { msg.textContent = 'That did not go through. Try again in a minute.'; }
+      return;
+    }
+    const lines = ['name', 'email', 'contact', 'title', 'genre', 'links', 'tiktok'].map((k) => `${k}: ${(data.get(k) || '').toString().trim()}`);
+    if (files.files.length) lines.push('', 'Files to attach: ' + [...files.files].map((f) => f.name).join(', '));
+    location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent('Demo: ' + data.get('title'))}&body=${encodeURIComponent(lines.join('\n'))}`;
+    if (files.files.length) msg.textContent = 'Your email app opened with the details. Attach your files there and hit send.';
+  });
 })();
 </script>
 </body>
