@@ -525,7 +525,7 @@ body:has(.drawer[open]) { overflow: hidden; }
       for (const e of entries) e.isIntersecting && !document.hidden ? play(e.target) : e.target.pause();
     }, { rootMargin: '200px 0px' });
     videos.forEach((v) => io.observe(v));
-    document.addEventListener('visibilitychange', () => videos.forEach((v) => { if (document.hidden) v.pause(); else if (v.src && onScreen(v)) play(v); }));
+    document.addEventListener('visibilitychange', () => videos.forEach((v) => { if (document.hidden) v.pause(); else if (onScreen(v)) play(v); }));   /* also covers pages opened in a background tab */
     const reel = document.querySelector('.reel');
     new IntersectionObserver(([e]) => reel.classList.toggle('is-off', !e.isIntersecting)).observe(reel);
   }
