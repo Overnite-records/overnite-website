@@ -8,8 +8,10 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Overnite Records: viral overnite">
 <meta property="og:description" content="Phonk, Hardtekk and internet music, pushed by the biggest editor network in the scene.">
-<meta property="og:image" content="share.jpg">
+<meta property="og:image" content="https://overnite-records.vercel.app/share.jpg">
+<meta property="og:url" content="https://overnite-records.vercel.app/">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://overnite-records.vercel.app/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#00020c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,16 +19,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Deep Sea, a step darker: electric blue on deep navy */
-  --bg: #00020c; --bg-2: #01051a; --ink: #f2f4fb; --grey: #7f87a6; --line: rgba(90,110,220,.16);
-  --accent: #0a1690; --accent-hi: #16239e; --accent-ink: #ffffff;
+  /* Neon blue on deep navy. Same hue as before (about 230), pushed bright enough to read on black:
+     --accent is for fills (white text on it is 5.9:1), --accent-hi is for text and strokes on the background (5.5:1). */
+  --bg: #00020c; --bg-2: #01051a; --ink: #f2f4fb; --grey: #7f87a6; --line: rgba(90,110,255,.18);
+  --accent: #2a4bff; --accent-hi: #5b78ff; --accent-ink: #ffffff; --glow: rgba(42,75,255,.55);
   --display: "Anton", "Impact", sans-serif; --text: "Inter", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
   --gut: clamp(20px, 2.4vw, 32px); --max: 1440px;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .rise { opacity: 1 !important; transform: none !important; } }
+@media (prefers-reduced-motion: reduce) { .reel__track { transform: translateX(-12%); } }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--text); -webkit-font-smoothing: antialiased; }
+::selection { background: var(--accent); color: #fff; }
 img { display: block; max-width: 100%; }
 a { color: inherit; }
 .wrap { width: min(100% - 2 * var(--gut), var(--max)); margin-inline: auto; }
@@ -37,13 +42,13 @@ a { color: inherit; }
 /* type */
 .label { font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); margin: 0; }
 .display { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: -.01em; line-height: .9; margin: 0; }
-.outline { color: transparent; -webkit-text-stroke: 2px var(--accent-hi); }
+.outline { color: transparent; -webkit-text-stroke: 2px var(--accent-hi); filter: drop-shadow(0 0 14px var(--glow)); }
 .accent { color: var(--accent-hi); }
 p { margin: 0; }
 
 /* buttons */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 22px; background: var(--accent); color: var(--accent-ink); font: 400 17px/1 var(--display); text-transform: uppercase; letter-spacing: .02em; text-decoration: none; border: 0; cursor: pointer; transition: transform .15s ease, background-color .15s ease; }
-.btn:hover { transform: translateY(-2px); background: #0e1ca8; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 22px; background: var(--accent); color: var(--accent-ink); font: 400 17px/1 var(--display); text-transform: uppercase; letter-spacing: .02em; text-decoration: none; border: 0; cursor: pointer; box-shadow: 0 0 0 rgba(42,75,255,0); transition: transform .15s ease, background-color .15s ease, box-shadow .2s ease; }
+.btn:hover { transform: translateY(-2px); background: #3a59ff; box-shadow: 0 0 28px var(--glow); }
 .btn:active { transform: translateY(0); }
 .btn svg { width: 14px; height: 14px; transition: transform .15s ease; }
 .btn:hover svg { transform: translateX(3px); }
@@ -62,12 +67,18 @@ p { margin: 0; }
 
 /* hero */
 .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; padding: 120px 0 clamp(40px, 7vh, 80px); }
-.wall { position: absolute; inset: 0 -6% 0 0; display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: calc((100% - 72px) / 2.6); gap: 6px; padding-top: 72px; opacity: .42; filter: grayscale(.55) contrast(1.05); animation: drift 60s linear infinite alternate;
-  -webkit-mask-image: radial-gradient(120% 90% at 65% 30%, #000 30%, transparent 78%); mask-image: radial-gradient(120% 90% at 65% 30%, #000 30%, transparent 78%); }
-.wall img { width: 100%; height: 100%; object-fit: cover; }
-@keyframes drift { to { transform: translateX(-5%); } }
-.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,2,12,0) 35%, var(--bg) 92%); pointer-events: none; }
-.hero .wrap { position: relative; z-index: 1; }
+/* hero background: two rows of edits drifting in opposite directions, tilted like the 99Eyes rows.
+   Each row is ONE video (10 edits stitched side by side) shown twice, so the loop is seamless and only 4 videos decode. */
+.reel { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.reel__rows { position: absolute; left: -15%; right: -15%; top: 50%; display: grid; gap: 14px; opacity: .55; transform: translateY(-58%) rotate(-5deg) scale(var(--reel-zoom, 1)); transform-origin: 50% 50%; }
+.reel__track { display: flex; width: max-content; animation: drift 120s linear infinite; }
+.reel__track--b { animation-duration: 140s; animation-direction: reverse; }
+.reel video { display: block; height: clamp(120px, 14vw, 240px); width: auto; aspect-ratio: 2560 / 240; background: var(--bg-2); }
+.reel.is-off .reel__track { animation-play-state: paused; }
+@keyframes drift { to { transform: translateX(-50%); } }
+.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(rgba(0,2,12,.75) 0, rgba(0,2,12,0) 22%), linear-gradient(rgba(0,2,12,.3) 0, rgba(0,2,12,.5) 45%, var(--bg) 94%); }
+.hero .wrap { position: relative; z-index: 1; transform-origin: 0 100%; }
 .hero h1 { font-size: clamp(76px, 15.6vw, 236px); line-height: .82; letter-spacing: -.012em; }
 .hero h1 > span { display: block; }
 .hero h1 .outline, .h2 .outline { -webkit-text-stroke-width: 3px; }
@@ -96,12 +107,97 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .step p { color: var(--grey); font-size: 15px; }
 @media (max-width: 760px) { .steps { grid-template-columns: 1fr; row-gap: 40px; } }
 
-/* full-bleed grid */
-.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; border-block: 1px solid var(--line); }
-.grid4 figure { margin: 0; aspect-ratio: 1; overflow: hidden; background: var(--bg-2); }
-.grid4 img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.25); transition: transform .6s ease, filter .6s ease; }
-.grid4 figure:hover img { transform: scale(1.03); filter: none; }
-@media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+/* warp: scroll zoom through a starfield, numbers fly out of the centre (after the Polaris Records about section).
+   Without JS, or with reduced motion, it is a plain list. script adds .warp--live */
+.warp { position: relative; padding: clamp(72px, 10vw, 140px) 0; overflow: clip; } /* clip, not hidden: hidden would break the sticky stage */
+.warp__stage { position: relative; }
+.warp__stars { display: none; }
+.warp__center { text-align: center; }
+.warp__big { font-size: clamp(72px, 12vw, 190px); line-height: .82; }
+.warp__big .outline { -webkit-text-stroke-width: 3px; }
+.warp__sub { max-width: 34ch; margin: 22px auto 0; color: var(--grey); font-size: 17px; }
+.warp__stats { list-style: none; margin-top: clamp(48px, 7vw, 88px); margin-bottom: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 32px 24px; }
+.warp__stats li { border-top: 1px solid var(--accent); padding-top: 16px; }
+/* every number is a button that opens the detail window */
+.num { all: unset; box-sizing: border-box; display: block; cursor: pointer; color: inherit; text-align: inherit; }
+.num:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 6px; }
+.num--title { display: inline; text-transform: inherit; }
+.num--title:hover .outline { -webkit-text-stroke-color: var(--ink); }
+.warp__stats .num:hover b { color: var(--ink); }
+.warp__stats b { display: block; transition: color .15s; font: 400 clamp(44px, 5vw, 72px)/.9 var(--display); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }
+.warp__stats span { display: block; margin-top: 10px; color: var(--grey); font-size: 15px; max-width: 26ch; }
+.warp__stats span strong { color: var(--ink); font-weight: 500; }
+
+.warp--live { height: 300vh; padding: 0; }
+.warp--live .warp__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.warp--live .warp__stars { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+.warp--live .warp__center { position: absolute; left: 50%; top: 50%; width: min(92vw, 1100px); transform: translate(-50%, -50%); will-change: transform, opacity; opacity: 0; }
+.warp--live .warp__stats { margin-top: 0; display: block; }
+.warp--live .warp__stats li { position: absolute; left: 50%; top: 50%; width: min(42vw, 300px); border: 0; padding: 0; opacity: 0; will-change: transform, opacity; }
+.warp--live .warp__stats li.is-left { text-align: right; }
+.warp--live .warp__stats li.is-left span { margin-left: auto; }
+.warp--live .warp__stats li.is-mid { text-align: center; }
+.warp--live .warp__stats li.is-mid span { margin-inline: auto; }
+.warp--live .warp__stats .num { animation: bob var(--bob, 9s) ease-in-out infinite; }
+.warp--live .warp__stats li:nth-child(2) .num { --bob: 11s; animation-delay: -3s; }
+.warp--live .warp__stats li:nth-child(3) .num { --bob: 10s; animation-delay: -6s; }
+.warp--live .warp__stats li:nth-child(4) .num { --bob: 12s; animation-delay: -2s; }
+@keyframes bob { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(4px, -7px); } 66% { transform: translate(-5px, 4px); } }
+@media (max-width: 640px) { .warp--live { height: 280vh; } .warp--live .warp__stats b { font-size: 40px; } .warp--live .warp__stats span { font-size: 13px; } }
+
+/* campaign results (after the Broke Records services block): a card that starts full screen and shrinks as you scroll,
+   uncovering columns of edit stills that slide up and down. Each number opens the drawer.
+   Without JS or with reduced motion it is a plain card. script adds .morph--live */
+.morph { position: relative; padding: clamp(72px, 10vw, 140px) 0; overflow: clip; }
+.morph__stage { position: relative; }
+.morph__cols { display: none; }
+.morph__card { position: relative; z-index: 1; width: min(100% - 2 * var(--gut), 1100px); margin-inline: auto; padding: clamp(40px, 7vw, 96px) 20px; background: var(--bg); border: 1px solid var(--line); text-align: center; }
+.morph__label { margin: 0; font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); }
+.morph__list { list-style: none; margin: clamp(28px, 5vw, 56px) 0 0; padding: 0; display: grid; gap: 6px; justify-items: center; }
+.morph__item { position: relative; overflow: hidden; font: 400 clamp(40px, 7.4vw, 104px)/.86 var(--display); text-transform: uppercase; letter-spacing: -.005em; transition: opacity .3s ease; }
+.morph__roll { display: grid; }
+.morph__roll > span { grid-area: 1 / 1; transition: transform .35s cubic-bezier(.65,0,.35,1); white-space: nowrap; }
+.morph__roll > span + span { transform: translateY(100%); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }
+.morph__item:hover .morph__roll > span:first-child, .morph__item:focus-visible .morph__roll > span:first-child { transform: translateY(-100%); }
+.morph__item:hover .morph__roll > span + span, .morph__item:focus-visible .morph__roll > span + span { transform: translateY(0); }
+.morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
+.morph__hint { margin-top: clamp(28px, 4vw, 48px); color: var(--grey); font-size: 14px; }
+
+.morph--live { height: 340vh; padding: 0; }
+.morph--live .morph__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.morph--live .morph__cols { position: absolute; left: 50%; top: 50%; display: flex; gap: 20px; transform: translate(-50%, -50%) scale(1.25); }
+.morph__col { display: flex; flex-direction: column; gap: 20px; will-change: transform; }
+.morph__col:nth-child(even) { margin-top: -160px; }
+.morph__col img { display: block; width: clamp(140px, 17vw, 270px); height: auto; aspect-ratio: 1; object-fit: cover; background: var(--bg-2); filter: brightness(1.05) saturate(.9); }
+.morph--live .morph__card { position: absolute; inset: 0; width: auto; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; box-shadow: 0 0 60px rgba(42,75,255,.25); will-change: transform; }
+@media (max-width: 640px) { .morph--live { height: 280vh; } .morph__col:nth-child(n + 4) { display: none; } }
+
+/* drawer: slides in from the right, "Go back" closes it (after the Broke Records service panels) */
+.drawer { position: fixed; inset: 0 0 0 auto; width: min(100%, 720px); max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; border-left: 1px solid var(--accent); background: var(--bg-2); color: var(--ink); transform: translateX(100%); transition: transform .55s cubic-bezier(.2,.8,.2,1); }
+.drawer.is-in { transform: none; }
+.drawer::backdrop { background: rgba(0,2,12,.6); opacity: 0; transition: opacity .55s ease; }
+.drawer.is-in::backdrop { opacity: 1; }
+.drawer__scroll { height: 100%; overflow-y: auto; overscroll-behavior: contain; padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 64px) 120px; }
+.drawer__num { margin-top: 16px; font-size: clamp(88px, 15vw, 168px); line-height: .82; color: var(--accent-hi); text-shadow: 0 0 34px var(--glow); }
+.drawer__title { margin-top: 8px; font: 400 clamp(26px, 3vw, 38px)/1 var(--display); text-transform: uppercase; }
+.drawer__text { margin-top: 22px; max-width: 46ch; color: #c4c9de; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.5; }
+.drawer__media { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 36px; }
+.drawer__media video { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; background: var(--bg); }
+.drawer__note { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); }
+.drawer__back { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); min-height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--ink); color: var(--bg); font: 400 16px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; cursor: pointer; }
+.drawer__back:hover { background: #fff; }
+.drawer__back:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 3px; }
+body:has(.drawer[open]) { overflow: hidden; }
+
+/* edits wall: full-bleed grid of edits, like the release wall on 99Eyes. Videos load and play only while on screen */
+.edits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; border-block: 1px solid var(--line); background: var(--line); }
+.tile { position: relative; margin: 0; aspect-ratio: 1; overflow: hidden; background: var(--bg-2); }
+.tile video { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(.2) brightness(.9); transition: transform .6s cubic-bezier(.25,1,.5,1), filter .6s ease; }
+.tile:hover video { transform: scale(1.03); filter: none; }
+.tile figcaption { position: absolute; inset: auto 0 0; display: grid; gap: 2px; padding: 40px 14px 14px; background: linear-gradient(rgba(0,2,12,0), rgba(0,2,12,.92)); pointer-events: none; }
+.tile figcaption b { font: 400 17px/1.1 var(--display); text-transform: uppercase; letter-spacing: .01em; font-weight: 400; }
+.tile figcaption span { font-size: 12px; color: var(--grey); }
+@media (max-width: 760px) { .edits { grid-template-columns: repeat(2, 1fr); } .tile:nth-child(n + 7) { display: none; } }
 
 /* split */
 .split { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
@@ -119,7 +215,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 /* who we sign */
 .rows { border-top: 1px solid var(--line); }
 .row { display: grid; grid-template-columns: 70px minmax(0, 1fr) minmax(0, 1.1fr); gap: 24px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid var(--line); transition: background-color .2s; }
-.row:hover { background: rgba(10,22,144,.12); }
+.row:hover { background: rgba(42,75,255,.08); }
 .row .label { color: var(--accent-hi); }
 .row h3 { font: 400 clamp(30px, 3.6vw, 52px)/.95 var(--display); text-transform: uppercase; margin: 0; }
 .row p:not(.label) { color: var(--grey); font-size: 16px; }
@@ -176,8 +272,8 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .cursor.is-text { opacity: 0; }
 
 /* close + footer */
-.close { background: radial-gradient(120% 140% at 50% 0%, #0a1690 0%, #071463 40%, #020a3a 75%, #00020c 100%); color: var(--ink); padding: clamp(64px, 9vw, 128px) 0; }
-.close .outline { -webkit-text-stroke-color: var(--ink); }
+.close { background: radial-gradient(120% 140% at 50% 0%, #2a4bff 0%, #1631c4 32%, #0a1a6e 62%, #00020c 100%); color: var(--ink); padding: clamp(64px, 9vw, 128px) 0; }
+.close .outline { -webkit-text-stroke-color: var(--ink); filter: none; }
 .close .wrap { display: flex; justify-content: space-between; align-items: center; gap: 28px; flex-wrap: wrap; }
 .close .display { font-size: clamp(64px, 11vw, 176px); line-height: .85; }
 .foot { padding: 24px 0 32px; }
@@ -193,7 +289,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 <header class="top">
   <div class="wrap">
     <a class="logo" href="#top" aria-label="Overnite Records, back to top">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="7" r="4" fill="#fafafa"/><circle cx="17" cy="7" r="4" fill="#fafafa"/><circle cx="7" cy="17" r="4" fill="#fafafa"/><rect x="13" y="13" width="8" height="8" fill="#16239e"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="7" r="4" fill="#fafafa"/><circle cx="17" cy="7" r="4" fill="#fafafa"/><circle cx="7" cy="17" r="4" fill="#fafafa"/><rect x="13" y="13" width="8" height="8" fill="#2a4bff"/></svg>
       <span>Over<i>nite</i></span>
     </a>
     <nav aria-label="Main">
@@ -207,19 +303,17 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 
 <main id="main">
   <section class="hero" id="top" aria-labelledby="hero-h">
-    <div class="wall" aria-hidden="true">
-      <img src="assets/img/photo-f77805477-500.jpg" alt="" fetchpriority="high">
-      <img src="assets/img/photo-f105241543-500.jpg" alt="">
-      <img src="assets/img/photo-f82106698-500.jpg" alt="">
-      <img src="assets/img/photo-f90519951-500.jpg" alt="">
-      <img src="assets/img/photo-f62268182-500.jpg" alt="">
-      <img src="assets/img/photo-f69352916-500.jpg" alt="">
-      <img src="assets/img/photo-f190017831-500.jpg" alt="">
-      <img src="assets/img/photo-f61803610-500.jpg" alt="">
-      <img src="assets/img/photo-f105211325-500.jpg" alt="">
-      <img src="assets/img/photo-f30511604-500.jpg" alt="">
-      <img src="assets/img/photo-f77805477-500.jpg" alt="">
-      <img src="assets/img/photo-f82106698-500.jpg" alt="">
+    <div class="reel" aria-hidden="true">
+      <div class="reel__rows">
+        <div class="reel__track">
+          <video data-src="assets/hero/hero-row-a.mp4" poster="assets/hero/hero-row-a.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+          <video data-src="assets/hero/hero-row-a.mp4" poster="assets/hero/hero-row-a.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+        </div>
+        <div class="reel__track reel__track--b">
+          <video data-src="assets/hero/hero-row-b.mp4" poster="assets/hero/hero-row-b.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+          <video data-src="assets/hero/hero-row-b.mp4" poster="assets/hero/hero-row-b.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+        </div>
+      </div>
     </div>
     <div class="wrap">
       <h1 class="display" id="hero-h"><span class="rise">Viral</span><span class="rise d2 outline">Overnite.</span></h1>
@@ -228,6 +322,33 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       <div class="hero__foot rise d3">
         <a class="btn" href="#demo">Send a demo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
       </div>
+    </div>
+  </section>
+
+  <section class="warp" id="numbers" aria-labelledby="warp-h">
+    <div class="warp__stage">
+      <canvas class="warp__stars" aria-hidden="true"></canvas>
+      <div class="wrap warp__center">
+        <h2 class="display warp__big" id="warp-h"><button class="num num--title" type="button"
+          data-kind="Our creator base" data-num="142B" data-title="views"
+          data-text="Views on every post our creators made for our campaigns since February 2025. Rejected posts are not counted."
+          data-note="Platform data, November 2026">142B <span class="outline">views</span></button></h2>
+        <p class="warp__sub">from the creator base behind Overnite. Tap any number to see what it means.</p>
+      </div>
+      <ul class="wrap warp__stats">
+        <li data-x="-1" data-y="-0.62"><button class="num" type="button" data-kind="Our creator base" data-num="3,500+" data-title="campaigns"
+          data-text="Campaigns our team has run with our creator base, for labels, artists and brands. Every one is a song or clip pushed by real creators on their own pages, not ads."
+          data-note="Our own count"><b>3,500+</b><span>campaigns run with our creator base</span></button></li>
+        <li data-x="1" data-y="-0.62"><button class="num" type="button" data-kind="Our creator base" data-num="9.8M" data-title="posts submitted"
+          data-text="Videos creators submitted to our campaigns since February 2025. Each one is a creator posting the song or clip on their own TikTok, Instagram or YouTube."
+          data-note="Platform data, November 2026"><b>9.8M</b><span>posts submitted</span></button></li>
+        <li data-x="-1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="136K" data-title="creators"
+          data-text="Different creators who have posted at least one video that made it through review. That is the network a song goes out to when we sign it."
+          data-note="Platform data, November 2026"><b>136K</b><span>creators who posted</span></button></li>
+        <li data-x="1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="300K+" data-title="accounts"
+          data-text="Social accounts those creators posted from. Plenty of creators run more than one page, so one campaign lands on a lot of different feeds."
+          data-note="Platform data, November 2026"><b>300K+</b><span>accounts posting</span></button></li>
+      </ul>
     </div>
   </section>
 
@@ -242,14 +363,50 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     </div>
   </section>
 
-  <div class="grid4">
-    <figure><img src="assets/img/photo-f82106698-960.jpg" srcset="assets/img/photo-f82106698-500.jpg 500w, assets/img/photo-f82106698-960.jpg 960w" sizes="(max-width: 760px) 50vw, 25vw" alt="A record spinning on a turntable, the tone arm in the groove" loading="lazy"></figure>
-    <figure><img src="assets/img/photo-f105211325-960.jpg" srcset="assets/img/photo-f105211325-500.jpg 500w, assets/img/photo-f105211325-960.jpg 960w" sizes="(max-width: 760px) 50vw, 25vw" alt="Faders and orange-lit controls on a mixing desk" loading="lazy"></figure>
-    <figure><img src="assets/img/photo-f30511604-960.jpg" srcset="assets/img/photo-f30511604-500.jpg 500w, assets/img/photo-f30511604-960.jpg 960w" sizes="(max-width: 760px) 50vw, 25vw" alt="Patch cables and knobs on a modular synthesizer" loading="lazy"></figure>
-    <figure><img src="assets/img/photo-f82583102-960.jpg" srcset="assets/img/photo-f82583102-500.jpg 500w, assets/img/photo-f82583102-960.jpg 960w" sizes="(max-width: 760px) 50vw, 25vw" alt="The Dubai skyline at night, reflected in the water" loading="lazy"></figure>
+  <div class="edits" role="region" aria-label="Edits from the scene">
+    <figure class="tile"><video data-src="assets/edits/arcane-jinx.mp4" poster="assets/edits/arcane-jinx.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Arcane edit of Jinx"></video><figcaption><b>Series</b><span>Arcane</span></figcaption></figure>
+    <figure class="tile"><video data-src="assets/edits/montagem-uranium.mp4" poster="assets/edits/montagem-uranium.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Rurouni Kenshin edit"></video><figcaption><b>Movie</b><span>Sound: Montagem Uranium (Slowed), ZAYLO</span></figcaption></figure>
+    <figure class="tile"><video data-src="assets/edits/spider-man.mp4" poster="assets/edits/spider-man.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Spider-Man edit"></video><figcaption><b>Movie</b><span>Spider-Man</span></figcaption></figure>
+    <figure class="tile"><video data-src="assets/edits/chemical.mp4" poster="assets/edits/chemical.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Tokyo Ghoul anime edit"></video><figcaption><b>Anime</b><span>Sound: chemical, blood nose</span></figcaption></figure>
+    <figure class="tile"><video data-src="assets/edits/jungwon.mp4" poster="assets/edits/jungwon.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="ENHYPEN Jungwon edit"></video><figcaption><b>K-pop</b><span>ENHYPEN</span></figcaption></figure>
+    <figure class="tile"><video data-src="assets/edits/make-u-whole.mp4" poster="assets/edits/make-u-whole.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Movie meme edit"></video><figcaption><b>Movie</b><span>Sound: Make U Whole, GEEMIX</span></figcaption></figure>
+    <figure class="tile"><video data-src="assets/edits/kante.mp4" poster="assets/edits/kante.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="Football edit of N'Golo Kante"></video><figcaption><b>Football</b><span>Chelsea</span></figcaption></figure>
+    <figure class="tile"><video data-src="assets/edits/bond.mp4" poster="assets/edits/bond.jpg" width="432" height="432" muted loop playsinline preload="none" aria-label="James Bond edit"></video><figcaption><b>Movie</b><span>James Bond</span></figcaption></figure>
   </div>
 
 
+  <section class="morph" id="results" aria-labelledby="results-h">
+    <div class="morph__stage">
+      <div class="morph__cols" aria-hidden="true">
+          <div class="morph__col"><img data-src="assets/wall/w06.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w38.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w29.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w09.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w34.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w16.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w20.webp" width="360" height="360" alt="" decoding="async"></div>
+          <div class="morph__col"><img data-src="assets/wall/w12.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w28.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w31.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w13.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w01.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w37.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w15.webp" width="360" height="360" alt="" decoding="async"></div>
+          <div class="morph__col"><img data-src="assets/wall/w11.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w22.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w35.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w27.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w32.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w18.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w23.webp" width="360" height="360" alt="" decoding="async"></div>
+          <div class="morph__col"><img data-src="assets/wall/w08.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w36.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w25.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w14.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w03.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w30.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w33.webp" width="360" height="360" alt="" decoding="async"></div>
+          <div class="morph__col"><img data-src="assets/wall/w17.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w02.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w19.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w24.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w07.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w05.webp" width="360" height="360" alt="" decoding="async"><img data-src="assets/wall/w04.webp" width="360" height="360" alt="" decoding="async"></div>
+      </div>
+      <div class="morph__card">
+        <h2 class="morph__label" id="results-h">Campaign results</h2>
+        <ul class="morph__list">
+          <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="9.2B" data-title="Spotify streams"
+            data-text="Spotify streams the songs picked up from the day a campaign launched until six weeks after it ended, tracked with Chartex across 1,309 songs. Other promotion running at the same time counts in there too."
+            data-note="Chartex, August 2025 to November 2026" data-media="spider-man,montagem-uranium,chemical"><span class="morph__roll"><span>9.2B Spotify streams</span><span aria-hidden="true">9.2B Spotify streams</span></span></button></li>
+          <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="85M" data-title="TikTok creates"
+            data-text="New TikTok videos made with the songs' sounds over the same windows. Almost all of them are people picking the sound up on their own, not posts we paid for."
+            data-note="Chartex, August 2025 to November 2026" data-media="jungwon,arcane-jinx,kante"><span class="morph__roll"><span>85M TikTok creates</span><span aria-hidden="true">85M TikTok creates</span></span></button></li>
+          <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="15B" data-title="Music views"
+            data-text="Views on posts from 1,668 music campaigns since February 2025. Rejected posts are not counted."
+            data-note="Platform data, November 2026" data-media="bond,make-u-whole,spider-man"><span class="morph__roll"><span>15B Music views</span><span aria-hidden="true">15B Music views</span></span></button></li>
+          <li><button class="num morph__item" type="button" data-kind="Independent artists" data-num="722M" data-title="Indie views"
+            data-text="Views across 76 campaigns for 8 independent artists. No major label behind any of them. One of those artists alone did 530M views over 43 campaigns."
+            data-note="Platform data, November 2026" data-media="chemical,arcane-jinx,montagem-uranium"><span class="morph__roll"><span>722M Indie views</span><span aria-hidden="true">722M Indie views</span></span></button></li>
+          <li><button class="num morph__item" type="button" data-kind="Independent artists" data-num="55M" data-title="In one round"
+            data-text="A single campaign round for one independent artist's song. One round, 55M views."
+            data-note="Platform data, November 2026" data-media="kante,jungwon,bond"><span class="morph__roll"><span>55M In one round</span><span aria-hidden="true">55M In one round</span></span></button></li>
+        </ul>
+        <p class="morph__hint">No names, just what the campaigns did. Tap a number.</p>
+      </div>
+    </div>
+  </section>
 
   <section id="campaign" aria-labelledby="campaign-h">
     <div class="wrap split">
@@ -332,34 +489,226 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   </div>
 </footer>
 
+<dialog class="drawer" aria-labelledby="drawer-num" aria-describedby="drawer-text">
+  <div class="drawer__scroll">
+    <p class="label drawer__kind"></p>
+    <p class="display drawer__num" id="drawer-num"></p>
+    <p class="drawer__title"></p>
+    <p class="drawer__text" id="drawer-text"></p>
+    <div class="drawer__media"></div>
+    <p class="label drawer__note"></p>
+  </div>
+  <button class="drawer__back" type="button">Go back</button>
+</dialog>
+
 <div class="cursor" aria-hidden="true"><span></span></div>
 <script>
+(() => {
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+  const playable = !calm && !saveData;
+
+  /* 1. Edit videos: load and play only while on screen, pause when off screen or when the tab is hidden.
+        With reduced motion or Save-Data on, the posters stay as still images and no video is downloaded. */
+  const play = (v) => {
+    if (!playable) return;
+    const group = v.closest('.reel__track') ? v.parentElement.querySelectorAll('video') : [v];
+    group.forEach((g) => { if (!g.src) { g.preload = 'auto'; g.src = g.dataset.src; } });
+    const p = v.play(); if (p) p.catch(() => {});
+  };
+  const onScreen = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
+  const videos = [...document.querySelectorAll('.reel video, .edits video')];
+  if (playable && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) e.isIntersecting && !document.hidden ? play(e.target) : e.target.pause();
+    }, { rootMargin: '200px 0px' });
+    videos.forEach((v) => io.observe(v));
+    document.addEventListener('visibilitychange', () => videos.forEach((v) => { if (document.hidden) v.pause(); else if (v.src && onScreen(v)) play(v); }));
+    const reel = document.querySelector('.reel');
+    new IntersectionObserver(([e]) => reel.classList.toggle('is-off', !e.isIntersecting)).observe(reel);
+  }
+
+  /* 2. Drawer: every number opens the same panel from the right, filled from the button's data attributes. */
+  const drawer = document.querySelector('.drawer');
+  const dKind = drawer.querySelector('.drawer__kind'), dNum = drawer.querySelector('.drawer__num'), dTitle = drawer.querySelector('.drawer__title'),
+        dText = drawer.querySelector('.drawer__text'), dNote = drawer.querySelector('.drawer__note'), dMedia = drawer.querySelector('.drawer__media'),
+        dScroll = drawer.querySelector('.drawer__scroll');
+  let opener = null;
+  function openDrawer(btn) {
+    opener = btn;
+    const d = btn.dataset;
+    dKind.textContent = d.kind || ''; dNum.textContent = d.num || ''; dTitle.textContent = d.title || ''; dText.textContent = d.text || ''; dNote.textContent = d.note || '';
+    dMedia.replaceChildren(...(d.media ? d.media.split(',') : []).map((name) => {
+      const v = document.createElement('video');
+      v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'none';
+      v.poster = `assets/edits/${name}.jpg`; v.dataset.src = `assets/edits/${name}.mp4`; v.width = 432; v.height = 432;
+      return v;
+    }));
+    dMedia.hidden = !d.media;
+    dScroll.scrollTop = 0;
+    drawer.showModal();
+    requestAnimationFrame(() => requestAnimationFrame(() => drawer.classList.add('is-in')));
+    dMedia.querySelectorAll('video').forEach(play);
+  }
+  function closeDrawer() {
+    if (!drawer.open) return;
+    drawer.classList.remove('is-in');
+    dMedia.querySelectorAll('video').forEach((v) => v.pause());
+    const done = () => { drawer.close(); };
+    if (calm) done(); else setTimeout(done, 450);
+  }
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button.num');
+    if (btn) openDrawer(btn);
+  });
+  drawer.querySelector('.drawer__back').addEventListener('click', closeDrawer);
+  drawer.addEventListener('click', (e) => { if (e.target === drawer) closeDrawer(); });           /* click on the dimmed page */
+  drawer.addEventListener('cancel', (e) => { e.preventDefault(); closeDrawer(); });                 /* Esc, with the slide-out */
+  drawer.addEventListener('close', () => { if (opener) opener.focus({ preventScroll: true }); });
+
+  if (calm) return;
+
+  /* 3. Scroll effects (skipped with reduced motion).
+        Hero: the text sinks away while the video rows zoom in.
+        Warp (after the Polaris Records about section): fly through a starfield, the numbers come out of the centre and settle in the corners.
+        Morph (after the Broke Records services block): the card shrinks and the stills slide past it. */
+  const hero = document.querySelector('.hero');
+  const heroText = hero.querySelector('.wrap');
+  const rows = hero.querySelector('.reel__rows');
+
+  const warp = document.querySelector('.warp');
+  warp.classList.add('warp--live');
+  const stage = warp.querySelector('.warp__stage');
+  const center = warp.querySelector('.warp__center');
+  const stats = [...warp.querySelectorAll('.warp__stats li')].map((el, i, all) => {
+    const x = parseFloat(el.dataset.x), y = parseFloat(el.dataset.y);
+    el.classList.add(x < -0.1 ? 'is-left' : x > 0.1 ? 'is-right' : 'is-mid');
+    return { el, x, y, start: 0.12 + i * (0.5 / (all.length - 1)) };
+  });
+  const canvas = warp.querySelector('.warp__stars');
+  const ctx = canvas.getContext('2d');
+  const stars = Array.from({ length: innerWidth < 700 ? 260 : 520 }, () => ({ x: (Math.random() - 0.5) * 2.4, y: (Math.random() - 0.5) * 2.4, z: Math.random(), blue: Math.random() < 0.45 }));
+  let W = 0, H = 0;
+  const size = () => { const dpr = Math.min(devicePixelRatio || 1, 2); W = stage.clientWidth; H = stage.clientHeight; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+
+  const morph = document.querySelector('.morph');
+  morph.classList.add('morph--live');
+  const card = morph.querySelector('.morph__card');
+  const cols = [...morph.querySelectorAll('.morph__col')];
+
+  size(); addEventListener('resize', size);
+
+  const progress = (el) => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight)); };
+  let heroOn = true, warpOn = false, morphOn = false, running = false, warpP = 0, morphP = 0;
+  new IntersectionObserver(([e]) => { heroOn = e.isIntersecting; kick(); }).observe(hero);
+  new IntersectionObserver(([e]) => { warpOn = e.isIntersecting; kick(); }).observe(warp);
+  new IntersectionObserver(([e]) => { morphOn = e.isIntersecting; kick(); }).observe(morph);
+  const loadStills = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    morph.querySelectorAll('img[data-src]').forEach((img) => { img.src = img.dataset.src; img.removeAttribute('data-src'); });
+    loadStills.disconnect();
+  }, { rootMargin: '1200px 0px' });
+  loadStills.observe(morph);
+  addEventListener('scroll', kick, { passive: true });
+
+  function drawStars(p, speed, t) {
+    ctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2, f = Math.max(W, H) * 0.45, travel = p * 3.2 + t * 0.00002;
+    const streak = Math.min(speed * 26, 0.22);
+    for (const s of stars) {
+      const z = 1 - ((s.z + travel) % 1) * 0.985;           /* 1 = far, about 0 = right in front of you */
+      const sx = cx + (s.x / z) * f, sy = cy + (s.y / z) * f;
+      if (sx < -40 || sx > W + 40 || sy < -40 || sy > H + 40) continue;
+      const a = clamp((1 - z) * 1.8 + 0.15) * clamp(z * 6);
+      ctx.strokeStyle = ctx.fillStyle = s.blue ? `rgba(91,120,255,${a})` : `rgba(242,244,251,${a})`;
+      const r = Math.max(0.6, (1 - z) * 2.6);
+      if (streak > 0.004) {
+        const z2 = Math.min(1, z + streak);
+        ctx.lineWidth = r; ctx.beginPath(); ctx.moveTo(cx + (s.x / z2) * f, cy + (s.y / z2) * f); ctx.lineTo(sx, sy); ctx.stroke();
+      } else { ctx.beginPath(); ctx.arc(sx, sy, r, 0, 6.283); ctx.fill(); }
+    }
+  }
+
+  function frame(t) {
+    running = false;
+    let again = false;
+    if (heroOn) {
+      const k = clamp(scrollY / hero.offsetHeight);
+      heroText.style.transform = `translateY(${k * 60}px) scale(${1 - k * 0.12})`;
+      heroText.style.opacity = 1 - k * 1.15;
+      rows.style.setProperty('--reel-zoom', 1 + k * 0.35);
+    }
+    if (warpOn) {
+      const target = progress(warp), prev = warpP;
+      warpP += (target - warpP) * 0.12;                      /* smoothing, so the zoom glides instead of jumping */
+      if (Math.abs(target - warpP) < 0.0005) warpP = target; else again = true;
+      drawStars(warpP, Math.abs(warpP - prev), t);
+      const inK = easeOut(clamp(warpP / 0.1));
+      center.style.opacity = inK;
+      center.style.transform = `translate(-50%, -50%) scale(${0.55 + inK * 0.45})`;
+      const m = Math.max(20, W * 0.06), ry = H * 0.5;
+      for (const s of stats) {
+        const q = clamp((warpP - s.start) / 0.22);           /* 0 = still in the centre, 1 = settled in its corner */
+        const come = easeOut(q);
+        const w = s.el.offsetWidth, h = s.el.offsetHeight;
+        let left;                                            /* x of the element's left edge, relative to the centre */
+        if (s.x < -0.1) left = (-(W / 2 - m) + w) * come - w;
+        else if (s.x > 0.1) left = (W / 2 - m - w) * come;
+        else left = -w / 2;
+        const top = (s.y * ry - h / 2) * come - (1 - come) * h / 2;
+        s.el.style.opacity = clamp(q / 0.4);
+        s.el.style.visibility = q > 0 ? 'visible' : 'hidden';
+        s.el.style.transform = `translate(${left}px, ${top}px) scale(${0.3 + come * 0.7})`;
+        s.el.style.transformOrigin = s.x < -0.1 ? '100% 50%' : s.x > 0.1 ? '0 50%' : '50% 50%';
+      }
+    }
+    if (morphOn) {
+      const target = progress(morph);
+      morphP += (target - morphP) * 0.14;
+      if (Math.abs(target - morphP) < 0.0005) morphP = target; else again = true;
+      const travel = (innerWidth < 640 ? 420 : 760) * morphP;
+      card.style.transform = `scale(${1 - 0.4 * clamp(morphP / 0.85)})`;
+      cols.forEach((c, i) => { c.style.transform = `translateY(${i % 2 ? travel : -travel}px)`; });
+    }
+    if (again) kick();
+  }
+  function kick() { if (!running) { running = true; requestAnimationFrame(frame); } }
+  kick();
+  /* keep the stars drifting slowly while the warp is on screen */
+  setInterval(() => { if (warpOn && !document.hidden) kick(); }, 50);
+})();
+
+/* 4. Custom cursor: one inverting dot that stretches with movement (desktop pointers only). Sleeps when the mouse stops. */
 (() => {
   const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 768px)').matches;
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!fine) return;
   const el = document.querySelector('.cursor');
   const target = { x: innerWidth / 2, y: innerHeight / 2 }, pos = { ...target };
-  let shown = false, onLink = false;
+  let shown = false, onLink = false, onPhoto = false, running = false;
   addEventListener('mousemove', (e) => {
     target.x = e.clientX; target.y = e.clientY;
     if (!shown) { shown = true; pos.x = target.x; pos.y = target.y; document.documentElement.classList.add('has-cursor'); }
     const t = e.target;
     onLink = !!t.closest('a, button, summary, select, label, [role="button"]');
+    onPhoto = !onLink && !!t.closest('.tile, .split figure');
     el.classList.toggle('is-text', !!t.closest('input'));
     el.classList.toggle('is-link', onLink);
-    el.classList.toggle('is-photo', !onLink && !!t.closest('.grid4 figure, .split figure'));
+    el.classList.toggle('is-photo', onPhoto);
+    if (!running) { running = true; requestAnimationFrame(frame); }
   }, { passive: true });
   document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
-  (function frame() {
+  function frame() {
     const px = pos.x, py = pos.y, ease = calm ? 1 : 0.16;
     pos.x += (target.x - pos.x) * ease; pos.y += (target.y - pos.y) * ease;
     const dx = pos.x - px, dy = pos.y - py, speed = Math.hypot(dx, dy);
     const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    const stretch = calm || onLink || el.classList.contains('is-photo') ? 1 : Math.min(1 + speed * 0.045, 1.9);
+    const stretch = calm || onLink || onPhoto ? 1 : Math.min(1 + speed * 0.045, 1.9);
     el.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${angle}deg) scale(${stretch}, ${1 / Math.sqrt(stretch)})`;
-    requestAnimationFrame(frame);
-  })();
+    if (Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3) requestAnimationFrame(frame); else running = false;
+  }
 })();
 </script>
 </body>
