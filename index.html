@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Overnite Records: phonk, Hardtekk and internet music</title>
+<meta name="description" content="Independent label for phonk, Hardtekk and internet music, run by the team behind more than 3,500 edit campaigns.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Overnite Records: viral overnite">
+<meta property="og:description" content="Phonk, Hardtekk and internet music, pushed by the biggest editor network in the scene.">
+<meta property="og:image" content="share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#00020c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Deep Sea, a step darker: electric blue on deep navy */
+  --bg: #00020c; --bg-2: #01051a; --ink: #f2f4fb; --grey: #7f87a6; --line: rgba(90,110,220,.16);
+  --accent: #0a1690; --accent-hi: #16239e; --accent-ink: #ffffff;
+  --display: "Anton", "Impact", sans-serif; --text: "Inter", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+  --gut: clamp(20px, 2.4vw, 32px); --max: 1440px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .rise { opacity: 1 !important; transform: none !important; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--text); -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+.wrap { width: min(100% - 2 * var(--gut), var(--max)); margin-inline: auto; }
+.skip { position: absolute; left: -9999px; top: 8px; z-index: 50; background: var(--accent); color: var(--accent-ink); padding: 10px 14px; font: 500 14px var(--text); }
+.skip:focus { left: 8px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* type */
+.label { font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); margin: 0; }
+.display { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: -.01em; line-height: .9; margin: 0; }
+.outline { color: transparent; -webkit-text-stroke: 2px var(--accent-hi); }
+.accent { color: var(--accent-hi); }
+p { margin: 0; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 22px; background: var(--accent); color: var(--accent-ink); font: 400 17px/1 var(--display); text-transform: uppercase; letter-spacing: .02em; text-decoration: none; border: 0; cursor: pointer; transition: transform .15s ease, background-color .15s ease; }
+.btn:hover { transform: translateY(-2px); background: #0e1ca8; }
+.btn:active { transform: translateY(0); }
+.btn svg { width: 14px; height: 14px; transition: transform .15s ease; }
+.btn:hover svg { transform: translateX(3px); }
+
+/* header */
+.top { position: fixed; inset: 0 0 auto; z-index: 20; background: linear-gradient(var(--bg) 0, rgba(0,2,12,.85) 70%, rgba(0,2,12,0)); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 400 22px/1 var(--display); text-transform: uppercase; letter-spacing: .01em; }
+.logo i { font-style: normal; color: var(--accent-hi); }
+.logo svg { width: 22px; height: 22px; }
+.top nav { display: flex; align-items: center; gap: 28px; }
+.top nav a:not(.btn) { font-size: 14px; color: var(--grey); text-decoration: none; transition: color .15s; }
+.top nav a:not(.btn):hover { color: var(--ink); }
+.top .btn { min-height: 38px; font-size: 15px; padding: 0 16px; }
+@media (max-width: 760px) { .top nav a:not(.btn) { display: none; } }
+
+/* hero */
+.hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; padding: 120px 0 clamp(40px, 7vh, 80px); }
+.wall { position: absolute; inset: 0 -6% 0 0; display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: calc((100% - 72px) / 2.6); gap: 6px; padding-top: 72px; opacity: .42; filter: grayscale(.55) contrast(1.05); animation: drift 60s linear infinite alternate;
+  -webkit-mask-image: radial-gradient(120% 90% at 65% 30%, #000 30%, transparent 78%); mask-image: radial-gradient(120% 90% at 65% 30%, #000 30%, transparent 78%); }
+.wall img { width: 100%; height: 100%; object-fit: cover; }
+@keyframes drift { to { transform: translateX(-5%); } }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,2,12,0) 35%, var(--bg) 92%); pointer-events: none; }
+.hero .wrap { position: relative; z-index: 1; }
+.hero h1 { font-size: clamp(76px, 15.6vw, 236px); line-height: .82; letter-spacing: -.012em; }
+.hero h1 > span { display: block; }
+.hero h1 .outline, .h2 .outline { -webkit-text-stroke-width: 3px; }
+@media (max-width: 640px) { .hero h1 { font-size: 21.5vw; } }
+.hero__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; margin-top: clamp(24px, 3.5vw, 40px); }
+.hero__line { font: 400 clamp(17px, 1.6vw, 22px)/1.25 var(--display); text-transform: uppercase; letter-spacing: .01em; }
+.hero__line b { font-weight: 400; color: var(--grey); margin: 0 .35em; }
+.hero h1 + .hero__line { margin-top: clamp(20px, 3vw, 34px); }
+.hero__sub { margin-top: 10px; }
+.hero__sub b { font-weight: 400; color: var(--accent-hi); margin: 0 .5em; }
+.rise { opacity: 0; transform: translateY(18px); animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
+.rise.d2 { animation-delay: .12s; } .rise.d3 { animation-delay: .26s; }
+@keyframes rise { to { opacity: 1; transform: none; } }
+
+/* sections */
+section { padding: clamp(72px, 10vw, 140px) 0; }
+.head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: clamp(28px, 4vw, 48px); flex-wrap: wrap; }
+.h2 { font-size: clamp(44px, 6.4vw, 96px); margin-top: 14px; }
+.lede { max-width: 56ch; color: var(--grey); font-size: 17px; }
+
+/* steps */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.step { border-top: 1px solid var(--accent); padding-top: 22px; }
+.step__n { font: 400 40px/1 var(--display); color: var(--accent-hi); }
+.step h3 { font: 400 23px/1.05 var(--display); text-transform: uppercase; margin: 18px 0 10px; }
+.step p { color: var(--grey); font-size: 15px; }
+@media (max-width: 760px) { .steps { grid-template-columns: 1fr; row-gap: 40px; } }
+
+/* full-bleed grid */
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; border-block: 1px solid var(--line); }
+.grid4 figure { margin: 0; aspect-ratio: 1; overflow: hidden; background: var(--bg-2); }
+.grid4 img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.25); transition: transform .6s ease, filter .6s ease; }
+.grid4 figure:hover img { transform: scale(1.03); filter: none; }
+@media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+
+/* split */
+.split { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
+.split figure { margin: 0; aspect-ratio: 4 / 5; overflow: hidden; }
+.split figure img { width: 100%; height: 100%; object-fit: cover; }
+.split .lede { margin-top: 24px; }
+.facts { margin-top: 40px; }
+.facts div { padding: 20px 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 200px 1fr; gap: 16px; }
+.facts div:last-child { border-bottom: 1px solid var(--line); }
+.facts h3 { font: 400 20px/1.1 var(--display); text-transform: uppercase; margin: 0; }
+.facts p { color: var(--grey); font-size: 15px; }
+@media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split figure { aspect-ratio: 4 / 3; } }
+@media (max-width: 560px) { .facts div { grid-template-columns: 1fr; gap: 6px; } }
+
+/* who we sign */
+.rows { border-top: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: 70px minmax(0, 1fr) minmax(0, 1.1fr); gap: 24px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid var(--line); transition: background-color .2s; }
+.row:hover { background: rgba(10,22,144,.12); }
+.row .label { color: var(--accent-hi); }
+.row h3 { font: 400 clamp(30px, 3.6vw, 52px)/.95 var(--display); text-transform: uppercase; margin: 0; }
+.row p:not(.label) { color: var(--grey); font-size: 16px; }
+@media (max-width: 760px) { .row { grid-template-columns: 1fr; gap: 8px; } }
+
+/* demo form */
+.demo { background: var(--bg-2); border-block: 1px solid var(--line); }
+.form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.field { display: grid; gap: 8px; }
+.field--full { grid-column: 1 / -1; }
+.field label { font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); }
+.field input, .field select { height: 52px; padding: 0 16px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: 400 16px var(--text); border-radius: 0; appearance: none; width: 100%; }
+.field select { background-image: linear-gradient(45deg, transparent 50%, var(--grey) 50%), linear-gradient(135deg, var(--grey) 50%, transparent 50%); background-position: calc(100% - 22px) 23px, calc(100% - 17px) 23px; background-size: 5px 5px; background-repeat: no-repeat; }
+.field input::placeholder { color: #4e5677; }
+.field input:focus, .field select:focus { border-color: var(--accent-hi); outline: none; }
+.field__hint { font-size: 13px; color: var(--grey); text-transform: none; letter-spacing: 0; font-family: var(--text); }
+.form__group { grid-column: 1 / -1; padding-top: 12px; border-top: 1px solid var(--line); }
+.form__group:first-child { border-top: 0; padding-top: 0; }
+.form fieldset { grid-column: 1 / -1; border: 0; margin: 0; padding: 0; min-width: 0; }
+.form legend { font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); padding: 0; margin-bottom: 12px; }
+.form__sub { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.choice { display: flex; flex-wrap: wrap; gap: 10px; }
+.choice label { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px; border: 1px solid var(--line); background: var(--bg); font-size: 15px; cursor: pointer; }
+.choice input { accent-color: var(--accent-hi); width: 18px; height: 18px; margin: 0; }
+.choice label:has(input:checked) { border-color: var(--accent-hi); }
+.check { grid-column: 1 / -1; display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start; font-size: 14px; color: var(--grey); cursor: pointer; }
+.check input { accent-color: var(--accent-hi); width: 18px; height: 18px; margin: 2px 0 0; }
+.form .btn { justify-self: start; }
+.form__note { grid-column: 1 / -1; font-size: 14px; color: var(--grey); }
+@media (max-width: 640px) { .form, .form__sub { grid-template-columns: 1fr; } .form .btn { justify-self: stretch; } }
+
+/* faq */
+.faq details { border-bottom: 1px solid var(--line); }
+.faq details:first-of-type { border-top: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 22px 0; font: 400 clamp(24px, 2.8vw, 40px)/1.05 var(--display); text-transform: uppercase; transition: color .15s; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font: 400 30px/1 var(--display); color: var(--accent-hi); transition: transform .2s; flex: none; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq summary:hover { color: var(--accent-hi); }
+.faq details p { color: var(--grey); max-width: 70ch; padding: 0 0 26px; font-size: 16px; }
+
+/* custom cursor: one inverting dot that stretches with movement (desktop pointers only; script adds .has-cursor) */
+.cursor { position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 100; pointer-events: none; opacity: 0; transition: opacity .15s ease; will-change: transform; }
+.cursor span { position: absolute; left: 0; top: 0; width: var(--size, 14px); height: var(--size, 14px); border-radius: 50%; transform: translate(-50%, -50%); background: #fff; mix-blend-mode: difference; transition: width .22s ease, height .22s ease; }
+@supports ((backdrop-filter: invert(1)) or (-webkit-backdrop-filter: invert(1))) {
+  .cursor span { background: transparent; mix-blend-mode: normal; -webkit-backdrop-filter: grayscale(1) brightness(1.5) contrast(9999) invert(1); backdrop-filter: grayscale(1) brightness(1.5) contrast(9999) invert(1); }
+  .cursor.is-photo span { -webkit-backdrop-filter: invert(1) grayscale(1); backdrop-filter: invert(1) grayscale(1); }
+}
+.has-cursor .cursor { opacity: 1; }
+.has-cursor, .has-cursor a, .has-cursor button, .has-cursor summary, .has-cursor select, .has-cursor label { cursor: none; }
+.has-cursor input { cursor: text; }
+.cursor.is-link { --size: 52px; }
+.cursor.is-photo { --size: 110px; }
+.cursor.is-text { opacity: 0; }
+
+/* close + footer */
+.close { background: radial-gradient(120% 140% at 50% 0%, #0a1690 0%, #071463 40%, #020a3a 75%, #00020c 100%); color: var(--ink); padding: clamp(64px, 9vw, 128px) 0; }
+.close .outline { -webkit-text-stroke-color: var(--ink); }
+.close .wrap { display: flex; justify-content: space-between; align-items: center; gap: 28px; flex-wrap: wrap; }
+.close .display { font-size: clamp(64px, 11vw, 176px); line-height: .85; }
+.foot { padding: 24px 0 32px; }
+.foot .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.foot a { text-decoration: none; }
+.foot a:hover { color: var(--ink); }
+.foot nav { display: flex; gap: 18px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Overnite Records, back to top">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="7" r="4" fill="#fafafa"/><circle cx="17" cy="7" r="4" fill="#fafafa"/><circle cx="7" cy="17" r="4" fill="#fafafa"/><rect x="13" y="13" width="8" height="8" fill="#16239e"/></svg>
+      <span>Over<i>nite</i></span>
+    </a>
+    <nav aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#artists">Artists</a>
+      <a href="#questions">Questions</a>
+      <a class="btn" href="#demo">Send a demo</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top" aria-labelledby="hero-h">
+    <div class="wall" aria-hidden="true">
+      <img src="assets/img/photo-f77805477-500.jpg" alt="" fetchpriority="high">
+      <img src="assets/img/photo-f105241543-500.jpg" alt="">
+      <img src="assets/img/photo-f82106698-500.jpg" alt="">
+      <img src="assets/img/photo-f90519951-500.jpg" alt="">
+      <img src="assets/img/photo-f62268182-500.jpg" alt="">
+      <img src="assets/img/photo-f69352916-500.jpg" alt="">
+      <img src="assets/img/photo-f190017831-500.jpg" alt="">
+      <img src="assets/img/photo-f61803610-500.jpg" alt="">
+      <img src="assets/img/photo-f105211325-500.jpg" alt="">
+      <img src="assets/img/photo-f30511604-500.jpg" alt="">
+      <img src="assets/img/photo-f77805477-500.jpg" alt="">
+      <img src="assets/img/photo-f82106698-500.jpg" alt="">
+    </div>
+    <div class="wrap">
+      <h1 class="display" id="hero-h"><span class="rise">Viral</span><span class="rise d2 outline">Overnite.</span></h1>
+      <p class="hero__line rise d3">Phonk, Hardtekk and internet music.</p>
+      <p class="label hero__sub rise d3">Independent label <b>&middot;</b> Run by the team behind 3,500+ edit campaigns</p>
+      <div class="hero__foot rise d3">
+        <a class="btn" href="#demo">Send a demo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="head"><h2 class="label" id="how-h">How it works</h2></div>
+      <div class="steps">
+        <div class="step"><div class="step__n">1</div><h3>Send us your track</h3><p>Fill out the form with your song and where we can DM you. We listen to everything.</p></div>
+        <div class="step"><div class="step__n">2</div><h3>We talk through the deal</h3><p>If we want the song, we reach out and go over the contract with you. You sign when you're happy with it.</p></div>
+        <div class="step"><div class="step__n">3</div><h3>Our editors use it</h3><p>Our editors make edits with your song and post them. People hear it, save the sound and use it in their own edits.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid4">
+    <figure><img src="assets/img/photo-f82106698-960.jpg" srcset="assets/img/photo-f82106698-500.jpg 500w, assets/img/photo-f82106698-960.jpg 960w" sizes="(max-width: 760px) 50vw, 25vw" alt="A record spinning on a turntable, the tone arm in the groove" loading="lazy"></figure>
+    <figure><img src="assets/img/photo-f105211325-960.jpg" srcset="assets/img/photo-f105211325-500.jpg 500w, assets/img/photo-f105211325-960.jpg 960w" sizes="(max-width: 760px) 50vw, 25vw" alt="Faders and orange-lit controls on a mixing desk" loading="lazy"></figure>
+    <figure><img src="assets/img/photo-f30511604-960.jpg" srcset="assets/img/photo-f30511604-500.jpg 500w, assets/img/photo-f30511604-960.jpg 960w" sizes="(max-width: 760px) 50vw, 25vw" alt="Patch cables and knobs on a modular synthesizer" loading="lazy"></figure>
+    <figure><img src="assets/img/photo-f82583102-960.jpg" srcset="assets/img/photo-f82583102-500.jpg 500w, assets/img/photo-f82583102-960.jpg 960w" sizes="(max-width: 760px) 50vw, 25vw" alt="The Dubai skyline at night, reflected in the water" loading="lazy"></figure>
+  </div>
+
+
+
+  <section id="campaign" aria-labelledby="campaign-h">
+    <div class="wrap split">
+      <div>
+        <h2 class="display h2" id="campaign-h">Why Overnite</h2>
+        <div class="facts">
+          <div><h3><span class="accent">3,500+</span> edit campaigns</h3><p>The team behind Overnite has run over 3,500 edit campaigns. We've seen what takes off and what doesn't.</p></div>
+          <div><h3>More editors than anyone</h3><p>The biggest editor network in the scene. When they post your song, other editors pick it up.</p></div>
+          <div><h3>Any stage</h3><p>Brand new or already moving on TikTok, we know what campaign it needs.</p></div>
+          <div><h3>We don't sign everything</h3><p>We only sign songs we'd put our own money behind. Then we do.</p></div>
+        </div>
+      </div>
+      <figure><img src="assets/img/photo-f77805477.jpg" srcset="assets/img/photo-f77805477-500.jpg 500w, assets/img/photo-f77805477-960.jpg 960w, assets/img/photo-f77805477.jpg 1280w" sizes="(max-width: 900px) 100vw, 45vw" alt="A packed arena under blue stage lights" loading="lazy" style="object-position: 45% 50%"></figure>
+    </div>
+  </section>
+
+  <section id="artists" aria-labelledby="artists-h">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="display h2" id="artists-h">What we sign</h2>
+        <p class="lede">Phonk and Hardtekk first. If it works in edits, send it too.</p>
+      </div>
+      <div class="rows">
+        <div class="row"><p class="label">01</p><h3>Phonk</h3><p>Brazilian phonk, funk, montagem, all of it. From anywhere in the world.</p></div>
+        <div class="row"><p class="label">02</p><h3>Hardtekk</h3><p>Jumpstyle and Hardtekk remixes. Huge on TikTok right now.</p></div>
+        <div class="row"><p class="label">03</p><h3>Internet music</h3><p>Doesn't matter what genre. If people would edit to it, we want to hear it.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo" id="demo" aria-labelledby="demo-h">
+    <div class="wrap split">
+      <div>
+        <h2 class="display h2" id="demo-h">Send us a <span class="outline">demo</span></h2>
+        <p class="lede">We listen to every demo and reach out if we want to work together.</p>
+      </div>
+      <form class="form" action="mailto:demos@overnite.example" method="post" enctype="text/plain">
+        <p class="label form__group">About you</p>
+        <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" placeholder="Artist name or real name" required></div>
+        <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></div>
+        <div class="field field--full"><label for="f-dm">Where can we DM you?</label><input id="f-dm" name="contact" type="text" placeholder="Instagram, Discord or WhatsApp" required></div>
+        <p class="label form__group">The song</p>
+        <div class="field"><label for="f-title">Song title</label><input id="f-title" name="title" type="text" placeholder="Just the title" required></div>
+        <div class="field"><label for="f-genre">Genre</label>
+          <select id="f-genre" name="genre" required>
+            <option value="">Choose one</option><option>Phonk</option><option>Brazilian phonk</option><option>Funk</option><option>Hardtekk</option><option>Something else</option>
+          </select></div>
+        <div class="field field--full"><label for="f-link">Your track</label><input id="f-link" name="link" type="url" inputmode="url" placeholder="https://" required><span class="field__hint">Link or audio file. Send the original, not slowed or sped up.</span></div>
+        <div class="field field--full"><label for="f-tt">Already moving on TikTok? (optional)</label><input id="f-tt" name="tiktok" type="url" inputmode="url" placeholder="https://www.tiktok.com/..."><span class="field__hint">Paste the video or sound.</span></div>
+        <p class="label form__group">Before you send</p>
+        <label class="check"><input type="checkbox" name="samples" required> All samples and vocals on this track are mine or cleared.</label>
+        <label class="check"><input type="checkbox" name="consent" required> I agree that Overnite can use my submission to review the demo and contact me about it.</label>
+        <button class="btn" type="submit">Send demo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+      </form>
+    </div>
+  </section>
+
+  <section class="faq" id="questions" aria-labelledby="faq-h">
+    <div class="wrap">
+      <div class="head"><h2 class="label" id="faq-h">Questions</h2></div>
+      <details><summary>What do you release?</summary><p>Phonk and Hardtekk first, plus any internet music made for edits.</p></details>
+      <details><summary>What does a deal look like?</summary><p>Clear splits, nothing predatory. You see the same numbers we do, including how your song does in edits.</p></details>
+      <details><summary>Do you check samples?</summary><p>Yes. Every sample and vocal gets checked before we sign, so your release doesn't get taken down later.</p></details>
+      <details><summary>Can I send a song that's already out?</summary><p>Yes. Released or not, we can run a campaign on it.</p></details>
+      <details><summary>What is Overnite?</summary><p>An independent label run by the team behind 3,500+ edit campaigns and the biggest editor network in the scene. We sign a few songs and put everything behind them.</p></details>
+    </div>
+  </section>
+</main>
+
+<section class="close" aria-labelledby="close-h">
+  <div class="wrap">
+    <h2 class="display" id="close-h">Viral <span class="outline">overnite.</span></h2>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="label">&copy; 2026 Overnite Records</span>
+    <nav class="label" aria-label="Footer"><a href="#how">How it works</a><a href="#artists">Artists</a><a href="#questions">Questions</a><a href="credits.html">Photo credits</a></nav>
+  </div>
+</footer>
+
+<div class="cursor" aria-hidden="true"><span></span></div>
+<script>
+(() => {
+  const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 768px)').matches;
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!fine) return;
+  const el = document.querySelector('.cursor');
+  const target = { x: innerWidth / 2, y: innerHeight / 2 }, pos = { ...target };
+  let shown = false, onLink = false;
+  addEventListener('mousemove', (e) => {
+    target.x = e.clientX; target.y = e.clientY;
+    if (!shown) { shown = true; pos.x = target.x; pos.y = target.y; document.documentElement.classList.add('has-cursor'); }
+    const t = e.target;
+    onLink = !!t.closest('a, button, summary, select, label, [role="button"]');
+    el.classList.toggle('is-text', !!t.closest('input'));
+    el.classList.toggle('is-link', onLink);
+    el.classList.toggle('is-photo', !onLink && !!t.closest('.grid4 figure, .split figure'));
+  }, { passive: true });
+  document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
+  (function frame() {
+    const px = pos.x, py = pos.y, ease = calm ? 1 : 0.16;
+    pos.x += (target.x - pos.x) * ease; pos.y += (target.y - pos.y) * ease;
+    const dx = pos.x - px, dy = pos.y - py, speed = Math.hypot(dx, dy);
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    const stretch = calm || onLink || el.classList.contains('is-photo') ? 1 : Math.min(1 + speed * 0.045, 1.9);
+    el.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${angle}deg) scale(${stretch}, ${1 / Math.sqrt(stretch)})`;
+    requestAnimationFrame(frame);
+  })();
+})();
+</script>
+</body>
+</html>
