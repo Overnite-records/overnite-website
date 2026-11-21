@@ -14,10 +14,14 @@
 <link rel="canonical" href="https://overnite-records.vercel.app/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#00020c">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* fonts are self-hosted (latin only, SIL Open Font License), so nothing waits on Google Fonts */
+@font-face { font-family: "Anton"; font-weight: 400; font-display: swap; src: url(assets/fonts/anton-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url(assets/fonts/inter-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Inter"; font-weight: 500; font-display: swap; src: url(assets/fonts/inter-latin-500-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: swap; src: url(assets/fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 :root {
   /* Neon blue on deep navy. Same hue as before (about 230), pushed bright enough to read on black:
      --accent is for fills (white text on it is 5.9:1), --accent-hi is for text and strokes on the background (5.5:1). */
@@ -70,7 +74,7 @@ p { margin: 0; }
 /* hero background: two rows of edits drifting in opposite directions, tilted like the 99Eyes rows.
    Each row is ONE video (10 edits stitched side by side) shown twice, so the loop is seamless and only 4 videos decode. */
 .reel { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.reel__rows { position: absolute; left: -15%; right: -15%; top: 50%; display: grid; gap: 14px; opacity: .55; transform: translateY(-58%) rotate(-5deg) scale(var(--reel-zoom, 1)); transform-origin: 50% 50%; }
+.reel__rows { position: absolute; left: -15%; right: -15%; top: 50%; display: grid; gap: 14px; opacity: .55; transform: translateY(-58%) rotate(-5deg); transform-origin: 50% 50%; will-change: transform; }
 .reel__track { display: flex; width: max-content; animation: drift 120s linear infinite; }
 .reel__track--b { animation-duration: 140s; animation-direction: reverse; }
 .reel video { display: block; height: clamp(120px, 14vw, 240px); width: auto; aspect-ratio: 2560 / 240; background: var(--bg-2); }
@@ -78,17 +82,14 @@ p { margin: 0; }
 @keyframes drift { to { transform: translateX(-50%); } }
 .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(rgba(0,2,12,.75) 0, rgba(0,2,12,0) 22%), linear-gradient(rgba(0,2,12,.3) 0, rgba(0,2,12,.5) 45%, var(--bg) 94%); }
-.hero .wrap { position: relative; z-index: 1; transform-origin: 0 100%; }
+.hero .wrap { position: relative; z-index: 1; transform-origin: 0 100%; will-change: transform, opacity; }
 .hero h1 { font-size: clamp(76px, 15.6vw, 236px); line-height: .82; letter-spacing: -.012em; }
 .hero h1 > span { display: block; }
 .hero h1 .outline, .h2 .outline { -webkit-text-stroke-width: 3px; }
 @media (max-width: 640px) { .hero h1 { font-size: 21.5vw; } }
 .hero__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; margin-top: clamp(24px, 3.5vw, 40px); }
 .hero__line { font: 400 clamp(17px, 1.6vw, 22px)/1.25 var(--display); text-transform: uppercase; letter-spacing: .01em; }
-.hero__line b { font-weight: 400; color: var(--grey); margin: 0 .35em; }
 .hero h1 + .hero__line { margin-top: clamp(20px, 3vw, 34px); }
-.hero__sub { margin-top: 10px; }
-.hero__sub b { font-weight: 400; color: var(--accent-hi); margin: 0 .5em; }
 .rise { opacity: 0; transform: translateY(18px); animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
 .rise.d2 { animation-delay: .12s; } .rise.d3 { animation-delay: .26s; }
 @keyframes rise { to { opacity: 1; transform: none; } }
@@ -136,9 +137,8 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .warp--live .warp__stats li { position: absolute; left: 50%; top: 50%; width: min(42vw, 300px); border: 0; padding: 0; opacity: 0; will-change: transform, opacity; }
 .warp--live .warp__stats li.is-left { text-align: right; }
 .warp--live .warp__stats li.is-left span { margin-left: auto; }
-.warp--live .warp__stats li.is-mid { text-align: center; }
-.warp--live .warp__stats li.is-mid span { margin-inline: auto; }
-.warp--live .warp__stats .num { animation: bob var(--bob, 9s) ease-in-out infinite; }
+.warp--live .warp__stats .num { animation: bob var(--bob, 9s) ease-in-out infinite; animation-play-state: paused; }
+.warp--live.is-on .warp__stats .num { animation-play-state: running; }
 .warp--live .warp__stats li:nth-child(2) .num { --bob: 11s; animation-delay: -3s; }
 .warp--live .warp__stats li:nth-child(3) .num { --bob: 10s; animation-delay: -6s; }
 .warp--live .warp__stats li:nth-child(4) .num { --bob: 12s; animation-delay: -2s; }
@@ -184,10 +184,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .drawer__media { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 36px; }
 .drawer__media video { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; background: var(--bg); }
 .drawer__note { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); }
-.drawer__back { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); min-height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--ink); color: var(--bg); font: 400 16px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; cursor: pointer; }
+.drawer__back { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); min-height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--ink); color: var(--bg); font: 400 16px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; cursor: pointer; }
 .drawer__back:hover { background: #fff; }
 .drawer__back:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 3px; }
-body:has(.drawer[open]) { overflow: hidden; }
+.is-locked { overflow: hidden; }
 
 /* edits wall: full-bleed grid of edits, like the release wall on 99Eyes. Videos load and play only while on screen */
 .edits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; border-block: 1px solid var(--line); background: var(--line); }
@@ -234,18 +234,10 @@ body:has(.drawer[open]) { overflow: hidden; }
 .field__hint { font-size: 13px; color: var(--grey); text-transform: none; letter-spacing: 0; font-family: var(--text); }
 .form__group { grid-column: 1 / -1; padding-top: 12px; border-top: 1px solid var(--line); }
 .form__group:first-child { border-top: 0; padding-top: 0; }
-.form fieldset { grid-column: 1 / -1; border: 0; margin: 0; padding: 0; min-width: 0; }
-.form legend { font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); padding: 0; margin-bottom: 12px; }
-.form__sub { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.choice { display: flex; flex-wrap: wrap; gap: 10px; }
-.choice label { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px; border: 1px solid var(--line); background: var(--bg); font-size: 15px; cursor: pointer; }
-.choice input { accent-color: var(--accent-hi); width: 18px; height: 18px; margin: 0; }
-.choice label:has(input:checked) { border-color: var(--accent-hi); }
 .check { grid-column: 1 / -1; display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start; font-size: 14px; color: var(--grey); cursor: pointer; }
 .check input { accent-color: var(--accent-hi); width: 18px; height: 18px; margin: 2px 0 0; }
 .form .btn { justify-self: start; }
-.form__note { grid-column: 1 / -1; font-size: 14px; color: var(--grey); }
-@media (max-width: 640px) { .form, .form__sub { grid-template-columns: 1fr; } .form .btn { justify-self: stretch; } }
+@media (max-width: 640px) { .form { grid-template-columns: 1fr; } .form .btn { justify-self: stretch; } }
 
 /* faq */
 .faq details { border-bottom: 1px solid var(--line); }
@@ -266,6 +258,7 @@ body:has(.drawer[open]) { overflow: hidden; }
 }
 .has-cursor .cursor { opacity: 1; }
 .has-cursor, .has-cursor a, .has-cursor button, .has-cursor summary, .has-cursor select, .has-cursor label { cursor: none; }
+.has-cursor .drawer, .has-cursor .drawer * { cursor: auto; }
 .has-cursor input { cursor: text; }
 .cursor.is-link { --size: 52px; }
 .cursor.is-photo { --size: 110px; }
@@ -306,19 +299,18 @@ body:has(.drawer[open]) { overflow: hidden; }
     <div class="reel" aria-hidden="true">
       <div class="reel__rows">
         <div class="reel__track">
-          <video data-src="assets/hero/hero-row-a.mp4" poster="assets/hero/hero-row-a.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
-          <video data-src="assets/hero/hero-row-a.mp4" poster="assets/hero/hero-row-a.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+          <video data-src="assets/hero/hero-row-a.mp4" data-src-sm="assets/hero/hero-row-a-sm.mp4" poster="assets/hero/hero-row-a.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+          <video data-src="assets/hero/hero-row-a.mp4" data-src-sm="assets/hero/hero-row-a-sm.mp4" poster="assets/hero/hero-row-a.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
         </div>
         <div class="reel__track reel__track--b">
-          <video data-src="assets/hero/hero-row-b.mp4" poster="assets/hero/hero-row-b.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
-          <video data-src="assets/hero/hero-row-b.mp4" poster="assets/hero/hero-row-b.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+          <video data-src="assets/hero/hero-row-b.mp4" data-src-sm="assets/hero/hero-row-b-sm.mp4" poster="assets/hero/hero-row-b.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+          <video data-src="assets/hero/hero-row-b.mp4" data-src-sm="assets/hero/hero-row-b-sm.mp4" poster="assets/hero/hero-row-b.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
         </div>
       </div>
     </div>
     <div class="wrap">
       <h1 class="display" id="hero-h"><span class="rise">Viral</span><span class="rise d2 outline">Overnite.</span></h1>
       <p class="hero__line rise d3">Phonk, Hardtekk and internet music.</p>
-      <p class="label hero__sub rise d3">Independent label <b>&middot;</b> Run by the team behind 3,500+ edit campaigns</p>
       <div class="hero__foot rise d3">
         <a class="btn" href="#demo">Send a demo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
       </div>
@@ -509,13 +501,14 @@ body:has(.drawer[open]) { overflow: hidden; }
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const easeOut = (t) => 1 - Math.pow(1 - t, 3);
   const playable = !calm && !saveData;
+  const small = innerWidth < 768;
 
   /* 1. Edit videos: load and play only while on screen, pause when off screen or when the tab is hidden.
         With reduced motion or Save-Data on, the posters stay as still images and no video is downloaded. */
   const play = (v) => {
     if (!playable) return;
     const group = v.closest('.reel__track') ? v.parentElement.querySelectorAll('video') : [v];
-    group.forEach((g) => { if (!g.src) { g.preload = 'auto'; g.src = g.dataset.src; } });
+    group.forEach((g) => { if (!g.src) { g.preload = 'auto'; g.src = (small && g.dataset.srcSm) || g.dataset.src; } });   /* phones get the lighter hero rows */
     const p = v.play(); if (p) p.catch(() => {});
   };
   const onScreen = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
@@ -549,6 +542,7 @@ body:has(.drawer[open]) { overflow: hidden; }
     dMedia.hidden = !d.media;
     dScroll.scrollTop = 0;
     drawer.showModal();
+    document.documentElement.classList.add('is-locked');
     requestAnimationFrame(() => requestAnimationFrame(() => drawer.classList.add('is-in')));
     dMedia.querySelectorAll('video').forEach(play);
   }
@@ -566,7 +560,7 @@ body:has(.drawer[open]) { overflow: hidden; }
   drawer.querySelector('.drawer__back').addEventListener('click', closeDrawer);
   drawer.addEventListener('click', (e) => { if (e.target === drawer) closeDrawer(); });           /* click on the dimmed page */
   drawer.addEventListener('cancel', (e) => { e.preventDefault(); closeDrawer(); });                 /* Esc, with the slide-out */
-  drawer.addEventListener('close', () => { if (opener) opener.focus({ preventScroll: true }); });
+  drawer.addEventListener('close', () => { document.documentElement.classList.remove('is-locked'); if (opener) opener.focus({ preventScroll: true }); });
 
   if (calm) return;
 
@@ -584,26 +578,34 @@ body:has(.drawer[open]) { overflow: hidden; }
   const center = warp.querySelector('.warp__center');
   const stats = [...warp.querySelectorAll('.warp__stats li')].map((el, i, all) => {
     const x = parseFloat(el.dataset.x), y = parseFloat(el.dataset.y);
-    el.classList.add(x < -0.1 ? 'is-left' : x > 0.1 ? 'is-right' : 'is-mid');
-    return { el, x, y, start: 0.12 + i * (0.5 / (all.length - 1)) };
+    el.classList.add(x < -0.1 ? 'is-left' : 'is-right');
+    el.style.transformOrigin = x < -0.1 ? '100% 50%' : '0 50%';
+    return { el, x, y, w: 0, h: 0, start: 0.12 + i * (0.5 / (all.length - 1)) };
   });
   const canvas = warp.querySelector('.warp__stars');
   const ctx = canvas.getContext('2d');
   const stars = Array.from({ length: innerWidth < 700 ? 260 : 520 }, () => ({ x: (Math.random() - 0.5) * 2.4, y: (Math.random() - 0.5) * 2.4, z: Math.random(), blue: Math.random() < 0.45 }));
   let W = 0, H = 0;
-  const size = () => { const dpr = Math.min(devicePixelRatio || 1, 2); W = stage.clientWidth; H = stage.clientHeight; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  const size = () => {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    stats.forEach((s) => { s.w = s.el.offsetWidth; s.h = s.el.offsetHeight; });   /* measured here, never inside the frame loop */
+    if (w === W && Math.abs(h - H) < 120) return;                                  /* ignore the mobile address bar showing and hiding */
+    const dpr = Math.min(devicePixelRatio || 1, 2); W = w; H = h; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
 
   const morph = document.querySelector('.morph');
   morph.classList.add('morph--live');
   const card = morph.querySelector('.morph__card');
   const cols = [...morph.querySelectorAll('.morph__col')];
 
-  size(); addEventListener('resize', size);
+  size();
+  let resizeT; addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { size(); kick(); }, 150); });
+  if (document.fonts) document.fonts.ready.then(() => { size(); kick(); });   /* number widths change once Anton has loaded */
 
   const progress = (el) => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight)); };
   let heroOn = true, warpOn = false, morphOn = false, running = false, warpP = 0, morphP = 0;
   new IntersectionObserver(([e]) => { heroOn = e.isIntersecting; kick(); }).observe(hero);
-  new IntersectionObserver(([e]) => { warpOn = e.isIntersecting; kick(); }).observe(warp);
+  new IntersectionObserver(([e]) => { warpOn = e.isIntersecting; warp.classList.toggle('is-on', warpOn); kick(); }).observe(warp);
   new IntersectionObserver(([e]) => { morphOn = e.isIntersecting; kick(); }).observe(morph);
   const loadStills = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return;
@@ -638,7 +640,7 @@ body:has(.drawer[open]) { overflow: hidden; }
       const k = clamp(scrollY / hero.offsetHeight);
       heroText.style.transform = `translateY(${k * 60}px) scale(${1 - k * 0.12})`;
       heroText.style.opacity = 1 - k * 1.15;
-      rows.style.setProperty('--reel-zoom', 1 + k * 0.35);
+      rows.style.transform = `translateY(-58%) rotate(-5deg) scale(${1 + k * 0.35})`;
     }
     if (warpOn) {
       const target = progress(warp), prev = warpP;
@@ -652,16 +654,14 @@ body:has(.drawer[open]) { overflow: hidden; }
       for (const s of stats) {
         const q = clamp((warpP - s.start) / 0.22);           /* 0 = still in the centre, 1 = settled in its corner */
         const come = easeOut(q);
-        const w = s.el.offsetWidth, h = s.el.offsetHeight;
+        const w = s.w, h = s.h;
         let left;                                            /* x of the element's left edge, relative to the centre */
         if (s.x < -0.1) left = (-(W / 2 - m) + w) * come - w;
-        else if (s.x > 0.1) left = (W / 2 - m - w) * come;
-        else left = -w / 2;
+        else left = (W / 2 - m - w) * come;
         const top = (s.y * ry - h / 2) * come - (1 - come) * h / 2;
         s.el.style.opacity = clamp(q / 0.4);
         s.el.style.visibility = q > 0 ? 'visible' : 'hidden';
         s.el.style.transform = `translate(${left}px, ${top}px) scale(${0.3 + come * 0.7})`;
-        s.el.style.transformOrigin = s.x < -0.1 ? '100% 50%' : s.x > 0.1 ? '0 50%' : '50% 50%';
       }
     }
     if (morphOn) {

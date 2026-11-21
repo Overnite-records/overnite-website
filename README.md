@@ -16,6 +16,9 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 - Numbers as of November 2026: platform data from Metabase, streams and TikTok creates from Chartex. Update them when they move.
 - Colours: the `:root` block at the top of the `<style>` tag. `--accent` is for filled things (buttons), `--accent-hi` for blue text and outlines on the dark background. Keep both bright, the old navy blue was nearly invisible on black.
 
+- Fonts: self-hosted in `assets/fonts/` (Anton, Inter, JetBrains Mono, latin only, SIL Open Font License), so the page never waits on Google Fonts.
+- Hero rows on phones: `hero-row-a-sm.mp4` / `hero-row-b-sm.mp4`, a lighter copy of the same rows. Rebuild both if you change a row.
+
 Preview locally by opening `index.html` in a browser, or run `python -m http.server` in this folder.
 
 ## Making new edit clips
