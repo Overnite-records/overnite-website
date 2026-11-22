@@ -12,12 +12,15 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 - Numbers: every number is a `<button class="num">` with `data-kind`, `data-num`, `data-title`, `data-text` and optional `data-media` (edit clip names from `assets/edits`, comma separated). Clicking it opens the drawer with that text, so to change what a number says, edit those attributes.
 - Our creator base (`#numbers`, the starfield zoom): `data-x` / `data-y` on each `<li>` set which corner the number settles in (-1 left, 1 right). Each corner stat is centred on itself (number, label and pill on one middle line). The last stat settles at about 3/4 of the scroll run, so there is little dead scrolling after it.
 - Campaign results (`#results`, the shrinking card): the list items. The clips sliding behind it are `assets/morph/m01.mp4` to `m19.mp4` (320px, 6 second loops) with `assets/wall/w01.webp` to `w19.webp` as their posters. Only the clips on screen play, at most 8 at once (4 on phones).
+- Why Overnite: four tabs (`.why__tab`, each with a small line icon) and one panel per tab (`.why__panel`). Clicking a tab or using the arrow keys shows its panel; the chosen tab turns blue. To change a reason, edit the tab label and the matching panel text.
+- What we sign: each genre cell turns blue on hover (or keyboard focus), the name moves up and the description appears. On touch screens the description is always shown.
+- Closing band: "We are ready / Are you?" in Montserrat ExtraBold on the blue, with "Let's talk" opening an email (still the placeholder `demos@overnite.example`, same as the form; change both when the real inbox exists).
 - Hover click: moving the mouse onto a Campaign results number plays a short click, generated in the browser (script part 6, no audio file). Browsers only allow it after the first click or key press on the page.
 - "Press to show more stats": the small blue pill on every number. It shows on hover (centred under the line in Campaign results), and always on touch screens, so people know a number opens more.
 - Numbers as of November 2026: platform data from Metabase, streams and TikTok creates from Chartex. Update them when they move.
 - Colours: the `:root` block at the top of the `<style>` tag. `--accent` is for filled things (buttons), `--accent-hi` for blue text and outlines on the dark background. Keep both bright, the old navy blue was nearly invisible on black.
 
-- Fonts: self-hosted in `assets/fonts/` (Anton for headlines, Archivo for everything else including the small labels, latin only, SIL Open Font License), so the page never waits on Google Fonts.
+- Fonts: self-hosted in `assets/fonts/` (Anton for headlines, Archivo for everything else including the small labels, Montserrat ExtraBold only for the blue closing band; latin only, SIL Open Font License), so the page never waits on Google Fonts.
 
 Preview locally by opening `index.html` in a browser, or run `python -m http.server` in this folder.
 

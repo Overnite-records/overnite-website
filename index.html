@@ -21,12 +21,13 @@
 @font-face { font-family: "Anton"; font-weight: 400; font-display: swap; src: url(assets/fonts/anton-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: "Archivo"; font-weight: 400; font-display: swap; src: url(assets/fonts/archivo-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: "Archivo"; font-weight: 500; font-display: swap; src: url(assets/fonts/archivo-latin-500-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Montserrat"; font-weight: 800; font-display: swap; src: url(assets/fonts/montserrat-latin-800-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 :root {
   /* Neon blue on deep navy. Same hue as before (about 230), pushed bright enough to read on black:
      --accent is for fills (white text on it is 5.9:1), --accent-hi is for text and strokes on the background (5.5:1). */
   --bg: #00020c; --bg-2: #01051a; --ink: #f2f4fb; --grey: #7f87a6; --line: rgba(90,110,255,.18);
   --accent: #2a4bff; --accent-hi: #5b78ff; --accent-ink: #ffffff; --glow: rgba(42,75,255,.55);
-  --display: "Anton", "Impact", sans-serif; --text: "Archivo", system-ui, sans-serif;
+  --display: "Anton", "Impact", sans-serif; --text: "Archivo", system-ui, sans-serif; --heavy: "Montserrat", "Archivo", sans-serif;
   --gut: clamp(20px, 2.4vw, 32px); --max: 1440px;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -45,7 +46,6 @@ a { color: inherit; }
 .label { font: 500 14px/1.5 var(--text); color: var(--grey); margin: 0; }
 .display { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: -.01em; line-height: .9; margin: 0; }
 .outline { color: transparent; -webkit-text-stroke: 2px var(--accent-hi); filter: drop-shadow(0 0 14px var(--glow)); }
-.accent { color: var(--accent-hi); }
 p { margin: 0; }
 
 /* buttons */
@@ -144,14 +144,18 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
    Without JS or with reduced motion it is a plain card. script adds .morph--live */
 .morph__card { position: relative; z-index: 1; width: min(100% - 2 * var(--gut), 1100px); margin-inline: auto; padding: clamp(40px, 7vw, 96px) 20px; text-align: center; }
 .morph__list { list-style: none; margin: clamp(28px, 5vw, 56px) 0 0; padding: 0; display: grid; gap: 6px; justify-items: center; }
-.morph__item { position: relative; font: 400 clamp(40px, min(8.2vw, 13svh), 120px)/1 var(--display); text-transform: uppercase; letter-spacing: -.005em; transition: opacity .3s ease; }
+.morph__item { position: relative; font: 400 clamp(40px, min(8.2vw, 13svh), 120px)/1 var(--display); text-transform: uppercase; letter-spacing: -.005em; transition: opacity .3s ease, transform .3s ease; }
 .morph__roll { display: grid; overflow: hidden; }
 .morph__roll > span { grid-area: 1 / 1; padding-block: .04em; transition: transform .35s cubic-bezier(.65,0,.35,1), text-shadow .35s; white-space: nowrap; }
 .morph__roll > span + span { transform: translateY(100%); color: var(--accent-hi); }
 .morph__item:hover .morph__roll > span:first-child, .morph__item:focus-visible .morph__roll > span:first-child { transform: translateY(-100%); }
 .morph__item:hover .morph__roll > span + span, .morph__item:focus-visible .morph__roll > span + span { transform: translateY(0); text-shadow: 0 0 24px var(--glow); }
 .morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
-@media (hover: hover) { .morph__list { gap: clamp(6px, .6vw, 10px); } }
+@media (hover: hover) {
+  .morph__list { gap: clamp(6px, .6vw, 10px); }
+  /* the lines under the hovered one step down to make room for its pill */
+  .morph__list li:has(> .morph__item:hover) ~ li > .morph__item, .morph__list li:has(> .morph__item:focus-visible) ~ li > .morph__item { transform: translateY(38px); }
+}
 
 /* "Press to show more stats": tells people a number opens more. Appears on hover, always visible on touch screens */
 .more { display: inline-flex; padding: 7px 13px; border-radius: 999px; background: var(--accent); color: #fff; font: 500 13px/1 var(--text); font-style: normal; text-transform: none; white-space: nowrap; pointer-events: none; }
@@ -190,24 +194,36 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .drawer__back:hover { background: #fff; }
 .is-locked { overflow: hidden; }
 
-/* split */
+/* split (demo section) */
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
 .split .lede { margin-top: 24px; }
-.facts { margin-top: clamp(28px, 4vw, 44px); border-top: 1px solid var(--line); }
-.facts div { padding: clamp(18px, 2.2vw, 26px) 0; border-bottom: 1px solid var(--line); }
-.facts h3 { font: 400 clamp(26px, 2.6vw, 38px)/1 var(--display); text-transform: uppercase; margin: 0; }
-.facts p { margin-top: 8px; max-width: 44ch; color: var(--grey); font-size: 16px; }
-.mark { align-self: center; display: grid; place-items: center; aspect-ratio: 1; background: radial-gradient(closest-side, rgba(42,75,255,.16), rgba(42,75,255,0)); }
-.mark svg { width: 56%; height: auto; filter: drop-shadow(0 0 30px var(--glow)); }
-@media (max-width: 900px) { .split { grid-template-columns: 1fr; } .mark { display: none; } }
+@media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+
+/* why overnite: a grid of tabs, the chosen one is explained on the right (after the Void services block) */
+.why { --rule: rgba(242,244,251,.2); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: clamp(28px, 4vw, 48px); border: 1px solid var(--rule); }
+.why__tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border-right: 1px solid var(--rule); }
+.why__tab { all: unset; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: clamp(150px, 14vw, 210px); padding: clamp(18px, 2vw, 30px); background: var(--bg); color: var(--ink); font: 400 clamp(22px, 2vw, 30px)/1 var(--display); text-transform: uppercase; cursor: pointer; transition: background-color .2s ease, color .2s ease; }
+.why__tab svg { width: 34px; height: 34px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.why__tab:hover { background: rgba(42,75,255,.16); }
+.why__tab[aria-selected="true"] { background: var(--accent); color: #fff; }
+.why__tab:focus-visible { outline-offset: -4px; }
+.why__panels { display: grid; align-items: center; padding: clamp(24px, 4vw, 64px); }
+.why__panel h3 { font: 400 clamp(26px, 2.4vw, 36px)/1 var(--display); text-transform: uppercase; color: var(--accent-hi); margin: 0; }
+.why__panel p { margin-top: 18px; max-width: 24ch; font-size: clamp(22px, 2.2vw, 34px); line-height: 1.2; }
+.why__panel:not([hidden]) { animation: rise .45s cubic-bezier(.2,.7,.2,1); }
+@media (max-width: 900px) { .why { grid-template-columns: 1fr; } .why__tabs { border-right: 0; border-bottom: 1px solid var(--rule); } .why__panels { min-height: 230px; align-items: start; } }
 
 /* what we sign */
 .sign { text-align: center; }
 .genres { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: clamp(36px, 5vw, 64px); border-top: 1px solid var(--line); }
-.genres div { padding: clamp(24px, 3vw, 40px) clamp(12px, 2vw, 28px); }
+.genres div { position: relative; display: grid; place-items: center; min-height: clamp(200px, 18vw, 270px); padding: 0 clamp(12px, 2vw, 28px); transition: background-color .3s ease; }
 .genres div + div { border-left: 1px solid var(--line); }
-.genres h3 { font: 400 clamp(32px, 3.6vw, 52px)/.95 var(--display); text-transform: uppercase; margin: 0; }
-.genres p { margin: 12px auto 0; max-width: 30ch; color: var(--grey); font-size: 16px; }
+.genres h3 { font: 400 clamp(32px, 3.6vw, 52px)/.95 var(--display); text-transform: uppercase; margin: 0; transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+.genres p { position: absolute; left: 50%; top: 50%; width: min(30ch, 86%); margin: 0; color: #e8ebff; font-size: 16px; opacity: 0; transform: translate(-50%, 34px); transition: opacity .3s ease, transform .4s cubic-bezier(.2,.8,.2,1); }
+.genres div:hover, .genres div:focus-visible { background: var(--accent); outline: 0; }
+.genres div:hover h3, .genres div:focus-visible h3 { transform: translateY(-.75em); }
+.genres div:hover p, .genres div:focus-visible p { opacity: 1; transform: translate(-50%, 10px); }
+@media (hover: none) { .genres h3 { transform: translateY(-.75em); } .genres p { opacity: 1; color: var(--grey); transform: translate(-50%, 10px); } }   /* phones: the description is always there */
 @media (max-width: 760px) { .genres { grid-template-columns: 1fr; } .genres div + div { border-left: 0; border-top: 1px solid var(--line); } }
 
 /* demo form */
@@ -258,10 +274,13 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .cursor.is-link { --size: 52px; }
 .cursor.is-text { opacity: 0; }
 
-/* close + footer */
-.close { background: radial-gradient(120% 140% at 50% 0%, #2a4bff 0%, #1631c4 32%, #0a1a6e 62%, #00020c 100%); color: var(--ink); padding: clamp(64px, 9vw, 128px) 0; }
-.close .outline { -webkit-text-stroke-color: var(--ink); filter: none; }
-.close .display { font-size: clamp(64px, 11vw, 176px); line-height: .85; }
+/* closing band + footer */
+.end { background: var(--accent); color: #fff; padding: clamp(96px, 14vw, 200px) 0 clamp(64px, 9vw, 128px); }
+.end ::selection { background: #fff; color: var(--accent); }
+.end__title { margin: 0; font: 800 clamp(30px, 11vw, 196px)/.9 var(--heavy); letter-spacing: -.045em; text-transform: uppercase; white-space: nowrap; }
+.end__talk { display: inline-flex; align-items: center; gap: .3em; margin-top: clamp(32px, 4.5vw, 64px); padding-bottom: 6px; border-bottom: 3px solid currentColor; color: #fff; font: 800 clamp(22px, 2.2vw, 34px)/1 var(--heavy); letter-spacing: -.02em; text-transform: uppercase; text-decoration: none; }
+.end__talk svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2.6; transition: transform .2s ease; }
+.end__talk:hover svg { transform: translate(3px, -3px); }
 .foot { padding: 24px 0 32px; }
 .foot .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .foot a { text-decoration: none; }
@@ -383,18 +402,21 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   </section>
 
   <section id="campaign" aria-labelledby="campaign-h">
-    <div class="wrap split">
-      <div>
-        <h2 class="display h2" id="campaign-h">Why Overnite?</h2>
-        <div class="facts">
-          <div><h3><span class="accent">3,500+</span> edit campaigns</h3><p>The team behind Overnite has run over 3,500 edit campaigns. We've seen what takes off and what doesn't.</p></div>
-          <div><h3>More editors than anyone</h3><p>The biggest editor network in the scene. When they post your song, other editors pick it up.</p></div>
-          <div><h3>Any stage</h3><p>Brand new or already moving on TikTok, we know what campaign it needs.</p></div>
-          <div><h3>We don't sign everything</h3><p>We only sign songs we'd put our own money behind. Then we do.</p></div>
+    <div class="wrap">
+      <h2 class="display h2" id="campaign-h">Why Overnite?</h2>
+      <div class="why">
+        <div class="why__tabs" role="tablist" aria-label="Why Overnite">
+          <button class="why__tab" type="button" role="tab" id="why-tab-campaigns" aria-controls="why-panel-campaigns" aria-selected="true" tabindex="0"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19.1 4.9a10 10 0 0 1 0 14.2M4.9 19.1a10 10 0 0 1 0-14.2"/></svg><span>Campaigns</span></button>
+          <button class="why__tab" type="button" role="tab" id="why-tab-editors" aria-controls="why-panel-editors" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg><span>Editors</span></button>
+          <button class="why__tab" type="button" role="tab" id="why-tab-stage" aria-controls="why-panel-stage" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg><span>Any stage</span></button>
+          <button class="why__tab" type="button" role="tab" id="why-tab-signing" aria-controls="why-panel-signing" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h8"/><path d="m14.5 4.5 5 5L9 20H4v-5z"/></svg><span>Signing</span></button>
         </div>
-      </div>
-      <div class="mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="4" fill="#f2f4fb"/><circle cx="17" cy="7" r="4" fill="#f2f4fb"/><circle cx="7" cy="17" r="4" fill="#f2f4fb"/><rect x="13" y="13" width="8" height="8" fill="#2a4bff"/></svg>
+        <div class="why__panels">
+          <div class="why__panel" role="tabpanel" id="why-panel-campaigns" aria-labelledby="why-tab-campaigns"><h3>3,500+ edit campaigns</h3><p>The team behind Overnite has run over 3,500 edit campaigns. We've seen what takes off and what doesn't.</p></div>
+          <div class="why__panel" role="tabpanel" id="why-panel-editors" aria-labelledby="why-tab-editors" hidden><h3>More editors than anyone</h3><p>The biggest editor network in the scene. When they post your song, other editors pick it up.</p></div>
+          <div class="why__panel" role="tabpanel" id="why-panel-stage" aria-labelledby="why-tab-stage" hidden><h3>Any stage</h3><p>Brand new or already moving on TikTok, we know what campaign it needs.</p></div>
+          <div class="why__panel" role="tabpanel" id="why-panel-signing" aria-labelledby="why-tab-signing" hidden><h3>We don't sign everything</h3><p>We only sign songs we'd put our own money behind. Then we do.</p></div>
+        </div>
       </div>
     </div>
   </section>
@@ -404,9 +426,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       <div class="sign">
         <h2 class="display h2" id="artists-h">What we sign</h2>
         <div class="genres">
-          <div><h3>Phonk</h3><p>Brazilian phonk, funk, montagem, all of it. From anywhere in the world.</p></div>
-          <div><h3>Hardtekk</h3><p>Jumpstyle and Hardtekk remixes. Huge on TikTok right now.</p></div>
-          <div><h3>Internet music</h3><p>Doesn't matter what genre. If people would edit to it, we want to hear it.</p></div>
+          <div tabindex="0"><h3>Phonk</h3><p>Brazilian phonk, funk, montagem, all of it. From anywhere in the world.</p></div>
+          <div tabindex="0"><h3>Hardtekk</h3><p>Jumpstyle and Hardtekk remixes. Huge on TikTok right now.</p></div>
+          <div tabindex="0"><h3>Internet music</h3><p>Doesn't matter what genre. If people would edit to it, we want to hear it.</p></div>
         </div>
       </div>
     </div>
@@ -453,9 +475,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   </section>
 </main>
 
-<section class="close" aria-labelledby="close-h">
+<section class="end" aria-labelledby="end-h">
   <div class="wrap">
-    <h2 class="display" id="close-h">Viral <span class="outline">overnite.</span></h2>
+    <h2 class="end__title" id="end-h">We are ready<br>Are you?</h2>
+    <a class="end__talk" href="mailto:demos@overnite.example">Let's talk <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   </div>
 </section>
 
@@ -780,6 +803,23 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     src.connect(band).connect(vol).connect(ctx.destination); src.start();
   };
   document.querySelectorAll('.morph__item').forEach((b) => b.addEventListener('pointerenter', tick));
+})();
+/* 7. Why Overnite tabs: click or arrow keys choose a tab, its text shows on the right. */
+(() => {
+  const tabs = [...document.querySelectorAll('.why__tab')];
+  const pick = (tab) => tabs.forEach((t) => {
+    const on = t === tab;
+    t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1;
+    document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+  });
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => pick(t));
+    t.addEventListener('keydown', (e) => {
+      const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (!step) return;
+      e.preventDefault(); const next = tabs[(i + step + tabs.length) % tabs.length]; pick(next); next.focus();
+    });
+  });
 })();
 </script>
 </body>
