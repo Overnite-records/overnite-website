@@ -153,12 +153,12 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph__item:hover .morph__roll > span:first-child, .morph__item:focus-visible .morph__roll > span:first-child { transform: translateY(-100%); }
 .morph__item:hover .morph__roll > span + span, .morph__item:focus-visible .morph__roll > span + span { transform: translateY(0); text-shadow: 0 0 24px var(--glow); }
 .morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
-@media (hover: hover) { .morph__list { gap: clamp(14px, 2.8vw, 40px); } }   /* room for the hint under the hovered line */
+@media (hover: hover) { .morph__list { gap: clamp(6px, .6vw, 10px); } }
 
 /* "Press to show more stats": tells people a number opens more. Appears on hover, always visible on touch screens */
 .more { display: inline-flex; padding: 7px 13px; border-radius: 999px; background: var(--accent); color: #fff; font: 500 13px/1 var(--text); font-style: normal; text-transform: none; white-space: nowrap; pointer-events: none; }
-.morph__item .more { position: absolute; left: 50%; top: 100%; z-index: 1; font-size: 15px; padding: 9px 15px; opacity: 0; transform: translate(-50%, -4px); transition: opacity .25s ease, transform .25s ease; }
-.morph__item:hover .more, .morph__item:focus-visible .more { opacity: 1; transform: translate(-50%, 2px); }
+.morph__item .more { position: absolute; left: 50%; top: calc(100% - .1em); z-index: 1; font-size: 15px; padding: 9px 15px; opacity: 0; transform: translate(-50%, -4px); transition: opacity .25s ease, transform .25s ease; }
+.morph__item:hover .more, .morph__item:focus-visible .more { opacity: 1; transform: translate(-50%, 0); }
 .warp__stats .more { display: flex; margin: 12px auto 0; width: max-content; opacity: 0; transform: translateY(4px); transition: opacity .25s ease, transform .25s ease; }
 .warp__stats .num:hover .more, .warp__stats .num:focus-visible .more { opacity: 1; transform: none; }
 @media (hover: none) {
