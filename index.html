@@ -97,12 +97,12 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .h2 { font-size: clamp(44px, 6.4vw, 96px); margin-top: 14px; }
 .lede { max-width: 56ch; color: var(--grey); font-size: 17px; }
 
-/* steps */
+/* steps. The extra space below matches the gap above, where the last stats of the warp sit just above the stage edge */
+#how { padding-bottom: calc(clamp(72px, 10vw, 140px) + clamp(36px, 7.8vw - 42px, 76px)); }
+@media (max-width: 640px) { #how { padding-bottom: 154px; } }
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
 .step { position: relative; text-align: center; }
-.step__n { display: grid; place-items: center; width: 56px; height: 56px; margin-inline: auto; border: 2px solid var(--accent); border-radius: 50%; font: 400 26px/1 var(--display); transition: background-color .2s ease; }
-.step:hover .step__n { background: var(--accent); }
-@media (hover: none) { .step:last-child .step__n { background: var(--accent); } }
+.step__n { display: grid; place-items: center; width: 56px; height: 56px; margin-inline: auto; border: 2px solid var(--accent); border-radius: 50%; font: 400 26px/1 var(--display); }
 .step:not(:last-child)::before { content: ""; position: absolute; top: 27px; left: calc(50% + 42px); right: calc(10px - 50%); height: 2px; background: var(--accent); }
 .step:not(:last-child)::after { content: ""; position: absolute; top: 22px; right: calc(10px - 50%); width: 10px; height: 10px; border: solid var(--accent); border-width: 2px 2px 0 0; transform: rotate(45deg); }
 .step h3 { font: 400 23px/1.05 var(--display); text-transform: uppercase; margin: 22px 0 10px; }
