@@ -17,7 +17,7 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 - What we sign: each genre cell turns blue on hover (or keyboard focus), the name moves up and the description appears. On touch screens the description is always shown.
 - How it works: three steps drawn as a timeline, circles and text centred, circles joined by arrows. The circles stay outlines (no hover fill, they are not buttons). On phones it runs top to bottom, left aligned, with down arrows. The space under the section matches the space above it (`#how` padding-bottom). Pure CSS on `.step`.
 - Page end order: Questions, then the blue "We are ready / Are you?" band (Montserrat ExtraBold), whose "Let's talk" arrow jumps down to the demo form, then the form, then the footer. The form is the only contact route (no separate email link).
-- Cursor: on desktop the mouse is a small dot that inverts what is under it and stretches with movement (script part 4). It is two stacked dots with blend modes (`saturation` takes the colour out, `difference` inverts), and over blue surfaces (the closing band, buttons, pills, a hovered genre) it is plain black. The list of blue surfaces is `BLUE` in part 4.
+- Cursor: on desktop the mouse is a small dot that inverts what is under it and stretches with movement (script part 4). It is two stacked dots with blend modes (`saturation` takes the colour out, `difference` inverts), and over blue surfaces (the closing band, buttons, pills, a hovered genre) it is plain black. The list of blue surfaces is `BLUE` in part 4. What is under the mouse comes from part 4a, which also re-checks after scrolling, so the cursor and the hover looks follow the page when you scroll without moving the mouse. Because of that, the Campaign results numbers and the genre cells use the `.is-hot` class instead of `:hover`.
 - Hover click: moving the mouse onto a Campaign results number plays a short click, generated in the browser (script part 6, no audio file). Browsers only allow it after the first click or key press on the page.
 - Numbers as of November 2026: platform data from Metabase, streams and TikTok creates from Chartex. Update them when they move.
 - Colours: the `:root` block at the top of the `<style>` tag. `--accent` is for filled things (buttons), `--accent-hi` for blue text and outlines on the dark background. Keep both bright, the old navy blue was nearly invisible on black.
@@ -43,6 +43,7 @@ Videos only load and play while they are on screen. With reduced motion or Save-
 
 - All moving parts share one frame loop (`ticker` at the top of the script). It only runs while something moves and stops by itself.
 - Nothing inside the loop reads layout: section positions are measured on load, resize and font load, and the scroll position comes from the scroll listener.
+- The one exception is part 4a: while you scroll it asks the browser once per frame which element is under the mouse (`elementFromPoint`), in its own frame callback, outside the shared loop.
 - The starfield canvas is drawn at most at 1.5x pixel density and drifts at about 20 fps when you are not scrolling. It stops when the section is off screen or the tab is hidden, like every other effect.
 - Avoid `backdrop-filter` and animated `text-shadow` over video, and don't move `<video>` elements directly every frame: move a wrapper.
 

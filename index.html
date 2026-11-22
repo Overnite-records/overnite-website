@@ -155,9 +155,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph__roll { display: grid; overflow: hidden; }
 .morph__roll > span { grid-area: 1 / 1; padding-block: .04em; transition: transform .35s cubic-bezier(.65,0,.35,1); white-space: nowrap; }
 .morph__roll > span + span { transform: translateY(100%); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }   /* the glow is always on the hidden line, so hovering only slides, nothing repaints */
-.morph__item:hover .morph__roll > span:first-child { transform: translateY(-100%); }
-.morph__item:hover .morph__roll > span + span { transform: translateY(0); }
-.morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
+.morph__item.is-hot .morph__roll > span:first-child { transform: translateY(-100%); }
+.morph__item.is-hot .morph__roll > span + span { transform: translateY(0); }
+.morph__list:has(.is-hot) .morph__item:not(.is-hot) { opacity: .2; }
 @media (hover: hover) { .morph__list { gap: clamp(6px, .6vw, 10px); } }
 
 .morph--live { height: 130vh; padding: 0; }
@@ -194,9 +194,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .genres div + div { border-left: 1px solid var(--line); }
 .genres h3 { font: 400 clamp(32px, 3.6vw, 52px)/.95 var(--display); text-transform: uppercase; margin: 0; transition: transform .4s cubic-bezier(.2,.8,.2,1); }
 .genres p { position: absolute; left: 50%; top: 50%; width: min(30ch, 86%); margin: 0; color: #e8ebff; font-size: 16px; opacity: 0; transform: translate(-50%, 34px); transition: opacity .3s ease, transform .4s cubic-bezier(.2,.8,.2,1); }
-.genres div:hover, .genres div:focus-visible { background: var(--accent); outline: 0; }
-.genres div:hover h3, .genres div:focus-visible h3 { transform: translateY(-.75em); }
-.genres div:hover p, .genres div:focus-visible p { opacity: 1; transform: translate(-50%, 10px); }
+.genres div.is-hot, .genres div:focus-visible { background: var(--accent); outline: 0; }
+.genres div.is-hot h3, .genres div:focus-visible h3 { transform: translateY(-.75em); }
+.genres div.is-hot p, .genres div:focus-visible p { opacity: 1; transform: translate(-50%, 10px); }
 @media (hover: none) { .genres h3 { transform: translateY(-.75em); } .genres p { opacity: 1; color: var(--grey); transform: translate(-50%, 10px); } }   /* phones: the description is always there */
 @media (max-width: 760px) { .genres { grid-template-columns: 1fr; } .genres div + div { border-left: 0; border-top: 1px solid var(--line); } }
 
@@ -681,8 +681,43 @@ const ticker = (() => {
   kick();
 })();
 
+/* 4a. What is under the mouse. Browsers only update :hover when the mouse moves, so after scrolling (or while the
+      Campaign results card shrinks under a still mouse) the hover look and the cursor colour stayed on the old element.
+      This keeps track of the element under the pointer itself: on mouseover, and again while the page scrolls (at most
+      once per frame, plus two checks after scrolling stops, while the results card is still easing).
+      Results numbers and genre cells get .is-hot from here instead of using :hover; the cursor (part 4) and the click
+      sound (part 6) listen to it too. */
+const pointer = (() => {
+  const subs = new Set();
+  if (!matchMedia('(hover: hover)').matches) return { on: () => {} };   /* same test as the CSS, so .is-hot exists wherever :hover used to */
+  let x = 0, y = 0, inside = false, el = null, hot = null, queued = false, settle = [];
+  const set = (t) => {
+    if (t === el) return;
+    el = t;
+    const h = t && t.closest ? t.closest('.morph__item, .genres > div') : null;
+    if (h !== hot) {
+      if (hot) hot.classList.remove('is-hot');
+      hot = h;
+      if (h) { h.classList.add('is-hot'); h.dispatchEvent(new Event('hot')); }
+    }
+    subs.forEach((f) => f(t));
+  };
+  const recheck = () => { queued = false; if (inside) set(document.elementFromPoint(x, y)); };
+  const soon = () => { if (!queued && inside) { queued = true; requestAnimationFrame(recheck); } };
+  const at = (e) => { x = e.clientX; y = e.clientY; inside = true; };
+  addEventListener('mousemove', at, { passive: true });
+  document.addEventListener('mouseover', (e) => { at(e); set(e.target); }, { passive: true });
+  document.addEventListener('mouseout', (e) => { if (!e.relatedTarget) { inside = false; set(null); } }, { passive: true });
+  addEventListener('scroll', () => {
+    soon();
+    settle.forEach(clearTimeout);
+    settle = [150, 600].map((ms) => setTimeout(soon, ms));
+  }, { passive: true });
+  return { on: (f) => subs.add(f) };
+})();
+
 /* 4. Custom cursor: one inverting dot that stretches with movement (desktop pointers only). Runs in the shared frame loop
-      and sleeps when the mouse stops. Links and inputs are checked on mouseover (once per element), not on every move. */
+      and sleeps when the mouse stops. Links and inputs are checked when the element under the mouse changes (part 4a), not on every move. */
 (() => {
   const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 768px)').matches;
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -706,7 +741,7 @@ const ticker = (() => {
   };
   /* the blend turns the dot yellow on blue, so over blue surfaces it is simply black, like the old black-or-white dot */
   const BLUE = '.end, .btn, .skip, .genres div';
-  document.addEventListener('mouseover', (e) => { over = e.target; look(); }, { passive: true });
+  pointer.on((t) => { over = t; look(); });   /* also fires when scrolling moves a new element under a still mouse */
   document.addEventListener('click', look);
   document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
   function frame() {
@@ -820,7 +855,7 @@ const ticker = (() => {
     src.buffer = buf; band.type = 'bandpass'; band.frequency.value = 2400; band.Q.value = 1.2; vol.gain.value = 0.35;
     src.connect(band).connect(vol).connect(ctx.destination); src.start();
   };
-  document.querySelectorAll('.morph__item').forEach((b) => b.addEventListener('pointerenter', tick));
+  document.querySelectorAll('.morph__item').forEach((b) => b.addEventListener('hot', tick));
 })();
 </script>
 </body>
