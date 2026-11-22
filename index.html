@@ -333,13 +333,13 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
         <p class="warp__sub">from the creator base behind Overnite.</p>
       </div>
       <ul class="wrap warp__stats">
-        <li data-x="-1" data-y="-0.62"><button class="num" type="button" data-kind="Our creator base" data-num="3,500+" data-title="campaigns"
+        <li data-x="-1" data-y="-0.44"><button class="num" type="button" data-kind="Our creator base" data-num="3,500+" data-title="campaigns"
           data-text="Campaigns our team has run with our creator base, for labels, artists and brands. Every one is a song or clip pushed by real creators on their own pages, not ads."><b>3,500+</b><span>campaigns run</span><em class="more">Press to show more stats</em></button></li>
-        <li data-x="1" data-y="-0.62"><button class="num" type="button" data-kind="Our creator base" data-num="9.8M" data-title="posts submitted"
+        <li data-x="1" data-y="-0.44"><button class="num" type="button" data-kind="Our creator base" data-num="9.8M" data-title="posts submitted"
           data-text="Videos creators submitted to our campaigns since February 2025. Each one is a creator posting the song or clip on their own TikTok, Instagram or YouTube."><b>9.8M</b><span>posts submitted</span><em class="more">Press to show more stats</em></button></li>
-        <li data-x="-1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="2B+" data-title="followers"
+        <li data-x="-1" data-y="0.68"><button class="num" type="button" data-kind="Our creator base" data-num="2B+" data-title="followers"
           data-text="Followers across the social accounts our creators have linked right now. That is the audience a song can reach when we sign it."><b>2B+</b><span>combined followers</span><em class="more">Press to show more stats</em></button></li>
-        <li data-x="1" data-y="0.6"><button class="num" type="button" data-kind="Our creator base" data-num="500K+" data-title="accounts"
+        <li data-x="1" data-y="0.68"><button class="num" type="button" data-kind="Our creator base" data-num="500K+" data-title="accounts"
           data-text="Different social accounts creators have linked to post for our campaigns since early 2025. Plenty of creators run more than one page, so one campaign lands on a lot of different feeds."><b>500K+</b><span>accounts linked</span><em class="more">Press to show more stats</em></button></li>
       </ul>
     </div>
@@ -663,7 +663,8 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
         const w = s.w, h = s.h;
         const end = s.x < 0 ? -(W / 2 - m) : W / 2 - m - w;   /* x of the block's left edge once it sits in its corner */
         const left = end * come - (w / 2) * (1 - come);      /* starts centred on the middle of the screen */
-        const top = (s.y * ry - h / 2) * come - (1 - come) * h / 2;
+        const settled = Math.min(Math.max(s.y * ry - h / 2, 96 - H / 2), H / 2 - h - 28);   /* never under the header, never off the bottom */
+        const top = settled * come - (1 - come) * h / 2;
         s.el.style.opacity = clamp(q / 0.4);
         s.el.style.visibility = q > 0 ? 'visible' : 'hidden';
         s.el.style.transform = `translate(${left}px, ${top}px) scale(${0.3 + come * 0.7})`;
