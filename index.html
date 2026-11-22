@@ -164,7 +164,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph--live .morph__cols { position: absolute; left: 50%; top: 50%; display: flex; gap: 18px; transform: translate(-50%, -50%) scale(1.2); }
 .morph__col { display: flex; flex-direction: column; gap: 18px; will-change: transform; }
 .morph__col:nth-child(even) { margin-top: -160px; }
-.morph__col video { display: block; width: clamp(140px, 17vw, 270px); height: auto; aspect-ratio: 1; object-fit: cover; background: var(--bg-2); }
+.morph__col video { display: block; width: clamp(140px, 17vw, 440px); height: auto; aspect-ratio: 1; object-fit: cover; background: var(--bg-2); }
+/* every third tile is tall (9:16), offset between neighbouring columns, so the wall reads like a feed of edits */
+.morph__col:nth-child(odd) video:nth-child(3n + 2), .morph__col:nth-child(even) video:nth-child(3n) { aspect-ratio: 9 / 16; }
 /* the card is a soft dark centre, not a box: the edits stay visible around and through the edges */
 .morph--live .morph__card { position: absolute; inset: 0; width: auto; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
   background: radial-gradient(closest-side, rgba(0,2,12,.94) 0%, rgba(0,2,12,.88) 50%, rgba(0,2,12,.5) 80%, rgba(0,2,12,0) 100%); will-change: transform; }
@@ -551,6 +553,9 @@ const ticker = (() => {
   morph.classList.add('morph--live');
   const card = morph.querySelector('.morph__card');
   const cols = [...morph.querySelectorAll('.morph__col')];
+  /* make every column longer with clips from two columns over, so no column runs out while it slides (no extra files, same clips) */
+  const extra = cols.map((c, i) => [...cols[(i + 2) % cols.length].children].slice(0, 5));
+  cols.forEach((c, i) => extra[i].forEach((v) => c.append(v.cloneNode())));
 
   /* section positions, so the frame loop only needs scrollY and never reads layout */
   const box = { warp: { top: 0, h: 0 }, morph: { top: 0, h: 0 } };
@@ -664,7 +669,7 @@ const ticker = (() => {
       if (Math.abs(target - morphP) < 0.0005) morphP = target; else again = true;
       if (morphP !== morphDone) {
         morphDone = morphP;
-        const travel = (vw < 640 ? 420 : 760) * morphP;
+        const travel = (vw < 640 ? 260 : 440) * morphP;
         card.style.transform = `scale(${1 - 0.4 * clamp(morphP / 0.85)})`;
         cols.forEach((c, i) => { c.style.transform = `translateY(${i % 2 ? travel : -travel}px)`; });
       }
