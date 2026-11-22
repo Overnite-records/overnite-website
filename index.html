@@ -69,7 +69,7 @@ p { margin: 0; }
 
 /* hero */
 .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; padding: 120px 0 clamp(40px, 7vh, 80px); }
-/* hero background: two big rows of edits (half the screen height each) drifting in opposite directions, tilted like the 99Eyes rows.
+/* hero background: two big rows of edits (half the screen height each) drifting in opposite directions, slightly tilted.
    Every edit is its own small video in its real shape (16:9, 4:3, square, 9:16). The script moves each tile and wraps it round
    to the other end, so nothing is duplicated and only the tiles on screen load and play. */
 .reel { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
@@ -117,7 +117,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   .step:not(:last-child)::after { top: auto; bottom: -26px; left: 23px; right: auto; transform: rotate(135deg); }
 }
 
-/* warp: scroll zoom through a starfield, numbers fly out of the centre (after the Polaris Records about section).
+/* warp: scroll zoom through a starfield, numbers fly out of the centre.
    Without JS, or with reduced motion, it is a plain list. script adds .warp--live */
 .warp, .morph { position: relative; overflow: clip; }   /* clip, not hidden: hidden would break the sticky stages */
 .warp__stage, .morph__stage { position: relative; }
@@ -151,7 +151,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 @keyframes bob { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(4px, -7px); } 66% { transform: translate(-5px, 4px); } }
 @media (max-width: 640px) { .warp--live { height: 160vh; } .warp--live .warp__stats b { font-size: 40px; } .warp--live .warp__stats span { font-size: 13px; } }
 
-/* campaign results (after the Broke Records services block): a card that starts full screen and shrinks as you scroll,
+/* campaign results: a card that starts full screen and shrinks as you scroll,
    uncovering columns of edit stills that slide up and down. Each number opens the drawer.
    Without JS or with reduced motion it is a plain card. script adds .morph--live */
 .morph__card { position: relative; z-index: 1; width: min(100% - 2 * var(--gut), 1100px); margin-inline: auto; padding: clamp(40px, 7vw, 96px) 20px; text-align: center; }
@@ -191,7 +191,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph--live .morph__cols::after { content: ""; position: absolute; inset: -200px 0; background: rgba(0,2,12,.4); }   /* one dim layer over all clips, cheaper than a filter on each video */
 @media (max-width: 640px) { .morph--live { height: 240vh; } .morph__col:nth-child(n + 4) { display: none; } }
 
-/* drawer: slides in from the right, "Go back" closes it (after the Broke Records service panels) */
+/* drawer: slides in from the right, "Go back" closes it */
 .drawer { position: fixed; inset: 0 0 0 auto; width: min(100%, 720px); max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; border-left: 1px solid var(--accent); background: var(--bg-2); color: var(--ink); transform: translateX(100%); transition: transform .55s cubic-bezier(.2,.8,.2,1); }
 .drawer.is-in { transform: none; }
 .drawer::backdrop { background: rgba(0,2,12,.6); opacity: 0; transition: opacity .55s ease; }
@@ -211,7 +211,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .split .lede { margin-top: 24px; }
 @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
 
-/* why overnite: a grid of tabs, the chosen one is explained on the right (after the Void services block) */
+/* why overnite: a grid of tabs, the chosen one is explained on the right */
 .why { --rule: rgba(242,244,251,.2); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: clamp(28px, 4vw, 48px); border: 1px solid var(--rule); }
 .why__tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border-right: 1px solid var(--rule); }
 .why__tab { all: unset; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: clamp(150px, 14vw, 210px); padding: clamp(18px, 2vw, 30px); background: var(--bg); color: var(--ink); font: 400 clamp(22px, 2vw, 30px)/1 var(--display); text-transform: uppercase; cursor: pointer; transition: background-color .2s ease, color .2s ease; }
@@ -585,8 +585,8 @@ const ticker = (() => {
 
   /* 3. Scroll effects (skipped with reduced motion).
         Hero: the text sinks away while the video rows zoom in.
-        Warp (after the Polaris Records about section): fly through a starfield, the numbers come out of the centre and settle in the corners.
-        Morph (after the Broke Records services block): the card shrinks and the stills slide past it. */
+        Warp: fly through a starfield, the numbers come out of the centre and settle in the corners.
+        Morph: the card shrinks and the stills slide past it. */
   const hero = document.querySelector('.hero');
   const heroText = hero.querySelector('.wrap');
   const rows = hero.querySelector('.reel__rows');
