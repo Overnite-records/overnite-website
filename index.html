@@ -127,12 +127,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .warp__sub { max-width: 34ch; margin: 22px auto 0; color: var(--grey); font-size: 17px; }
 .warp__stats { list-style: none; margin-top: clamp(48px, 7vw, 88px); margin-bottom: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 32px 24px; }
 .warp__stats li { border-top: 1px solid var(--accent); padding-top: 16px; }
-/* every number is a button that opens the detail window */
-.num { all: unset; box-sizing: border-box; display: block; cursor: pointer; color: inherit; text-align: inherit; }
-.num:focus-visible { outline-offset: 6px; }
-.num--title { display: inline; text-transform: inherit; }
-.num--title:hover .outline { -webkit-text-stroke-color: var(--ink); }
-.warp__stats .num:hover b { color: var(--ink); }
+.num { display: block; }   /* wraps each corner stat so it can bob */
 .warp__stats b { display: block; transition: color .15s; font: 400 clamp(44px, 5vw, 72px)/.9 var(--display); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }
 .warp__stats span { display: block; margin-top: 10px; color: var(--grey); font-size: 15px; }
 
@@ -152,7 +147,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 @media (max-width: 640px) { .warp--live { height: 160vh; } .warp--live .warp__stats b { font-size: 40px; } .warp--live .warp__stats span { font-size: 13px; } }
 
 /* campaign results: a card that starts full screen and shrinks as you scroll,
-   uncovering columns of edit stills that slide up and down. Each number opens the drawer.
+   uncovering columns of edit stills that slide up and down.
    Without JS or with reduced motion it is a plain card. script adds .morph--live */
 .morph__card { position: relative; z-index: 1; width: min(100% - 2 * var(--gut), 1100px); margin-inline: auto; padding: clamp(40px, 7vw, 96px) 20px; text-align: center; }
 .morph__list { list-style: none; margin: clamp(28px, 5vw, 56px) 0 0; padding: 0; display: grid; gap: 6px; justify-items: center; }
@@ -160,25 +155,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph__roll { display: grid; overflow: hidden; }
 .morph__roll > span { grid-area: 1 / 1; padding-block: .04em; transition: transform .35s cubic-bezier(.65,0,.35,1); white-space: nowrap; }
 .morph__roll > span + span { transform: translateY(100%); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }   /* the glow is always on the hidden line, so hovering only slides, nothing repaints */
-.morph__item:hover .morph__roll > span:first-child, .morph__item:focus-visible .morph__roll > span:first-child { transform: translateY(-100%); }
-.morph__item:hover .morph__roll > span + span, .morph__item:focus-visible .morph__roll > span + span { transform: translateY(0); }
+.morph__item:hover .morph__roll > span:first-child { transform: translateY(-100%); }
+.morph__item:hover .morph__roll > span + span { transform: translateY(0); }
 .morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
-@media (hover: hover) {
-  .morph__list { gap: clamp(6px, .6vw, 10px); }
-  /* the lines under the hovered one step down to make room for its pill */
-  .morph__list li:has(> .morph__item:hover) ~ li > .morph__item, .morph__list li:has(> .morph__item:focus-visible) ~ li > .morph__item { transform: translateY(38px); }
-}
-
-/* "Press to show more stats": tells people a number opens more. Appears on hover, always visible on touch screens */
-.more { display: inline-flex; padding: 7px 13px; border-radius: 999px; background: var(--accent); color: #fff; font: 500 13px/1 var(--text); font-style: normal; text-transform: none; white-space: nowrap; pointer-events: none; }
-.morph__item .more { position: absolute; left: 50%; top: calc(100% - .1em); z-index: 1; font-size: 15px; padding: 9px 15px; opacity: 0; transform: translate(-50%, -4px); transition: opacity .25s ease, transform .25s ease; }
-.morph__item:hover .more, .morph__item:focus-visible .more { opacity: 1; transform: translate(-50%, 0); }
-.warp__stats .more { display: flex; margin: 12px auto 0; width: max-content; opacity: 0; transform: translateY(4px); transition: opacity .25s ease, transform .25s ease; }
-.warp__stats .num:hover .more, .warp__stats .num:focus-visible .more { opacity: 1; transform: none; }
-@media (hover: none) {
-  .warp__stats .more { opacity: 1; transform: none; }
-  .morph__item .more { position: static; display: flex; width: max-content; margin: 8px auto 10px; opacity: 1; transform: none; }
-}
+@media (hover: hover) { .morph__list { gap: clamp(6px, .6vw, 10px); } }
 
 .morph--live { height: 180vh; padding: 0; }
 .morph--live .morph__cols { position: absolute; left: 50%; top: 50%; display: flex; gap: 18px; transform: translate(-50%, -50%) scale(1.2); }
@@ -190,21 +170,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   background: radial-gradient(closest-side, rgba(0,2,12,.94) 0%, rgba(0,2,12,.88) 50%, rgba(0,2,12,.5) 80%, rgba(0,2,12,0) 100%); will-change: transform; }
 .morph--live .morph__cols::after { content: ""; position: absolute; inset: -200px 0; background: rgba(0,2,12,.4); }   /* one dim layer over all clips, cheaper than a filter on each video */
 @media (max-width: 640px) { .morph--live { height: 160vh; } .morph__col:nth-child(n + 4) { display: none; } }
-
-/* drawer: slides in from the right, "Go back" closes it */
-.drawer { position: fixed; inset: 0 0 0 auto; width: min(100%, 720px); max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; border-left: 1px solid var(--accent); background: var(--bg-2); color: var(--ink); transform: translateX(100%); transition: transform .55s cubic-bezier(.2,.8,.2,1); }
-.drawer.is-in { transform: none; }
-.drawer::backdrop { background: rgba(0,2,12,.6); opacity: 0; transition: opacity .55s ease; }
-.drawer.is-in::backdrop { opacity: 1; }
-.drawer__scroll { height: 100%; overflow-y: auto; overscroll-behavior: contain; padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 64px) 120px; }
-.drawer__num { margin-top: 16px; font-size: clamp(88px, 15vw, 168px); line-height: .82; color: var(--accent-hi); text-shadow: 0 0 34px var(--glow); }
-.drawer__title { margin-top: 8px; font: 400 clamp(26px, 3vw, 38px)/1 var(--display); text-transform: uppercase; }
-.drawer__text { margin-top: 22px; max-width: 46ch; color: #c4c9de; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.5; }
-.drawer__media { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 36px; }
-.drawer__media video { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; background: var(--bg); }
-.drawer__back { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); min-height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--ink); color: var(--bg); font: 400 16px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; cursor: pointer; }
-.drawer__back:hover { background: #fff; }
-.is-locked { overflow: hidden; }
 
 /* split (demo section) */
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
@@ -280,7 +245,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .cursor span { position: absolute; left: 0; top: 0; width: var(--size, 14px); height: var(--size, 14px); border-radius: 50%; transform: translate(-50%, -50%); background: #fff; transition: width .22s ease, height .22s ease; }
 .has-cursor .cursor { opacity: 1; }
 .has-cursor, .has-cursor a, .has-cursor button, .has-cursor summary, .has-cursor select, .has-cursor label { cursor: none; }
-.has-cursor .drawer, .has-cursor .drawer * { cursor: auto; }
 .has-cursor input { cursor: text; }
 .cursor.is-link { --size: 52px; }
 .cursor.is-text { opacity: 0; }
@@ -363,20 +327,14 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     <div class="warp__stage">
       <canvas class="warp__stars" aria-hidden="true"></canvas>
       <div class="wrap warp__center">
-        <h2 class="display warp__big" id="warp-h"><button class="num num--title" type="button"
-          data-kind="Our creator base" data-num="142B" data-title="views"
-          data-text="Views on every post our creators made for our campaigns since February 2025. Rejected posts are not counted.">142B <span class="outline">views</span></button></h2>
+        <h2 class="display warp__big" id="warp-h">142B <span class="outline">views</span></h2>
         <p class="warp__sub">from the creator base behind Overnite.</p>
       </div>
       <ul class="wrap warp__stats">
-        <li data-x="-1" data-y="-0.44"><button class="num" type="button" data-kind="Our creator base" data-num="3,500+" data-title="campaigns"
-          data-text="Campaigns our team has run with our creator base, for labels, artists and brands. Every one is a song or clip pushed by real creators on their own pages, not ads."><b>3,500+</b><span>campaigns run</span><em class="more">Press to show more stats</em></button></li>
-        <li data-x="1" data-y="-0.44"><button class="num" type="button" data-kind="Our creator base" data-num="9.8M" data-title="posts submitted"
-          data-text="Videos creators submitted to our campaigns since February 2025. Each one is a creator posting the song or clip on their own TikTok, Instagram or YouTube."><b>9.8M</b><span>posts submitted</span><em class="more">Press to show more stats</em></button></li>
-        <li data-x="-1" data-y="0.68"><button class="num" type="button" data-kind="Our creator base" data-num="2B+" data-title="followers"
-          data-text="Followers across the social accounts our creators have linked right now. That is the audience a song can reach when we sign it."><b>2B+</b><span>combined followers</span><em class="more">Press to show more stats</em></button></li>
-        <li data-x="1" data-y="0.68"><button class="num" type="button" data-kind="Our creator base" data-num="500K+" data-title="accounts"
-          data-text="Different social accounts creators have linked to post for our campaigns since early 2025. Plenty of creators run more than one page, so one campaign lands on a lot of different feeds."><b>500K+</b><span>accounts linked</span><em class="more">Press to show more stats</em></button></li>
+        <li data-x="-1" data-y="-0.44"><div class="num"><b>3,500+</b><span>campaigns run</span></div></li>
+        <li data-x="1" data-y="-0.44"><div class="num"><b>9.8M</b><span>posts submitted</span></div></li>
+        <li data-x="-1" data-y="0.68"><div class="num"><b>2B+</b><span>combined followers</span></div></li>
+        <li data-x="1" data-y="0.68"><div class="num"><b>500K+</b><span>accounts linked</span></div></li>
       </ul>
     </div>
   </section>
@@ -404,14 +362,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       <div class="morph__card">
         <h2 class="label" id="results-h">Campaign results</h2>
         <ul class="morph__list">
-          <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="9.2B" data-title="Spotify streams"
-            data-text="Spotify streams the songs picked up from the day a campaign launched until six weeks after it ended, tracked with Chartex across 1,309 songs. Other promotion running at the same time counts in there too." data-media="spider-man,montagem-uranium,chemical"><span class="morph__roll"><span>9.2B Spotify streams</span><span aria-hidden="true">9.2B Spotify streams</span></span><em class="more">Press to show more stats</em></button></li>
-          <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="85M" data-title="TikTok creates"
-            data-text="New TikTok videos made with the songs' sounds over the same windows. Almost all of them are people picking the sound up on their own, not posts we paid for." data-media="jungwon,arcane-jinx,kante"><span class="morph__roll"><span>85M TikTok creates</span><span aria-hidden="true">85M TikTok creates</span></span><em class="more">Press to show more stats</em></button></li>
-          <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="15B" data-title="Music views"
-            data-text="Views on posts from 1,668 music campaigns since February 2025. Rejected posts are not counted." data-media="bond,make-u-whole,spider-man"><span class="morph__roll"><span>15B Music views</span><span aria-hidden="true">15B Music views</span></span><em class="more">Press to show more stats</em></button></li>
-          <li><button class="num morph__item" type="button" data-kind="Independent artists" data-num="722M" data-title="Indie views"
-            data-text="Views across 76 campaigns for 8 independent artists. No major label behind any of them. One of those artists alone did 530M views over 43 campaigns." data-media="chemical,arcane-jinx,montagem-uranium"><span class="morph__roll"><span>722M Indie views</span><span aria-hidden="true">722M Indie views</span></span><em class="more">Press to show more stats</em></button></li>
+          <li><div class="morph__item"><span class="morph__roll"><span>9.2B Spotify streams</span><span aria-hidden="true">9.2B Spotify streams</span></span></div></li>
+          <li><div class="morph__item"><span class="morph__roll"><span>85M TikTok creates</span><span aria-hidden="true">85M TikTok creates</span></span></div></li>
+          <li><div class="morph__item"><span class="morph__roll"><span>15B Music views</span><span aria-hidden="true">15B Music views</span></span></div></li>
+          <li><div class="morph__item"><span class="morph__roll"><span>722M Indie views</span><span aria-hidden="true">722M Indie views</span></span></div></li>
         </ul>
       </div>
     </div>
@@ -498,17 +452,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   </div>
 </footer>
 
-<dialog class="drawer" aria-labelledby="drawer-num" aria-describedby="drawer-text">
-  <div class="drawer__scroll">
-    <p class="label drawer__kind"></p>
-    <p class="display drawer__num" id="drawer-num"></p>
-    <p class="drawer__title"></p>
-    <p class="drawer__text" id="drawer-text"></p>
-    <div class="drawer__media"></div>
-  </div>
-  <button class="drawer__back" type="button">Go back</button>
-</dialog>
-
 <div class="cursor cursor--grey" aria-hidden="true"><span></span></div><div class="cursor" aria-hidden="true"><span></span></div>
 <script>
 /* shared frame loop: every moving part adds its step here, a step returns true while it still needs frames.
@@ -532,41 +475,6 @@ const ticker = (() => {
     if (!v.src) { v.preload = 'auto'; v.src = v.dataset.src; }
     v.play().catch(() => {});
   };
-
-  /* 2. Drawer: every number opens the same panel from the right, filled from the button's data attributes. */
-  const drawer = document.querySelector('.drawer');
-  const dKind = drawer.querySelector('.drawer__kind'), dNum = drawer.querySelector('.drawer__num'), dTitle = drawer.querySelector('.drawer__title'),
-        dText = drawer.querySelector('.drawer__text'), dMedia = drawer.querySelector('.drawer__media'),
-        dScroll = drawer.querySelector('.drawer__scroll');
-  let opener = null;
-  function openDrawer(btn) {
-    opener = btn;
-    const d = btn.dataset;
-    dKind.textContent = d.kind || ''; dNum.textContent = d.num || ''; dTitle.textContent = d.title || ''; dText.textContent = d.text || '';
-    dMedia.replaceChildren(...(d.media ? d.media.split(',') : []).map((name) => {
-      const v = document.createElement('video');
-      v.muted = v.loop = v.playsInline = true; v.preload = 'none';
-      v.poster = `assets/edits/${name}.jpg`; v.dataset.src = `assets/edits/${name}.mp4`; v.width = 432; v.height = 432;
-      return v;
-    }));
-    dMedia.hidden = !d.media;
-    dScroll.scrollTop = 0;
-    drawer.showModal();
-    document.documentElement.classList.add('is-locked');
-    requestAnimationFrame(() => requestAnimationFrame(() => drawer.classList.add('is-in')));
-    dMedia.querySelectorAll('video').forEach(play);
-  }
-  function closeDrawer() {
-    if (!drawer.open) return;
-    drawer.classList.remove('is-in');
-    dMedia.querySelectorAll('video').forEach((v) => v.pause());
-    setTimeout(() => drawer.close(), calm ? 0 : 450);
-  }
-  document.addEventListener('click', (e) => { const btn = e.target.closest('button.num'); if (btn) openDrawer(btn); });
-  drawer.querySelector('.drawer__back').addEventListener('click', closeDrawer);
-  drawer.addEventListener('click', (e) => { if (e.target === drawer) closeDrawer(); });           /* click on the dimmed page */
-  drawer.addEventListener('cancel', (e) => { e.preventDefault(); closeDrawer(); });                 /* Esc, with the slide-out */
-  drawer.addEventListener('close', () => { document.documentElement.classList.remove('is-locked'); if (opener) opener.focus({ preventScroll: true }); });
 
   if (calm) return;
 
@@ -792,7 +700,7 @@ const ticker = (() => {
     flag('is-blue', !!t.closest(BLUE));
   };
   /* the blend turns the dot yellow on blue, so over blue surfaces it is simply black, like the old black-or-white dot */
-  const BLUE = '.end, .btn, .more, .skip, .genres div';
+  const BLUE = '.end, .btn, .skip, .genres div';
   document.addEventListener('mouseover', (e) => { over = e.target; look(); }, { passive: true });
   document.addEventListener('click', look);
   document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
