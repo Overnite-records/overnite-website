@@ -53,4 +53,7 @@ Videos only load and play while they are on screen. With reduced motion or Save-
 
 ## Deploy
 
-Hosted on Vercel (project `overnite-records`). Every push to `main` goes live automatically within about a minute. Other branches get their own preview URL.
+Every push to `main` goes live automatically:
+
+- **overniterecords.com** (Firebase Hosting, GCP project `overnite-website`): the GitHub Action `.github/workflows/firebase-deploy.yml`, about a minute. It signs in to Google Cloud without a stored key (Workload Identity Federation, account `github-deploy`), and only pushes to `main` of this repo may use it. Check the Actions tab if a change doesn't show up. It can also be started by hand there (Run workflow).
+- **overnite-records.vercel.app** (Vercel): Vercel's own Git connection. Other branches get their own preview URL there.
