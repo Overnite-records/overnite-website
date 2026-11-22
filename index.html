@@ -158,10 +158,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph__list { list-style: none; margin: clamp(28px, 5vw, 56px) 0 0; padding: 0; display: grid; gap: 6px; justify-items: center; }
 .morph__item { position: relative; font: 400 clamp(40px, min(8.2vw, 13svh), 120px)/1 var(--display); text-transform: uppercase; letter-spacing: -.005em; transition: opacity .3s ease, transform .3s ease; }
 .morph__roll { display: grid; overflow: hidden; }
-.morph__roll > span { grid-area: 1 / 1; padding-block: .04em; transition: transform .35s cubic-bezier(.65,0,.35,1), text-shadow .35s; white-space: nowrap; }
-.morph__roll > span + span { transform: translateY(100%); color: var(--accent-hi); }
+.morph__roll > span { grid-area: 1 / 1; padding-block: .04em; transition: transform .35s cubic-bezier(.65,0,.35,1); white-space: nowrap; }
+.morph__roll > span + span { transform: translateY(100%); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }   /* the glow is always on the hidden line, so hovering only slides, nothing repaints */
 .morph__item:hover .morph__roll > span:first-child, .morph__item:focus-visible .morph__roll > span:first-child { transform: translateY(-100%); }
-.morph__item:hover .morph__roll > span + span, .morph__item:focus-visible .morph__roll > span + span { transform: translateY(0); text-shadow: 0 0 24px var(--glow); }
+.morph__item:hover .morph__roll > span + span, .morph__item:focus-visible .morph__roll > span + span { transform: translateY(0); }
 .morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
 @media (hover: hover) {
   .morph__list { gap: clamp(6px, .6vw, 10px); }
