@@ -211,19 +211,14 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .split .lede { margin-top: 24px; }
 @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
 
-/* why overnite: a grid of tabs, the chosen one is explained on the right */
-.why { --rule: rgba(242,244,251,.2); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: clamp(28px, 4vw, 48px); border: 1px solid var(--rule); }
-.why__tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border-right: 1px solid var(--rule); }
-.why__tab { all: unset; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: clamp(150px, 14vw, 210px); padding: clamp(18px, 2vw, 30px); background: var(--bg); color: var(--ink); font: 400 clamp(22px, 2vw, 30px)/1 var(--display); text-transform: uppercase; cursor: pointer; transition: background-color .2s ease, color .2s ease; }
-.why__tab svg { width: 34px; height: 34px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.why__tab:hover { background: rgba(42,75,255,.16); }
-.why__tab[aria-selected="true"] { background: var(--accent); color: #fff; }
-.why__tab:focus-visible { outline-offset: -4px; }
-.why__panels { display: grid; align-items: center; padding: clamp(24px, 4vw, 64px); }
-.why__panel h3 { font: 400 clamp(26px, 2.4vw, 36px)/1 var(--display); text-transform: uppercase; color: var(--accent-hi); margin: 0; }
-.why__panel p { margin-top: 18px; max-width: 24ch; font-size: clamp(22px, 2.2vw, 34px); line-height: 1.2; }
-.why__panel:not([hidden]) { animation: rise .45s cubic-bezier(.2,.7,.2,1); }
-@media (max-width: 900px) { .why { grid-template-columns: 1fr; } .why__tabs { border-right: 0; border-bottom: 1px solid var(--rule); } .why__panels { min-height: 230px; align-items: start; } }
+/* why overnite: four cards side by side, every reason readable at once */
+.why { --rule: rgba(242,244,251,.2); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: clamp(28px, 4vw, 48px); background: var(--rule); border: 1px solid var(--rule); }
+.why__card { display: flex; flex-direction: column; gap: 18px; padding: clamp(20px, 2.2vw, 32px); background: var(--bg); }
+.why__card svg { width: 34px; height: 34px; margin-bottom: clamp(8px, 2vw, 28px); fill: none; stroke: var(--accent-hi); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.why__card h3 { font: 400 clamp(24px, 2.2vw, 32px)/1 var(--display); text-transform: uppercase; margin: 0; }
+.why__card p { color: #c4c9de; font-size: clamp(16px, 1.25vw, 18px); line-height: 1.45; }
+@media (max-width: 1100px) { .why { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .why { grid-template-columns: 1fr; } }
 
 /* what we sign */
 .sign { text-align: center; }
@@ -426,18 +421,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     <div class="wrap">
       <h2 class="display h2" id="campaign-h">Why Overnite?</h2>
       <div class="why">
-        <div class="why__tabs" role="tablist" aria-label="Why Overnite">
-          <button class="why__tab" type="button" role="tab" id="why-tab-campaigns" aria-controls="why-panel-campaigns" aria-selected="true" tabindex="0"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19.1 4.9a10 10 0 0 1 0 14.2M4.9 19.1a10 10 0 0 1 0-14.2"/></svg><span>Campaigns</span></button>
-          <button class="why__tab" type="button" role="tab" id="why-tab-editors" aria-controls="why-panel-editors" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg><span>Editors</span></button>
-          <button class="why__tab" type="button" role="tab" id="why-tab-stage" aria-controls="why-panel-stage" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg><span>Any stage</span></button>
-          <button class="why__tab" type="button" role="tab" id="why-tab-signing" aria-controls="why-panel-signing" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h8"/><path d="m14.5 4.5 5 5L9 20H4v-5z"/></svg><span>Signing</span></button>
-        </div>
-        <div class="why__panels">
-          <div class="why__panel" role="tabpanel" id="why-panel-campaigns" aria-labelledby="why-tab-campaigns"><h3>3,500+ edit campaigns</h3><p>Run by the team behind Overnite for labels, artists and brands. We've seen what takes off and what doesn't.</p></div>
-          <div class="why__panel" role="tabpanel" id="why-panel-editors" aria-labelledby="why-tab-editors" hidden><h3>More editors than anyone</h3><p>The biggest editor network in the scene. When they post your song, other editors pick it up.</p></div>
-          <div class="why__panel" role="tabpanel" id="why-panel-stage" aria-labelledby="why-tab-stage" hidden><h3>Any stage</h3><p>Brand new or already moving on TikTok, we know what campaign it needs.</p></div>
-          <div class="why__panel" role="tabpanel" id="why-panel-signing" aria-labelledby="why-tab-signing" hidden><h3>We don't sign everything</h3><p>We only sign songs we'd put our own money behind. Then we do.</p></div>
-        </div>
+        <div class="why__card"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19.1 4.9a10 10 0 0 1 0 14.2M4.9 19.1a10 10 0 0 1 0-14.2"/></svg><h3>3,500+ edit campaigns</h3><p>Run by the team behind Overnite for labels, artists and brands. We've seen what takes off and what doesn't.</p></div>
+        <div class="why__card"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg><h3>More editors than anyone</h3><p>The biggest editor network in the scene. When they post your song, other editors pick it up.</p></div>
+        <div class="why__card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg><h3>Any stage</h3><p>Brand new or already moving on TikTok, we know what campaign it needs.</p></div>
+        <div class="why__card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h8"/><path d="m14.5 4.5 5 5L9 20H4v-5z"/></svg><h3>We don't sign everything</h3><p>We only sign songs we'd put our own money behind. Then we do.</p></div>
       </div>
     </div>
   </section>
@@ -805,7 +792,7 @@ const ticker = (() => {
     flag('is-blue', !!t.closest(BLUE));
   };
   /* the blend turns the dot yellow on blue, so over blue surfaces it is simply black, like the old black-or-white dot */
-  const BLUE = '.end, .btn, .more, .skip, .genres div, .why__tab[aria-selected="true"]';
+  const BLUE = '.end, .btn, .more, .skip, .genres div';
   document.addEventListener('mouseover', (e) => { over = e.target; look(); }, { passive: true });
   document.addEventListener('click', look);
   document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
@@ -921,23 +908,6 @@ const ticker = (() => {
     src.connect(band).connect(vol).connect(ctx.destination); src.start();
   };
   document.querySelectorAll('.morph__item').forEach((b) => b.addEventListener('pointerenter', tick));
-})();
-/* 7. Why Overnite tabs: click or arrow keys choose a tab, its text shows on the right. */
-(() => {
-  const tabs = [...document.querySelectorAll('.why__tab')];
-  const pick = (tab) => tabs.forEach((t) => {
-    const on = t === tab;
-    t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1;
-    document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
-  });
-  tabs.forEach((t, i) => {
-    t.addEventListener('click', () => pick(t));
-    t.addEventListener('keydown', (e) => {
-      const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
-      if (!step) return;
-      e.preventDefault(); const next = tabs[(i + step + tabs.length) % tabs.length]; pick(next); next.focus();
-    });
-  });
 })();
 </script>
 </body>
