@@ -76,7 +76,7 @@ p { margin: 0; }
 .reel__rows { position: absolute; left: -15%; right: -15%; top: 50%; display: grid; gap: 12px; opacity: .55; transform: translateY(-50%) rotate(-3deg); transform-origin: 50% 50%; will-change: transform; }
 .reel__track { position: relative; display: flex; gap: 12px; height: clamp(150px, calc(50svh - 6px), 520px); }
 .reel video { display: block; flex: none; height: 100%; width: auto; background: var(--bg-2); }
-.reel--live video { position: absolute; left: 0; top: 0; will-change: transform; }
+.reel__tile { position: absolute; left: 0; top: 0; height: 100%; }   /* the script wraps each video in one of these and slides it */
 .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(rgba(0,2,12,.75) 0, rgba(0,2,12,0) 22%), linear-gradient(rgba(0,2,12,.3) 0, rgba(0,2,12,.5) 45%, var(--bg) 94%); }
 .hero .wrap { position: relative; z-index: 1; transform-origin: 0 100%; will-change: transform, opacity; }
@@ -522,6 +522,13 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 
 <div class="cursor" aria-hidden="true"><span></span></div>
 <script>
+/* shared frame loop: every moving part adds its step here, a step returns true while it still needs frames.
+   Nothing runs while nothing moves */
+const ticker = (() => {
+  const jobs = new Set(); let on = false;
+  const run = (t) => { on = false; for (const j of [...jobs]) if (!j(t)) jobs.delete(j); if (jobs.size && !on) { on = true; requestAnimationFrame(run); } };
+  return (job) => { jobs.add(job); if (!on) { on = true; requestAnimationFrame(run); } };
+})();
 (() => {
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const saveData = !!(navigator.connection && navigator.connection.saveData);
@@ -529,22 +536,13 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   const easeOut = (t) => 1 - Math.pow(1 - t, 3);
   const playable = !calm && !saveData;
 
-  /* 1. Edit videos: load and play only while on screen, pause when off screen or when the tab is hidden.
+  /* 1. Edit videos load and play only while on screen and pause when the tab is hidden (the hero reel does this in part 3).
         With reduced motion or Save-Data on, the posters stay as still images and no video is downloaded. */
   const play = (v) => {
     if (!playable) return;
     if (!v.src) { v.preload = 'auto'; v.src = v.dataset.src; }
     v.play().catch(() => {});
   };
-  const onScreen = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; };
-  const videos = [...document.querySelectorAll('.reel video')];
-  if (playable && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) e.isIntersecting && !document.hidden ? play(e.target) : e.target.pause();
-    }, { rootMargin: '200px 0px' });
-    videos.forEach((v) => io.observe(v));
-    document.addEventListener('visibilitychange', () => videos.forEach((v) => { if (document.hidden) v.pause(); else if (onScreen(v)) play(v); }));   /* also covers pages opened in a background tab */
-  }
 
   /* 2. Drawer: every number opens the same panel from the right, filled from the button's data attributes. */
   const drawer = document.querySelector('.drawer');
@@ -591,24 +589,47 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   const heroText = hero.querySelector('.wrap');
   const rows = hero.querySelector('.reel__rows');
   hero.querySelector('.reel').classList.add('reel--live');
-  const tracks = [...rows.children].map((el) => ({ el, tiles: [...el.children], speed: parseFloat(el.dataset.speed), x: 0, pos: [], total: 0, view: 0 }));
-  const layoutReel = () => tracks.forEach((t) => {                     /* tile offsets in the row, measured on load and resize only */
+  /* The reel tiles slide with browser animations (one per tile, run by the compositor), so the drift costs no script per frame.
+     Each tile loops over the row's full length and jumps from one end to the other while it is off screen. */
+  /* each video gets a plain wrapper and the wrapper is what moves: restyling a <video> is expensive (it has its own inner parts) */
+  const tracks = [...rows.children].map((el) => ({ el, speed: parseFloat(el.dataset.speed), anims: [],
+    tiles: [...el.children].map((v) => { const d = document.createElement('div'); d.className = 'reel__tile'; v.replaceWith(d); d.append(v); return d; }) }));
+  let heroH = 0, reelK = 0, sy = scrollY;   /* sy: scroll position, updated by the scroll listener */
+  const layoutReel = () => tracks.forEach((t) => {                     /* measured on load and resize only */
+    t.anims.forEach((a) => a.cancel());
     let x = 0;
     t.pos = t.tiles.map((v) => { const p = x; x += v.offsetWidth + 12; return p; });
-    t.total = x; t.view = t.el.clientWidth; t.h = t.el.clientHeight;
+    t.w = t.tiles.map((v) => v.offsetWidth);
+    t.total = x; t.view = t.el.clientWidth; t.h = t.el.clientHeight; t.mid = t.el.offsetTop + t.h / 2 - rows.offsetHeight / 2;   /* row centre, from the middle of the rows */
+    t.a = t.view - t.total;                                            /* left end of the loop; the right end is the row's right edge */
+    t.dur = t.total / (Math.abs(t.speed) * t.h) * 1000;                /* speed is in row heights per second */
+    const from = `translate3d(${t.a}px, 0, 0)`, to = `translate3d(${t.view}px, 0, 0)`;
+    t.anims = t.tiles.map((v, i) => {
+      const anim = v.animate(t.speed > 0 ? [{ transform: from }, { transform: to }] : [{ transform: to }, { transform: from }], { duration: t.dur, iterations: Infinity, easing: 'linear' });
+      const u = ((t.pos[i] - t.a) / t.total) % 1;                      /* where this tile starts on the loop, 0 to 1 */
+      anim.currentTime = (t.speed > 0 ? u : 1 - u) * t.dur;
+      return anim;
+    });
   });
-  let lastT = 0;
-  function moveReel(t) {
-    const dt = Math.min(50, lastT ? t - lastT : 16); lastT = t;
-    for (const r of tracks) {
-      r.x = (r.x + r.speed * r.h * dt / 1000) % r.total;              /* speed is in row heights per second */
-      r.tiles.forEach((v, i) => {
-        let p = ((r.pos[i] + r.x) % r.total + r.total) % r.total;
-        if (p > r.view) p -= r.total;                                 /* past the right edge: wrap round to the far left */
-        v.style.transform = `translate3d(${p}px, 0, 0)`;
+  /* which tiles are on screen (rows within 200px above or below count), worked out from the animation clocks instead of measuring the page */
+  let reelTimer = 0;
+  function reelCheck() {
+    reelTimer = 0;
+    if (!heroOn || document.hidden) return;
+    const s = 1 + reelK * 0.25, W = vw, Hh = vh, M = 200, cy = heroH / 2 - sy;
+    for (const t of tracks) {
+      const y = cy + t.mid * s, rowIn = Math.abs(y - Hh / 2) < t.h * s / 2 + Hh / 2 + M;
+      t.tiles.forEach((v, i) => {
+        const u = (t.anims[i].currentTime % t.dur) / t.dur, p = t.a + (t.speed > 0 ? u : 1 - u) * t.total;
+        const l = W / 2 + (p - t.view / 2) * s, r = l + t.w[i] * s;
+        const vid = v.firstChild;
+        if (rowIn && r > 0 && l < W) play(vid); else if (!vid.paused) vid.pause();
       });
     }
+    reelTimer = setTimeout(reelCheck, 250);
   }
+  const reelStop = () => { clearTimeout(reelTimer); reelTimer = 0; tracks.forEach((t) => { t.tiles.forEach((v) => v.firstChild.pause()); t.anims.forEach((a) => a.pause()); }); };
+  const reelStart = () => { tracks.forEach((t) => t.anims.forEach((a) => a.play())); if (!reelTimer) reelCheck(); };
 
   const warp = document.querySelector('.warp');
   warp.classList.add('warp--live');
@@ -626,7 +647,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     const w = stage.clientWidth, h = stage.clientHeight;
     stats.forEach((s) => { s.w = s.el.offsetWidth; s.h = s.el.offsetHeight; });   /* measured here, never inside the frame loop */
     if (w === W && Math.abs(h - H) < 120) return;                                  /* ignore the mobile address bar showing and hiding */
-    const dpr = Math.min(devicePixelRatio || 1, 2); W = w; H = h; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const dpr = Math.min(devicePixelRatio || 1, 1.5); W = w; H = h; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
 
   const morph = document.querySelector('.morph');
@@ -634,17 +655,26 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   const card = morph.querySelector('.morph__card');
   const cols = [...morph.querySelectorAll('.morph__col')];
 
-  size(); layoutReel();
-  let resizeT; addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { size(); layoutReel(); kick(); }, 150); });
-  if (document.fonts) document.fonts.ready.then(() => { size(); kick(); });   /* number widths change once Anton has loaded */
+  /* section positions, so the frame loop only needs scrollY and never reads layout */
+  const box = { warp: { top: 0, h: 0 }, morph: { top: 0, h: 0 } };
+  let vh = innerHeight, vw = innerWidth;
+  const measure = () => {
+    vh = innerHeight; vw = innerWidth; heroH = hero.offsetHeight;
+    for (const [k, el] of [['warp', warp], ['morph', morph]]) { const r = el.getBoundingClientRect(); box[k].top = r.top + scrollY; box[k].h = r.height; }
+  };
+  const relayout = () => { sy = scrollY; measure(); size(); layoutReel(); lastY = -1; kick(); };
+  measure(); size(); layoutReel();
+  let resizeT; addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(relayout, 150); });
+  if (document.fonts) document.fonts.ready.then(() => { measure(); size(); kick(); });   /* number widths change once Anton has loaded */
+  new ResizeObserver(() => { measure(); kick(); }).observe(document.querySelector('main'));   /* text above a section changed height */
 
-  const progress = (el) => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight)); };
-  let heroOn = true, warpOn = false, morphOn = false, running = false, warpP = 0, morphP = 0;
-  new IntersectionObserver(([e]) => { heroOn = e.isIntersecting; kick(); }).observe(hero);
+  const progress = (b) => clamp((sy - b.top) / (b.h - vh));
+  let heroOn = true, warpOn = false, morphOn = false, warpP = 0, morphP = 0, lastY = -1, starsT = 0, idleT = 0, warpDone = -1, morphDone = -1;
+  new IntersectionObserver(([e]) => { heroOn = e.isIntersecting; heroOn ? reelStart() : reelStop(); kick(); }).observe(hero);
   new IntersectionObserver(([e]) => { warpOn = e.isIntersecting; warp.classList.toggle('is-on', warpOn); kick(); }).observe(warp);
   new IntersectionObserver(([e]) => { morphOn = e.isIntersecting; kick(); }).observe(morph);
-  /* the edits behind the results: posters load well before the section, clips load just before they come on screen,
-     and every clip on screen plays (they are small 320px loops). The cap is only a safety net for phones */
+  /* the edits behind the results: posters load well before the section, clips load and play only while they are in view.
+     The cap is a safety net for small screens */
   const morphVids = [...morph.querySelectorAll('.morph__col video')];
   const cap = innerWidth < 768 ? 12 : 24;
   const seen = new Set(), live = new Set();
@@ -663,7 +693,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       else { seen.delete(v); if (live.delete(v)) v.pause(); }
     }
     fillMorph();
-  }, { rootMargin: '200px 0px' });
+  });
   const loadPosters = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return;
     morphVids.forEach((v) => { v.poster = v.dataset.poster; morphIO.observe(v); });
@@ -671,9 +701,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   }, { rootMargin: '1200px 0px' });
   loadPosters.observe(morph);
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { live.forEach((v) => v.pause()); live.clear(); } else fillMorph();
+    if (document.hidden) { live.forEach((v) => v.pause()); live.clear(); reelStop(); }
+    else { fillMorph(); if (heroOn) reelStart(); kick(); }
   });
-  addEventListener('scroll', kick, { passive: true });
+  addEventListener('scroll', () => { sy = scrollY; kick(); }, { passive: true });   /* read here, where it is free: inside the frame it would force a style update */
 
   function drawStars(p, speed, t) {
     ctx.clearRect(0, 0, W, H);
@@ -693,52 +724,59 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     }
   }
 
+  /* one frame loop for all three effects. It only runs while something is moving and stops when everything has settled */
   function frame(t) {
-    running = false;
     let again = false;
-    if (heroOn) {
-      const k = clamp(scrollY / hero.offsetHeight);
+    const y = sy;
+    if (heroOn && y !== lastY) {
+      const k = reelK = clamp(y / heroH);
       heroText.style.transform = `translateY(${k * 60}px) scale(${1 - k * 0.12})`;
       heroText.style.opacity = 1 - k * 1.15;
       rows.style.transform = `translateY(-50%) rotate(-3deg) scale(${1 + k * 0.25})`;
-      moveReel(t); again = true;                                       /* the rows keep drifting while the hero is on screen */
-    } else lastT = 0;
+    }
     if (warpOn) {
-      const target = progress(warp), prev = warpP;
+      const target = progress(box.warp), prev = warpP;
       warpP += (target - warpP) * 0.18;                      /* smoothing, so the zoom glides instead of jumping */
       if (Math.abs(target - warpP) < 0.0005) warpP = target; else again = true;
-      drawStars(warpP, Math.abs(warpP - prev), t);
-      const inK = easeOut(clamp(warpP / 0.08));
-      center.style.opacity = inK;
-      center.style.transform = `translate(-50%, -50%) scale(${0.55 + inK * 0.45})`;
-      const m = Math.max(20, W * 0.06), ry = H * 0.5;
-      for (const s of stats) {
-        const q = clamp((warpP - s.start) / 0.22);           /* 0 = still in the centre, 1 = settled in its corner */
-        const come = easeOut(q);
-        const { w, h } = s;
-        const end = s.x < 0 ? -(W / 2 - m) : W / 2 - m - w;   /* x of the block's left edge once it sits in its corner */
-        const left = end * come - (w / 2) * (1 - come);      /* starts centred on the middle of the screen */
-        const settled = Math.min(Math.max(s.y * ry - h / 2, 96 - H / 2), H / 2 - h - 28);   /* never under the header, never off the bottom */
-        const top = settled * come - (1 - come) * h / 2;
-        s.el.style.opacity = clamp(q / 0.4);
-        s.el.style.visibility = q > 0 ? 'visible' : 'hidden';
-        s.el.style.transform = `translate(${left}px, ${top}px) scale(${0.3 + come * 0.7})`;
+      const moving = warpP !== prev;
+      if (moving || t - starsT > 48) { starsT = t; drawStars(warpP, Math.abs(warpP - prev), t); }   /* at rest the stars drift at about 20 fps */
+      if (warpP !== warpDone || moving) {
+        warpDone = warpP;
+        const inK = easeOut(clamp(warpP / 0.08));
+        center.style.opacity = inK;
+        center.style.transform = `translate(-50%, -50%) scale(${0.55 + inK * 0.45})`;
+        const m = Math.max(20, W * 0.06), ry = H * 0.5;
+        for (const s of stats) {
+          const q = clamp((warpP - s.start) / 0.22);           /* 0 = still in the centre, 1 = settled in its corner */
+          const come = easeOut(q);
+          const { w, h } = s;
+          const end = s.x < 0 ? -(W / 2 - m) : W / 2 - m - w;   /* x of the block's left edge once it sits in its corner */
+          const left = end * come - (w / 2) * (1 - come);      /* starts centred on the middle of the screen */
+          const settled = Math.min(Math.max(s.y * ry - h / 2, 96 - H / 2), H / 2 - h - 28);   /* never under the header, never off the bottom */
+          const top = settled * come - (1 - come) * h / 2;
+          s.el.style.opacity = clamp(q / 0.4);
+          s.el.style.visibility = q > 0 ? 'visible' : 'hidden';
+          s.el.style.transform = `translate(${left}px, ${top}px) scale(${0.3 + come * 0.7})`;
+        }
       }
+      if (!again && !document.hidden) { clearTimeout(idleT); idleT = setTimeout(kick, 48); }   /* keep the stars drifting while the warp is on screen */
     }
     if (morphOn) {
-      const target = progress(morph);
+      const target = progress(box.morph);
       morphP += (target - morphP) * 0.14;
       if (Math.abs(target - morphP) < 0.0005) morphP = target; else again = true;
-      const travel = (innerWidth < 640 ? 420 : 760) * morphP;
-      card.style.transform = `scale(${1 - 0.4 * clamp(morphP / 0.85)})`;
-      cols.forEach((c, i) => { c.style.transform = `translateY(${i % 2 ? travel : -travel}px)`; });
+      if (morphP !== morphDone) {
+        morphDone = morphP;
+        const travel = (vw < 640 ? 420 : 760) * morphP;
+        card.style.transform = `scale(${1 - 0.4 * clamp(morphP / 0.85)})`;
+        cols.forEach((c, i) => { c.style.transform = `translateY(${i % 2 ? travel : -travel}px)`; });
+      }
     }
-    if (again) kick();
+    lastY = y;
+    return again;
   }
-  function kick() { if (!running) { running = true; requestAnimationFrame(frame); } }
+  function kick() { ticker(frame); }
   kick();
-  /* keep the stars drifting slowly while the warp is on screen */
-  setInterval(() => { if (warpOn && !document.hidden) kick(); }, 50);
 })();
 
 /* 4. Custom cursor: one inverting dot that stretches with movement (desktop pointers only). Sleeps when the mouse stops. */
