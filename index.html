@@ -988,15 +988,10 @@ const ticker = (() => {
     logo.p.style.transform = `translate(${logo.px.toFixed(2)}px, ${logo.py.toFixed(2)}px)`;
     return Math.abs(gx - logo.px) + Math.abs(gy - logo.py) > .05;
   };
-  /* The orb is always in front of the moon. Never a white ring: it keeps away from the middle of the moon, and it wakes only when it
-     can jump straight at the cursor without crossing the middle. Units: 1000 = moon box. */
+  /* The orb is always in front of the moon and moves freely. Units: 1000 = moon box. */
   const HA = Math.atan2(-30, 129), LANE = 40 * D, wrap = (a) => Math.atan2(Math.sin(a), Math.cos(a));
   const moonOf = (m, homeX, homeY) => { const u = m.size / 656; return { u, x: homeX + m.size / 2 - 129 * u, y: homeY + m.size / 2 + 30 * u, rf: 716 * u }; };
   const geo = (m, mo) => { const ox = m.x + m.size / 2 - mo.x, oy = m.y + m.size / 2 - mo.y; return { d: Math.hypot(ox, oy), off: wrap(Math.atan2(oy, ox) - HA), ox, oy }; };
-  const crosses = (ax, ay, bx, by, mo, r) => {               /* does the straight line a to b pass within r of the moon's middle */
-    const vx = bx - ax, vy = by - ay, l = vx * vx + vy * vy || 1, t = clamp(((mo.x - ax) * vx + (mo.y - ay) * vy) / l, 0, 1);
-    return Math.hypot(ax + vx * t - mo.x, ay + vy * t - mo.y) < r;
-  };
   const loosen = (m, t) => {
     m.state = 'chase'; m.t0 = t; m.x = m.hx; m.y = m.hy - sy; m.vx = m.vy = 0;
     m.orb.style.width = m.size + 'px'; m.orb.classList.add('is-loose');
@@ -1012,7 +1007,7 @@ const ticker = (() => {
       const s = m.size, homeX = m.hx, homeY = m.hy - sy, hcx = homeX + s / 2, hcy = homeY + s / 2;
       const away = Math.hypot(mx - hcx, my - hcy), f = m.f;
       if (m.state === 'home') {
-        const near = hunt && m.hunts && seen && away < s * .95 && !crosses(hcx, hcy, mx, my, moonOf(m, homeX, homeY), 50 * s / 656);
+        const near = hunt && m.hunts && seen && away < s * .95;
         if (near && t > rest) loosen(m, t); else if (near) busy = true;
       }
       const since = t - m.t0;
@@ -1046,7 +1041,6 @@ const ticker = (() => {
       }
       /* body: a soft spring toward the target, never faster than about 560px a second */
       const mo = moonOf(m, homeX, homeY);
-      const g = geo(m, mo);
       let tx = mx - s / 2, ty = my - s / 2, K = 12, C = 6.4, cap = 560;
       if (m.state === 'chase' && since < 450) { K = 45; C = 12; cap = 1600; }          /* the pounce: straight at the cursor */
       else if (m.state === 'eat') { tx = m.x; ty = m.y + Math.sin(since / 90) * 2; K = 30; C = 11; }
@@ -1057,16 +1051,9 @@ const ticker = (() => {
       const v = Math.hypot(m.vx, m.vy); if (v > cap) { m.vx *= cap / v; m.vy *= cap / v; }
       m.x += m.vx * sec; m.y += m.vy * sec;
       {
-        const h = geo(m, mo);
-        /* always in front of the moon, but never near its middle, so the moon only ever looks like a crescent (never a ring).
-           Its own resting lane on the right is allowed a little closer. */
-        if (h.d < 160 * mo.u && !(Math.abs(h.off) < LANE && h.d > 110 * mo.u)) {
-          const k2 = (Math.abs(h.off) < LANE ? 110 : 160) * mo.u / (h.d || 1), nx = h.ox / (h.d || 1), ny = h.oy / (h.d || 1);
-          m.x = mo.x + h.ox * k2 - s / 2; m.y = mo.y + h.oy * k2 - s / 2;
-          const vin = m.vx * nx + m.vy * ny; if (vin < 0) { m.vx -= vin * nx; m.vy -= vin * ny; }
-          const qx = tx + s / 2 - mo.x, qy = ty + s / 2 - mo.y, cr = nx * qy - ny * qx, sg = Math.abs(cr) > 1 ? Math.sign(cr) : -1;
-          m.vx += -ny * sg * 1400 * sec; m.vy += nx * sg * 1400 * sec;   /* slide round toward the cursor instead of getting stuck */
-        }
+        /* no blockers: it moves freely. The orb is a bit smaller than the moon, so right over the middle it swells just enough
+           to cover the moon (up to about 20%), so you never see a white ring around it. */
+        const h = geo(m, mo); m.grow = Math.max(1, (396 - h.d / mo.u) / 328);
       }
       if (m.state === 'chase') {
         if (away > s * 2.6 + 260) { m.state = 'back'; m.full = false; m.t0 = t; }
@@ -1077,7 +1064,7 @@ const ticker = (() => {
       } else if (m.state === 'eat' && since > 1200) { m.state = 'back'; m.full = true; m.t0 = t; }
       else if (m.state === 'back' && Math.abs(homeX - m.x) + Math.abs(homeY - m.y) < .8 && v < 8) { settle(m); continue; }
       const tilt = clamp(m.vx * .01, -7, 7);
-      m.orb.style.transform = `translate3d(${n1(m.x)}px, ${n1(m.y)}px, 0) rotate(${tilt.toFixed(1)}deg)`;
+      m.orb.style.transform = `translate3d(${n1(m.x)}px, ${n1(m.y)}px, 0) rotate(${tilt.toFixed(1)}deg) scale(${(m.grow || 1).toFixed(3)})`;
       busy = true;
     }
     if (!busy) prev = 0;
