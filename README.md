@@ -8,7 +8,7 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 
 - Text: search for the sentence in `index.html` and change it.
 - `assets/edits/`: the clips shown in the number drawer (`data-media`). The edits grid that used to sit above Campaign results was removed.
-- Hero background: `assets/hero/hero-row-a.mp4` and `hero-row-b.mp4`. Each row is 10 edits stitched side by side into one video (2560x240), so only a few videos play at once.
+- Hero background: two rows of edits in `assets/reel/`, one small video per edit (`eNN.mp4`, 400px tall, in the edit's real shape, 6 second loop) with a `eNN.webp` poster. Each `<video>` in `.reel__track` needs `width`/`height` matching the file so the row can be laid out before anything loads. `data-speed` on a row is its drift speed in row heights per second (negative = the other way). The script moves every tile and wraps it round, so tiles are never duplicated and only the ones on screen load and play. The IDs match the catalog of original edits (project doc `claude/overnite-source-edits-catalog.md`, originals in Kon's Drive).
 - Numbers: every number is a `<button class="num">` with `data-kind`, `data-num`, `data-title`, `data-text` and optional `data-media` (edit clip names from `assets/edits`, comma separated). Clicking it opens the drawer with that text, so to change what a number says, edit those attributes.
 - Our creator base (`#numbers`, the starfield zoom): `data-x` / `data-y` on each `<li>` set which corner the number settles in (-1 left, 1 right). Each corner stat is centred on itself (number, label and pill on one middle line). The last stat settles at about 3/4 of the scroll run, so there is little dead scrolling after it.
 - Campaign results (`#results`, the shrinking card): the list items. The clips sliding behind it are `assets/morph/m01.mp4` to `m19.mp4` (320px, 6 second loops) with `assets/wall/w01.webp` to `w19.webp` as their posters. Only the clips on screen play, at most 8 at once (4 on phones).
@@ -18,7 +18,6 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 - Colours: the `:root` block at the top of the `<style>` tag. `--accent` is for filled things (buttons), `--accent-hi` for blue text and outlines on the dark background. Keep both bright, the old navy blue was nearly invisible on black.
 
 - Fonts: self-hosted in `assets/fonts/` (Anton for headlines, Archivo for everything else including the small labels, latin only, SIL Open Font License), so the page never waits on Google Fonts.
-- Hero rows: two rows, each half the screen tall, so together they fill the hero. Phones load `hero-row-a-sm.mp4` / `hero-row-b-sm.mp4`: same 2560x240 size, lower bitrate and 24fps (the old 128px phone rows were too blurry at the bigger size). Rebuild both if you change a row. The rows are 240px tall, so they are upscaled about 2x on a laptop; sharper source edits would make them crisper.
 
 Preview locally by opening `index.html` in a browser, or run `python -m http.server` in this folder.
 

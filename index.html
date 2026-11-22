@@ -31,7 +31,7 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .rise { opacity: 1 !important; transform: none !important; } .reel__track { transform: translateX(-12%); } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .rise { opacity: 1 !important; transform: none !important; } }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--text); -webkit-font-smoothing: antialiased; }
 ::selection { background: var(--accent); color: #fff; }
 img { display: block; max-width: 100%; }
@@ -70,15 +70,13 @@ p { margin: 0; }
 /* hero */
 .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; padding: 120px 0 clamp(40px, 7vh, 80px); }
 /* hero background: two big rows of edits (half the screen height each) drifting in opposite directions, tilted like the 99Eyes rows.
-   Each row is ONE video (10 edits stitched side by side) shown twice, so the loop is seamless and only 4 videos decode. */
+   Every edit is its own small video in its real shape (16:9, 4:3, square, 9:16). The script moves each tile and wraps it round
+   to the other end, so nothing is duplicated and only the tiles on screen load and play. */
 .reel { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .reel__rows { position: absolute; left: -15%; right: -15%; top: 50%; display: grid; gap: 12px; opacity: .55; transform: translateY(-50%) rotate(-3deg); transform-origin: 50% 50%; will-change: transform; }
-.reel__track { display: flex; width: max-content; animation: drift 55s linear infinite; }
-.reel__track--b { animation-duration: 65s; animation-direction: reverse; }
-/* two big rows that together fill the whole hero, on phones too */
-.reel video { display: block; height: clamp(150px, calc(50svh - 6px), 520px); width: auto; aspect-ratio: 2560 / 240; background: var(--bg-2); }
-.reel.is-off .reel__track { animation-play-state: paused; }
-@keyframes drift { to { transform: translateX(-50%); } }
+.reel__track { position: relative; display: flex; gap: 12px; height: clamp(150px, calc(50svh - 6px), 520px); }
+.reel video { display: block; flex: none; height: 100%; width: auto; background: var(--bg-2); }
+.reel--live video { position: absolute; left: 0; top: 0; will-change: transform; }
 .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(rgba(0,2,12,.75) 0, rgba(0,2,12,0) 22%), linear-gradient(rgba(0,2,12,.3) 0, rgba(0,2,12,.5) 45%, var(--bg) 94%); }
 .hero .wrap { position: relative; z-index: 1; transform-origin: 0 100%; will-change: transform, opacity; }
@@ -293,13 +291,29 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   <section class="hero" id="top" aria-labelledby="hero-h">
     <div class="reel" aria-hidden="true">
       <div class="reel__rows">
-        <div class="reel__track">
-          <video data-src="assets/hero/hero-row-a.mp4" data-src-sm="assets/hero/hero-row-a-sm.mp4" poster="assets/hero/hero-row-a.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
-          <video data-src="assets/hero/hero-row-a.mp4" data-src-sm="assets/hero/hero-row-a-sm.mp4" poster="assets/hero/hero-row-a.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+        <div class="reel__track" data-speed=".19">
+          <video data-src="assets/reel/e13.mp4" poster="assets/reel/e13.webp" width="712" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e02.mp4" poster="assets/reel/e02.webp" width="360" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e05.mp4" poster="assets/reel/e05.webp" width="534" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e15.mp4" poster="assets/reel/e15.webp" width="500" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e06.mp4" poster="assets/reel/e06.webp" width="712" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e17.mp4" poster="assets/reel/e17.webp" width="400" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e11.mp4" poster="assets/reel/e11.webp" width="534" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e20.mp4" poster="assets/reel/e20.webp" width="224" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e16.mp4" poster="assets/reel/e16.webp" width="598" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e07.mp4" poster="assets/reel/e07.webp" width="400" height="400" muted loop playsinline preload="none"></video>
         </div>
-        <div class="reel__track reel__track--b">
-          <video data-src="assets/hero/hero-row-b.mp4" data-src-sm="assets/hero/hero-row-b-sm.mp4" poster="assets/hero/hero-row-b.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
-          <video data-src="assets/hero/hero-row-b.mp4" data-src-sm="assets/hero/hero-row-b-sm.mp4" poster="assets/hero/hero-row-b.jpg" width="2560" height="240" muted loop playsinline preload="none"></video>
+        <div class="reel__track" data-speed="-.16">
+          <video data-src="assets/reel/e09.mp4" poster="assets/reel/e09.webp" width="712" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e04.mp4" poster="assets/reel/e04.webp" width="400" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e12.mp4" poster="assets/reel/e12.webp" width="482" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e18.mp4" poster="assets/reel/e18.webp" width="534" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e10.mp4" poster="assets/reel/e10.webp" width="712" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e01.mp4" poster="assets/reel/e01.webp" width="400" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e14.mp4" poster="assets/reel/e14.webp" width="556" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e03.mp4" poster="assets/reel/e03.webp" width="444" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e19.mp4" poster="assets/reel/e19.webp" width="534" height="400" muted loop playsinline preload="none"></video>
+          <video data-src="assets/reel/e08.mp4" poster="assets/reel/e08.webp" width="556" height="400" muted loop playsinline preload="none"></video>
         </div>
       </div>
     </div>
@@ -471,17 +485,15 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const easeOut = (t) => 1 - Math.pow(1 - t, 3);
   const playable = !calm && !saveData;
-  const small = innerWidth < 768;
 
   /* 1. Edit videos: load and play only while on screen, pause when off screen or when the tab is hidden.
         With reduced motion or Save-Data on, the posters stay as still images and no video is downloaded. */
   const play = (v) => {
     if (!playable) return;
-    const group = v.closest('.reel__track') ? v.parentElement.querySelectorAll('video') : [v];
-    group.forEach((g) => { if (!g.src) { g.preload = 'auto'; g.src = (small && g.dataset.srcSm) || g.dataset.src; } });   /* phones get the lighter hero rows */
+    if (!v.src) { v.preload = 'auto'; v.src = v.dataset.src; }
     v.play().catch(() => {});
   };
-  const onScreen = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
+  const onScreen = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; };
   const videos = [...document.querySelectorAll('.reel video')];
   if (playable && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
@@ -489,8 +501,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     }, { rootMargin: '200px 0px' });
     videos.forEach((v) => io.observe(v));
     document.addEventListener('visibilitychange', () => videos.forEach((v) => { if (document.hidden) v.pause(); else if (onScreen(v)) play(v); }));   /* also covers pages opened in a background tab */
-    const reel = document.querySelector('.reel');
-    new IntersectionObserver(([e]) => reel.classList.toggle('is-off', !e.isIntersecting)).observe(reel);
   }
 
   /* 2. Drawer: every number opens the same panel from the right, filled from the button's data attributes. */
@@ -537,6 +547,25 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   const hero = document.querySelector('.hero');
   const heroText = hero.querySelector('.wrap');
   const rows = hero.querySelector('.reel__rows');
+  hero.querySelector('.reel').classList.add('reel--live');
+  const tracks = [...rows.children].map((el) => ({ el, tiles: [...el.children], speed: parseFloat(el.dataset.speed), x: 0, pos: [], total: 0, view: 0 }));
+  const layoutReel = () => tracks.forEach((t) => {                     /* tile offsets in the row, measured on load and resize only */
+    let x = 0;
+    t.pos = t.tiles.map((v) => { const p = x; x += v.offsetWidth + 12; return p; });
+    t.total = x; t.view = t.el.clientWidth; t.h = t.el.clientHeight;
+  });
+  let lastT = 0;
+  function moveReel(t) {
+    const dt = Math.min(50, lastT ? t - lastT : 16); lastT = t;
+    for (const r of tracks) {
+      r.x = (r.x + r.speed * r.h * dt / 1000) % r.total;              /* speed is in row heights per second */
+      r.tiles.forEach((v, i) => {
+        let p = ((r.pos[i] + r.x) % r.total + r.total) % r.total;
+        if (p > r.view) p -= r.total;                                 /* past the right edge: wrap round to the far left */
+        v.style.transform = `translate3d(${p}px, 0, 0)`;
+      });
+    }
+  }
 
   const warp = document.querySelector('.warp');
   warp.classList.add('warp--live');
@@ -562,8 +591,8 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   const card = morph.querySelector('.morph__card');
   const cols = [...morph.querySelectorAll('.morph__col')];
 
-  size();
-  let resizeT; addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { size(); kick(); }, 150); });
+  size(); layoutReel();
+  let resizeT; addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { size(); layoutReel(); kick(); }, 150); });
   if (document.fonts) document.fonts.ready.then(() => { size(); kick(); });   /* number widths change once Anton has loaded */
 
   const progress = (el) => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight)); };
@@ -629,7 +658,8 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       heroText.style.transform = `translateY(${k * 60}px) scale(${1 - k * 0.12})`;
       heroText.style.opacity = 1 - k * 1.15;
       rows.style.transform = `translateY(-50%) rotate(-3deg) scale(${1 + k * 0.25})`;
-    }
+      moveReel(t); again = true;                                       /* the rows keep drifting while the hero is on screen */
+    } else lastT = 0;
     if (warpOn) {
       const target = progress(warp), prev = warpP;
       warpP += (target - warpP) * 0.18;                      /* smoothing, so the zoom glides instead of jumping */
