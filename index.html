@@ -98,12 +98,22 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .lede { max-width: 56ch; color: var(--grey); font-size: 17px; }
 
 /* steps */
-.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.step { border-top: 1px solid var(--accent); padding-top: 22px; }
-.step__n { font: 400 40px/1 var(--display); color: var(--accent-hi); }
-.step h3 { font: 400 23px/1.05 var(--display); text-transform: uppercase; margin: 18px 0 10px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.step { position: relative; }
+.step__n { display: grid; place-items: center; width: 56px; height: 56px; border: 2px solid var(--accent); border-radius: 50%; font: 400 26px/1 var(--display); }
+.step:last-child .step__n { background: var(--accent); }
+.step:not(:last-child)::before { content: ""; position: absolute; top: 27px; left: 70px; right: -18px; height: 2px; background: var(--accent); }
+.step:not(:last-child)::after { content: ""; position: absolute; top: 22px; right: -18px; width: 10px; height: 10px; border: solid var(--accent); border-width: 2px 2px 0 0; transform: rotate(45deg); }
+.step h3 { font: 400 23px/1.05 var(--display); text-transform: uppercase; margin: 22px 0 10px; }
 .step p { color: var(--grey); font-size: 15px; }
-@media (max-width: 760px) { .steps { grid-template-columns: 1fr; row-gap: 40px; } }
+@media (max-width: 760px) {
+  .steps { grid-template-columns: 1fr; gap: 40px; }
+  .step { padding-left: 76px; min-height: 56px; }
+  .step__n { position: absolute; left: 0; top: 0; }
+  .step h3 { margin-top: 14px; }
+  .step:not(:last-child)::before { top: 70px; bottom: -26px; left: 27px; right: auto; width: 2px; height: auto; }
+  .step:not(:last-child)::after { top: auto; bottom: -26px; left: 23px; right: auto; transform: rotate(135deg); }
+}
 
 /* warp: scroll zoom through a starfield, numbers fly out of the centre (after the Polaris Records about section).
    Without JS, or with reduced motion, it is a plain list. script adds .warp--live */
@@ -278,9 +288,11 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .end { background: var(--accent); color: #fff; padding: clamp(96px, 14vw, 200px) 0 clamp(64px, 9vw, 128px); }
 .end ::selection { background: #fff; color: var(--accent); }
 .end__title { margin: 0; font: 800 clamp(30px, 11vw, 196px)/.9 var(--heavy); letter-spacing: -.045em; text-transform: uppercase; white-space: nowrap; }
+.end__title span { display: block; }
+.end__title span + span { margin-top: .3em; }
 .end__talk { display: inline-flex; align-items: center; gap: .3em; margin-top: clamp(32px, 4.5vw, 64px); padding-bottom: 6px; border-bottom: 3px solid currentColor; color: #fff; font: 800 clamp(22px, 2.2vw, 34px)/1 var(--heavy); letter-spacing: -.02em; text-transform: uppercase; text-decoration: none; }
 .end__talk svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2.6; transition: transform .2s ease; }
-.end__talk:hover svg { transform: translate(3px, -3px); }
+.end__talk:hover svg { transform: translateY(4px); }
 .foot { padding: 24px 0 32px; }
 .foot .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .foot a { text-decoration: none; }
@@ -369,7 +381,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     <div class="wrap">
       <div class="steps">
         <div class="step"><div class="step__n">1</div><h3>Send us your track</h3><p>Fill out the form with your song and where we can DM you. We listen to everything.</p></div>
-        <div class="step"><div class="step__n">2</div><h3>We talk through the deal</h3><p>If we want the song, we reach out and go over the contract with you. You sign when you're happy with it.</p></div>
+        <div class="step"><div class="step__n">2</div><h3>We walk you through the deal</h3><p>If we want the song, we reach out and go over the contract with you. You sign when you're happy with it.</p></div>
         <div class="step"><div class="step__n">3</div><h3>Our editors use it</h3><p>Our editors make edits with your song and post them. People hear it, save the sound and use it in their own edits.</p></div>
       </div>
     </div>
@@ -434,6 +446,24 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     </div>
   </section>
 
+  <section class="faq" id="questions" aria-labelledby="faq-h">
+    <div class="wrap">
+      <h2 class="display h2 faq__h" id="faq-h">Questions</h2>
+      <details><summary>What do you release?</summary><p>Phonk and Hardtekk first, plus any internet music made for edits.</p></details>
+      <details><summary>What does a deal look like?</summary><p>Clear splits, nothing predatory. You see the same numbers we do, including how your song does in edits.</p></details>
+      <details><summary>Do you check samples?</summary><p>Yes. Every sample and vocal gets checked before we sign, so your release doesn't get taken down later.</p></details>
+      <details><summary>Can I send a song that's already out?</summary><p>Yes. Released or not, we can run a campaign on it.</p></details>
+      <details><summary>What is Overnite?</summary><p>An independent label run by the team behind 3,500+ edit campaigns and the biggest editor network in the scene. We sign a few songs and put everything behind them.</p></details>
+    </div>
+  </section>
+
+  <section class="end" aria-labelledby="end-h">
+    <div class="wrap">
+      <h2 class="end__title" id="end-h"><span>We are ready</span> <span>Are you?</span></h2>
+      <a class="end__talk" href="#demo">Let's talk <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg></a>
+    </div>
+  </section>
+
   <section class="demo" id="demo" aria-labelledby="demo-h">
     <div class="wrap split">
       <div>
@@ -462,25 +492,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       </form>
     </div>
   </section>
-
-  <section class="faq" id="questions" aria-labelledby="faq-h">
-    <div class="wrap">
-      <h2 class="display h2 faq__h" id="faq-h">Questions</h2>
-      <details><summary>What do you release?</summary><p>Phonk and Hardtekk first, plus any internet music made for edits.</p></details>
-      <details><summary>What does a deal look like?</summary><p>Clear splits, nothing predatory. You see the same numbers we do, including how your song does in edits.</p></details>
-      <details><summary>Do you check samples?</summary><p>Yes. Every sample and vocal gets checked before we sign, so your release doesn't get taken down later.</p></details>
-      <details><summary>Can I send a song that's already out?</summary><p>Yes. Released or not, we can run a campaign on it.</p></details>
-      <details><summary>What is Overnite?</summary><p>An independent label run by the team behind 3,500+ edit campaigns and the biggest editor network in the scene. We sign a few songs and put everything behind them.</p></details>
-    </div>
-  </section>
 </main>
-
-<section class="end" aria-labelledby="end-h">
-  <div class="wrap">
-    <h2 class="end__title" id="end-h">We are ready<br>Are you?</h2>
-    <a class="end__talk" href="mailto:demos@overnite.example">Let's talk <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-  </div>
-</section>
 
 <footer class="foot">
   <div class="wrap">

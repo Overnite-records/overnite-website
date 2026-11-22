@@ -14,7 +14,8 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 - Campaign results (`#results`, the shrinking card): the list items. The clips sliding behind it are `assets/morph/m01.mp4` to `m19.mp4` (320px, 6 second loops) with `assets/wall/w01.webp` to `w19.webp` as their posters. Only the clips on screen play, at most 8 at once (4 on phones).
 - Why Overnite: four tabs (`.why__tab`, each with a small line icon) and one panel per tab (`.why__panel`). Clicking a tab or using the arrow keys shows its panel; the chosen tab turns blue. To change a reason, edit the tab label and the matching panel text.
 - What we sign: each genre cell turns blue on hover (or keyboard focus), the name moves up and the description appears. On touch screens the description is always shown.
-- Closing band: "We are ready / Are you?" in Montserrat ExtraBold on the blue, with "Let's talk" opening an email (still the placeholder `demos@overnite.example`, same as the form; change both when the real inbox exists).
+- How it works: three steps drawn as a timeline (numbered circles joined by arrows, last circle filled blue; vertical with down arrows on phones). Pure CSS on `.step`.
+- Page end order: Questions, then the blue "We are ready / Are you?" band (Montserrat ExtraBold), whose "Let's talk" arrow jumps down to the demo form, then the form, then the footer. The form is the only contact route (no separate email link).
 - Hover click: moving the mouse onto a Campaign results number plays a short click, generated in the browser (script part 6, no audio file). Browsers only allow it after the first click or key press on the page.
 - "Press to show more stats": the small blue pill on every number. It shows on hover (centred under the line in Campaign results), and always on touch screens, so people know a number opens more.
 - Numbers as of November 2026: platform data from Metabase, streams and TikTok creates from Chartex. Update them when they move.
