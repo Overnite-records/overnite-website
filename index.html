@@ -277,6 +277,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .orb { position: absolute; left: 29.7%; top: 11.4%; width: 65.6%; aspect-ratio: 1; pointer-events: none; }
 .orb svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .orb.is-loose { position: fixed; left: 0; top: 0; z-index: 110; will-change: transform; }
+.orb.is-behind { z-index: 0; }   /* behind the moon (the mascots sit at z-index 1) */
 .orb__rim { opacity: 0; transition: opacity .4s; }
 .is-loose .orb__rim { opacity: 1; }
 html.is-eaten .cursor { opacity: 0 !important; }
@@ -285,7 +286,7 @@ html.is-eaten, html.is-eaten * { cursor: none !important; }
 .mascot--hero::before { inset: -30%; background: radial-gradient(closest-side, rgba(0,2,12,.97) 55%, rgba(0,2,12,.75) 72%, rgba(0,2,12,0)); }
 .end { overflow: clip; }
 .end .wrap { position: relative; }
-.mascot--end { position: absolute; right: 0; bottom: 0; width: clamp(110px, 19vw, 300px); }
+.mascot--end { position: absolute; z-index: 1; right: 0; bottom: 0; width: clamp(110px, 19vw, 300px); }
 .mascot--end::before { background: radial-gradient(closest-side, rgba(0,2,12,.3), rgba(0,2,12,0)); }
 @media (max-width: 640px) { .mascot--hero { width: 44vw; top: 92px; right: 10vw; } .mascot--end { position: relative; width: 46vw; margin: 48px 0 0 auto; } }
 @media (prefers-reduced-motion: reduce) { .moon__eyes { animation: none; } }
@@ -987,41 +988,23 @@ const ticker = (() => {
     logo.p.style.transform = `translate(${logo.px.toFixed(2)}px, ${logo.py.toFixed(2)}px)`;
     return Math.abs(gx - logo.px) + Math.abs(gy - logo.py) > .05;
   };
-  /* The moon is an obstacle: the orb may only overlap it from the right (the side it rests on), so it never ends up over the middle
-     of the moon with a white ring around it. To get round to the other side it arcs around the outside. Units: 1000 = moon box. */
+  /* Never a white ring: the orb leaves the moon in front of it, and once it is fully off the moon it moves behind it, so it can go
+     anywhere and the moon covers it. It wakes only when it can jump straight at the cursor without crossing the middle of the moon.
+     Going home it first comes round to the right side of the moon (behind it), then slides in from the front. Units: 1000 = moon box. */
   const HA = Math.atan2(-30, 129), LANE = 40 * D, wrap = (a) => Math.atan2(Math.sin(a), Math.cos(a));
   const moonOf = (m, homeX, homeY) => { const u = m.size / 656; return { u, x: homeX + m.size / 2 - 129 * u, y: homeY + m.size / 2 + 30 * u, rf: 716 * u }; };
-  const route = (m, mo, tx, ty) => {                         /* target for the orb's top left corner, going round the moon if needed */
-    const s2 = m.size / 2, ox = m.x + s2 - mo.x, oy = m.y + s2 - mo.y, ao = Math.atan2(oy, ox), d = Math.hypot(ox, oy);
-    const at = Math.atan2(ty + s2 - mo.y, tx + s2 - mo.x), diff = wrap(at - ao);
-    if (d < mo.rf && Math.abs(wrap(ao - HA)) < LANE * .95 && Math.abs(diff) > 45 * D) {                /* still over the moon: first straight out to the right */
-      const a = HA + clamp(wrap(ao - HA), -LANE, LANE);
-      return [mo.x + Math.cos(a) * mo.rf * 1.15 - s2, mo.y + Math.sin(a) * mo.rf * 1.15 - s2];
-    }
-    if (d < mo.rf * 1.25 && Math.abs(diff) > 45 * D) {
-      const a = ao + Math.sign(diff) * 55 * D;
-      return [mo.x + Math.cos(a) * mo.rf * 1.12 - s2, mo.y + Math.sin(a) * mo.rf * 1.12 - s2];
-    }
-    return [tx, ty];
+  const geo = (m, mo) => { const ox = m.x + m.size / 2 - mo.x, oy = m.y + m.size / 2 - mo.y; return { d: Math.hypot(ox, oy), off: wrap(Math.atan2(oy, ox) - HA), ox, oy }; };
+  const crosses = (ax, ay, bx, by, mo, r) => {               /* does the straight line a to b pass within r of the moon's middle */
+    const vx = bx - ax, vy = by - ay, l = vx * vx + vy * vy || 1, t = clamp(((mo.x - ax) * vx + (mo.y - ay) * vy) / l, 0, 1);
+    return Math.hypot(ax + vx * t - mo.x, ay + vy * t - mo.y) < r;
   };
-  const keepOut = (m, mo) => {                               /* push the orb out of the moon unless it is in the lane on the right */
-    const s2 = m.size / 2, ox = m.x + s2 - mo.x, oy = m.y + s2 - mo.y, d = Math.hypot(ox, oy);
-    if (d >= mo.rf) return;
-    const a = Math.atan2(oy, ox), off = wrap(a - HA);
-    if (Math.abs(off) <= LANE && d >= 125 * mo.u) return;
-    const edge = HA + Math.sign(off || 1) * LANE, dl = Math.max(125 * mo.u, d);  /* nearest allowed spot: lane edge or outside the moon */
-    const c1 = [Math.cos(edge) * dl, Math.sin(edge) * dl], c2 = [Math.cos(a) * mo.rf, Math.sin(a) * mo.rf];
-    const p = Math.hypot(c1[0] - ox, c1[1] - oy) < Math.hypot(c2[0] - ox, c2[1] - oy) ? c1 : c2;
-    m.x = mo.x + p[0] - s2; m.y = mo.y + p[1] - s2;
-    const nx = p[0] / Math.hypot(p[0], p[1]), ny = p[1] / Math.hypot(p[0], p[1]), vin = m.vx * nx + m.vy * ny;
-    if (vin < 0) { m.vx -= vin * nx; m.vy -= vin * ny; }      /* drop the part of the speed that pushes into the moon */
-  };
+  const setBehind = (m, b) => { if (m.behind !== b) { m.behind = b; m.orb.classList.toggle('is-behind', b); } };
   const loosen = (m, t) => {
     m.state = 'chase'; m.t0 = t; m.x = m.hx; m.y = m.hy - sy; m.vx = m.vy = 0;
     m.orb.style.width = m.size + 'px'; m.orb.classList.add('is-loose');
     m.orb.style.transform = `translate3d(${m.x}px, ${m.y}px, 0)`; document.body.append(m.orb);
   };
-  const settle = (m) => { m.state = 'home'; m.orb.classList.remove('is-loose'); m.orb.style.width = m.orb.style.transform = ''; m.el.append(m.orb); };
+  const settle = (m) => { setBehind(m, false); m.state = 'home'; m.orb.classList.remove('is-loose'); m.orb.style.width = m.orb.style.transform = ''; m.el.append(m.orb); };
 
   function frame(t) {
     const dt = Math.min(50, prev ? t - prev : 16.7), sec = dt / 1000; prev = t;
@@ -1031,7 +1014,7 @@ const ticker = (() => {
       const s = m.size, homeX = m.hx, homeY = m.hy - sy, hcx = homeX + s / 2, hcy = homeY + s / 2;
       const away = Math.hypot(mx - hcx, my - hcy), f = m.f;
       if (m.state === 'home') {
-        const near = hunt && seen && away < s * .95;
+        const near = hunt && seen && away < s * .95 && !crosses(hcx, hcy, mx, my, moonOf(m, homeX, homeY), 50 * s / 656);
         if (near && t > rest) loosen(m, t); else if (near) busy = true;
       }
       const since = t - m.t0;
@@ -1065,17 +1048,35 @@ const ticker = (() => {
       }
       /* body: a soft spring toward the target, never faster than about 560px a second */
       const mo = moonOf(m, homeX, homeY);
+      const g = geo(m, mo);
       let tx = mx - s / 2, ty = my - s / 2, K = 12, C = 6.4, cap = 560;
-      if (m.state === 'eat') { tx = m.x; ty = m.y + Math.sin(since / 90) * 2; K = 30; C = 11; }
-      else if (m.state === 'back') { tx = homeX; ty = homeY; K = 16; C = 7.4; cap = 800; }
-      if (m.state !== 'eat') [tx, ty] = route(m, mo, tx, ty);
+      if (m.state === 'chase' && since < 450) { K = 45; C = 12; cap = 1600; }          /* the pounce: straight at the cursor */
+      else if (m.state === 'eat') { tx = m.x; ty = m.y + Math.sin(since / 90) * 2; K = 30; C = 11; }
+      else if (m.state === 'back') {
+        K = 16; C = 7.4; cap = 800; tx = homeX; ty = homeY;
+        if (m.behind) {                                       /* come round to the right of the moon first, then in front */
+          const ex = mo.x + Math.cos(HA) * mo.rf * 1.05 - s / 2, ey = mo.y + Math.sin(HA) * mo.rf * 1.05 - s / 2;
+          if (g.d >= mo.rf && Math.abs(g.off) < LANE && Math.hypot(ex - m.x, ey - m.y) < s * .3) setBehind(m, false);
+          else { tx = ex; ty = ey; }
+        }
+      }
       m.vx += ((tx - m.x) * K - m.vx * C) * sec; m.vy += ((ty - m.y) * K - m.vy * C) * sec;
       const v = Math.hypot(m.vx, m.vy); if (v > cap) { m.vx *= cap / v; m.vy *= cap / v; }
       m.x += m.vx * sec; m.y += m.vy * sec;
-      keepOut(m, mo);
+      if (!m.behind) {
+        const h = geo(m, mo);
+        if (h.d >= mo.rf && m.state !== 'back') setBehind(m, true);                     /* fully off the moon: from now on behind it */
+        else if (h.d < 160 * mo.u && !(Math.abs(h.off) < LANE && h.d > 110 * mo.u)) {   /* its own resting lane on the right is allowed */          /* in front: stay away from the middle of the moon (only crescents, never a ring) */
+          const k2 = (Math.abs(h.off) < LANE ? 110 : 160) * mo.u / (h.d || 1), nx = h.ox / (h.d || 1), ny = h.oy / (h.d || 1);
+          m.x = mo.x + h.ox * k2 - s / 2; m.y = mo.y + h.oy * k2 - s / 2;
+          const vin = m.vx * nx + m.vy * ny; if (vin < 0) { m.vx -= vin * nx; m.vy -= vin * ny; }
+          const qx = tx + s / 2 - mo.x, qy = ty + s / 2 - mo.y, cr = nx * qy - ny * qx, sg = Math.abs(cr) > 1 ? Math.sign(cr) : -1;
+          m.vx += -ny * sg * 1400 * sec; m.vy += nx * sg * 1400 * sec;   /* slide round toward the cursor instead of getting stuck */
+        }
+      }
       if (m.state === 'chase') {
         if (away > s * 2.6 + 260) { m.state = 'back'; m.full = false; m.t0 = t; }
-        else if (since > 700 && Math.hypot(mx - (m.x + s / 2), my - (m.y + s / 2)) < s * .17) {
+        else if (since > 700 && !(m.behind && g.d < 400 * mo.u) && Math.hypot(mx - (m.x + s / 2), my - (m.y + s / 2)) < s * .17) {
           m.state = 'eat'; m.t0 = t; root.classList.add('is-eaten'); rest = t + 4400;
           setTimeout(() => root.classList.remove('is-eaten'), 3000);
         }
