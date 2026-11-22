@@ -9,6 +9,12 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 - Text: search for the sentence in `index.html` and change it.
 - `assets/edits/`: no longer used. These clips belonged to the number drawer, which was removed (numbers are plain text now). Safe to delete.
 - Hero text: "Viral Overnite." with the motto "Blew up overnite." under it (from the Label Motto page in Notion).
+- Logo and mascot: a full cream moon with a black orb in front of its right side, which makes the crescent. The orb has blue cat eyes. Everything is drawn in code, with no image files. It only appears in three places: the top bar logo (static, only the pupils move), the hero (top right) and the blue band at the end. The shared colours live in the hidden `<svg>` with the `mn-` ids right after `<body>`. Script part 8 draws the orb's face and moves it.
+  - The face is flat, but every point of the eyes and grin is wrapped around a ball and turned toward the mouse. When it looks to one side, the far eye and that end of the grin squeeze toward the edge and slide out of sight.
+  - The grin is modelled on the reference video: it starts as a thin slash drawn in from the right, then opens into a wide grin up to eye level with two rows of rounded interlocking teeth, and the eyes lift. When the mouth closes, it disappears at once.
+  - On desktop the orb hunts. When the mouse comes within about one orb width, it leaves the moon (the full moon stays behind), grins and follows the cursor on a soft spring, slower than the mouse. If the mouse gets far away, it floats home. If it catches the cursor, the jaw drops, it snaps shut and the cursor is gone for 3 seconds. Then it chews, floats home looking pleased, and rests for a moment.
+  - The moon is an obstacle: the orb only overlaps it from the right, where it rests, and goes around the outside to reach the other side. It never sits over the middle of the moon.
+  - It blinks now and then. On touch screens, and with reduced motion, there is no chase, only the eyes and the head turn.
 - Hero background: two rows of edits in `assets/reel/`, one small video per edit (`eNN.mp4`, 400px tall, in the edit's real shape, 6 second loop) with a `eNN.webp` poster. Each `<video>` in `.reel__track` needs `width`/`height` matching the file so the row can be laid out before anything loads. `data-speed` on a row is its drift speed in row heights per second (negative = the other way). The script wraps each video in a `.reel__tile` div and slides the div with a browser animation that loops it round the row, so tiles are never duplicated and the drift costs no script per frame (moving the `<video>` itself made Chrome restyle it every frame, which was the main lag). Four times a second it works out from the animation clocks which tiles are on screen and plays only those. The IDs match the catalog of original edits (project doc `claude/overnite-source-edits-catalog.md`, originals in Kon's Drive).
 - Numbers: plain text, nothing to click. The big "142B views" and the four corner stats are in `#numbers`, the four Campaign results lines in `#results`. Edit the text directly.
 - Our creator base (`#numbers`, the starfield zoom): `data-x` / `data-y` on each `<li>` set which corner the number settles in (-1 left, 1 right). Each corner stat is centred on itself (number, label and pill on one middle line). The last stat settles at about 3/4 of the scroll run, so there is little dead scrolling after it.
@@ -17,7 +23,7 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 - What we sign: each genre cell turns blue on hover (or keyboard focus), the name moves up and the description appears. On touch screens the description is always shown.
 - How it works: three steps drawn as a timeline, circles and text centred, circles joined by arrows. The circles stay outlines (no hover fill, they are not buttons). On phones it runs top to bottom, left aligned, with down arrows. The space under the section matches the space above it (`#how` padding-bottom). Pure CSS on `.step`.
 - Page end order: Questions, then the blue "We are ready / Are you?" band (Montserrat ExtraBold), whose "Let's talk" arrow jumps down to the demo form, then the form, then the footer. The form is the only contact route (no separate email link).
-- Cursor: on desktop the mouse is a small dot that inverts what is under it and stretches with movement (script part 4). It is two stacked dots with blend modes (`saturation` takes the colour out, `difference` inverts), and over blue surfaces (the closing band, buttons, pills, a hovered genre) it is plain black. The list of blue surfaces is `BLUE` in part 4. What is under the mouse comes from part 4a, which also re-checks after scrolling, so the cursor and the hover looks follow the page when you scroll without moving the mouse. Because of that, the Campaign results numbers and the genre cells use the `.is-hot` class instead of `:hover`.
+- Cursor: on desktop the mouse is a small dot that inverts what is under it and stretches with movement (script part 4). It is two stacked dots with blend modes (`saturation` takes the colour out, `difference` inverts), and over blue surfaces (the closing band, buttons, pills, a hovered genre) it is plain black. The list of blue surfaces is `BLUE` in part 4.
 - Hover click: moving the mouse onto a Campaign results number plays a short click, generated in the browser (script part 6, no audio file). Browsers only allow it after the first click or key press on the page.
 - Numbers as of November 2026: platform data from Metabase, streams and TikTok creates from Chartex. Update them when they move.
 - Colours: the `:root` block at the top of the `<style>` tag. `--accent` is for filled things (buttons), `--accent-hi` for blue text and outlines on the dark background. Keep both bright, the old navy blue was nearly invisible on black.
@@ -43,7 +49,6 @@ Videos only load and play while they are on screen. With reduced motion or Save-
 
 - All moving parts share one frame loop (`ticker` at the top of the script). It only runs while something moves and stops by itself.
 - Nothing inside the loop reads layout: section positions are measured on load, resize and font load, and the scroll position comes from the scroll listener.
-- The one exception is part 4a: while you scroll it asks the browser once per frame which element is under the mouse (`elementFromPoint`), in its own frame callback, outside the shared loop.
 - The starfield canvas is drawn at most at 1.5x pixel density and drifts at about 20 fps when you are not scrolling. It stops when the section is off screen or the tab is hidden, like every other effect.
 - Avoid `backdrop-filter` and animated `text-shadow` over video, and don't move `<video>` elements directly every frame: move a wrapper.
 
@@ -53,7 +58,4 @@ Videos only load and play while they are on screen. With reduced motion or Save-
 
 ## Deploy
 
-Every push to `main` goes live automatically:
-
-- **overniterecords.com** (Firebase Hosting, GCP project `overnite-website`): the GitHub Action `.github/workflows/firebase-deploy.yml`, about a minute. It signs in to Google Cloud without a stored key (Workload Identity Federation, account `github-deploy`), and only pushes to `main` of this repo may use it. Check the Actions tab if a change doesn't show up. It can also be started by hand there (Run workflow).
-- **overnite-records.vercel.app** (Vercel): Vercel's own Git connection. Other branches get their own preview URL there.
+Hosted on Vercel (project `overnite-records`). Every push to `main` goes live automatically within about a minute. Other branches get their own preview URL.

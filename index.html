@@ -60,7 +60,7 @@ p { margin: 0; }
 .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
 .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 400 22px/1 var(--display); text-transform: uppercase; letter-spacing: .01em; }
 .logo i { font-style: normal; color: var(--accent-hi); }
-.logo svg { width: 22px; height: 22px; }
+.logo .moon { width: 30px; height: 30px; margin: -4px 0; }
 .top nav { display: flex; align-items: center; gap: 28px; }
 .top nav a:not(.btn) { font-size: 14px; color: var(--grey); text-decoration: none; transition: color .15s; }
 .top nav a:not(.btn):hover { color: var(--ink); }
@@ -155,9 +155,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph__roll { display: grid; overflow: hidden; }
 .morph__roll > span { grid-area: 1 / 1; padding-block: .04em; transition: transform .35s cubic-bezier(.65,0,.35,1); white-space: nowrap; }
 .morph__roll > span + span { transform: translateY(100%); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }   /* the glow is always on the hidden line, so hovering only slides, nothing repaints */
-.morph__item.is-hot .morph__roll > span:first-child { transform: translateY(-100%); }
-.morph__item.is-hot .morph__roll > span + span { transform: translateY(0); }
-.morph__list:has(.is-hot) .morph__item:not(.is-hot) { opacity: .2; }
+.morph__item:hover .morph__roll > span:first-child { transform: translateY(-100%); }
+.morph__item:hover .morph__roll > span + span { transform: translateY(0); }
+.morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
 @media (hover: hover) { .morph__list { gap: clamp(6px, .6vw, 10px); } }
 
 .morph--live { height: 130vh; padding: 0; }
@@ -194,9 +194,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .genres div + div { border-left: 1px solid var(--line); }
 .genres h3 { font: 400 clamp(32px, 3.6vw, 52px)/.95 var(--display); text-transform: uppercase; margin: 0; transition: transform .4s cubic-bezier(.2,.8,.2,1); }
 .genres p { position: absolute; left: 50%; top: 50%; width: min(30ch, 86%); margin: 0; color: #e8ebff; font-size: 16px; opacity: 0; transform: translate(-50%, 34px); transition: opacity .3s ease, transform .4s cubic-bezier(.2,.8,.2,1); }
-.genres div.is-hot, .genres div:focus-visible { background: var(--accent); outline: 0; }
-.genres div.is-hot h3, .genres div:focus-visible h3 { transform: translateY(-.75em); }
-.genres div.is-hot p, .genres div:focus-visible p { opacity: 1; transform: translate(-50%, 10px); }
+.genres div:hover, .genres div:focus-visible { background: var(--accent); outline: 0; }
+.genres div:hover h3, .genres div:focus-visible h3 { transform: translateY(-.75em); }
+.genres div:hover p, .genres div:focus-visible p { opacity: 1; transform: translate(-50%, 10px); }
 @media (hover: none) { .genres h3 { transform: translateY(-.75em); } .genres p { opacity: 1; color: var(--grey); transform: translate(-50%, 10px); } }   /* phones: the description is always there */
 @media (max-width: 760px) { .genres { grid-template-columns: 1fr; } .genres div + div { border-left: 0; border-top: 1px solid var(--line); } }
 
@@ -263,6 +263,32 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .end__talk { display: inline-flex; align-items: center; gap: .3em; margin-top: clamp(32px, 4.5vw, 64px); padding-bottom: 6px; border-bottom: 3px solid currentColor; color: #fff; font: 800 clamp(22px, 2.2vw, 34px)/1 var(--heavy); letter-spacing: -.02em; text-transform: uppercase; text-decoration: none; }
 .end__talk svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2.6; transition: transform .2s ease; }
 .end__talk:hover svg { transform: translateY(4px); }
+/* the mascot: a crescent moon with a black orb resting in its hollow, the orb has the eyes. Only in the top bar logo, the hero and the
+   blue band. The moon is a full white circle and the orb sits in front of its right side, which makes the crescent. On desktop,
+   when the mouse comes close, the orb comes out (leaving the full moon behind), grins and chases the cursor. If it catches it,
+   it eats it (the cursor is gone for 3 seconds) and floats back. Far away, it gives up and goes back. The face is drawn and
+   turned by script part 8; it never sits over the middle of the moon. */
+.moon { display: block; width: 100%; height: auto; overflow: visible; }
+.moon__eyes { transform-box: fill-box; transform-origin: 50% 60%; animation: blink 6.5s 3s infinite; }
+.moon__pupils ellipse { fill: #050a2a; }
+@keyframes blink { 0%, 94%, 100% { transform: none; } 96.5% { transform: scaleY(.06); } }
+.mascot { pointer-events: none; isolation: isolate; }
+.mascot::before { content: ""; position: absolute; inset: -18%; z-index: -1; }
+.orb { position: absolute; left: 29.7%; top: 11.4%; width: 65.6%; aspect-ratio: 1; pointer-events: none; }
+.orb svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.orb.is-loose { position: fixed; left: 0; top: 0; z-index: 110; will-change: transform; }
+.orb__rim { opacity: 0; transition: opacity .4s; }
+.is-loose .orb__rim { opacity: 1; }
+html.is-eaten .cursor { opacity: 0 !important; }
+html.is-eaten, html.is-eaten * { cursor: none !important; }
+.mascot--hero { position: absolute; z-index: 1; top: clamp(84px, 13svh, 150px); right: calc(max(var(--gut), (100% - var(--max)) / 2) + 9vw); width: min(28vw, 42svh, 420px); }
+.mascot--hero::before { inset: -30%; background: radial-gradient(closest-side, rgba(0,2,12,.97) 55%, rgba(0,2,12,.75) 72%, rgba(0,2,12,0)); }
+.end { overflow: clip; }
+.end .wrap { position: relative; }
+.mascot--end { position: absolute; right: 0; bottom: 0; width: clamp(110px, 19vw, 300px); }
+.mascot--end::before { background: radial-gradient(closest-side, rgba(0,2,12,.3), rgba(0,2,12,0)); }
+@media (max-width: 640px) { .mascot--hero { width: 44vw; top: 92px; right: 10vw; } .mascot--end { position: relative; width: 46vw; margin: 48px 0 0 auto; } }
+@media (prefers-reduced-motion: reduce) { .moon__eyes { animation: none; } }
 .foot { padding: 24px 0 32px; }
 .foot .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .foot a { text-decoration: none; }
@@ -272,11 +298,28 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <radialGradient id="mn-moon" cx=".38" cy=".42" r=".7"><stop offset="0" stop-color="#fbf8f1"/><stop offset="1" stop-color="#ece5d6"/></radialGradient>
+  <radialGradient id="mn-halo"><stop offset="0" stop-color="#3a5bff" stop-opacity=".7"/><stop offset=".55" stop-color="#2a4bff" stop-opacity=".18"/><stop offset="1" stop-color="#2a4bff" stop-opacity="0"/></radialGradient>
+  <radialGradient id="mn-eye-l" gradientUnits="userSpaceOnUse" cx="-150" cy="40" r="110"><stop offset="0" stop-color="#d4dcff"/><stop offset=".5" stop-color="#7189ff"/><stop offset="1" stop-color="#3556ff"/></radialGradient>
+  <radialGradient id="mn-eye-r" gradientUnits="userSpaceOnUse" cx="44" cy="40" r="110"><stop offset="0" stop-color="#d4dcff"/><stop offset=".5" stop-color="#7189ff"/><stop offset="1" stop-color="#3556ff"/></radialGradient>
+  <radialGradient id="mn-grin" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#e4e9ff"/><stop offset=".6" stop-color="#a3b3ff"/><stop offset="1" stop-color="#6380ff"/></radialGradient>
+  <radialGradient id="mn-eye" cx=".5" cy=".62" r=".7"><stop offset="0" stop-color="#d4dcff"/><stop offset=".5" stop-color="#7189ff"/><stop offset="1" stop-color="#3556ff"/></radialGradient>
+  <radialGradient id="mn-teeth" gradientUnits="userSpaceOnUse" cx="0" cy="150" r="330"><stop offset="0" stop-color="#e6ebff"/><stop offset=".6" stop-color="#a9b8ff"/><stop offset="1" stop-color="#6a86ff"/></radialGradient>
+  <radialGradient id="mn-rim"><stop offset=".84" stop-color="#2a4bff" stop-opacity="0"/><stop offset=".87" stop-color="#3a5bff" stop-opacity=".5"/><stop offset="1" stop-color="#2a4bff" stop-opacity="0"/></radialGradient>
+  <clipPath id="mn-ball"><circle r="324"/></clipPath>
+  <clipPath id="mn-eye-l"><path d="M-84-51Q-2-9 84 51H-16Q-60 17-84-51Z"/></clipPath>
+  <clipPath id="mn-eye-r"><path d="M84-51Q2-9-84 51H16Q60 17 84-51Z"/></clipPath>
+  <clipPath id="mn-clip"><path d="M-245-32Q-163 10-77 70H-177Q-221 36-245-32ZM139-32Q57 10-29 70H71Q115 36 139-32Z"/></clipPath>
+</defs></svg>
 
 <header class="top">
   <div class="wrap">
     <a class="logo" href="#top" aria-label="Overnite Records, back to top">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="7" r="4" fill="#fafafa"/><circle cx="17" cy="7" r="4" fill="#fafafa"/><circle cx="7" cy="17" r="4" fill="#fafafa"/><rect x="13" y="13" width="8" height="8" fill="#2a4bff"/></svg>
+      <svg class="moon moon--logo" viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><path d="M647.4 114.8A388 388 0 1 0 789.5 725.8A328 328 0 1 1 647.4 114.8Z" fill="url(#mn-moon)"/>
+        <g transform="translate(625 442)"><circle r="328" fill="#00020c"/><ellipse cx="-53" cy="22" rx="270" ry="125" fill="url(#mn-halo)"/><ellipse cx="-160" cy="30" rx="120" ry="70" fill="url(#mn-halo)"/><ellipse cx="54" cy="30" rx="120" ry="70" fill="url(#mn-halo)"/>
+          <g class="moon__eyes"><path d="M-245-32Q-163 10-77 70H-177Q-221 36-245-32Z" fill="url(#mn-eye-l)"/><path d="M139-32Q57 10-29 70H71Q115 36 139-32Z" fill="url(#mn-eye-r)"/>
+            <g clip-path="url(#mn-clip)"><g class="moon__pupils"><ellipse cx="-155" cy="42" rx="8" ry="40"/><ellipse cx="49" cy="42" rx="8" ry="40"/></g></g></g></g></svg>
       <span>Over<i>nite</i></span>
     </a>
     <nav aria-label="Main">
@@ -317,6 +360,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
           <video data-src="assets/reel/e08.mp4" poster="assets/reel/e08.webp" width="556" height="400" muted loop playsinline preload="none"></video>
         </div>
       </div>
+    </div>
+    <div class="mascot mascot--hero rise d2" aria-hidden="true">
+      <svg class="moon" viewBox="0 0 1000 1000" focusable="false"><circle cx="496" cy="472" r="388" fill="url(#mn-moon)"/></svg>
+      <div class="orb"><svg viewBox="-330 -330 660 660" focusable="false"><circle class="orb__rim" r="380" fill="url(#mn-rim)"/><circle r="328" fill="#00020c"/><g class="orb__face" clip-path="url(#mn-ball)"></g></svg></div>
     </div>
     <div class="wrap">
       <h1 class="display" id="hero-h"><span class="rise">Viral</span><span class="rise d2 outline">Overnite.</span></h1>
@@ -413,6 +460,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     <div class="wrap">
       <h2 class="end__title" id="end-h"><span>We are ready</span> <span>Are you?</span></h2>
       <a class="end__talk" href="#demo">Let's talk <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg></a>
+      <div class="mascot mascot--end" aria-hidden="true">
+      <svg class="moon" viewBox="0 0 1000 1000" focusable="false"><circle cx="496" cy="472" r="388" fill="url(#mn-moon)"/></svg>
+      <div class="orb"><svg viewBox="-330 -330 660 660" focusable="false"><circle class="orb__rim" r="380" fill="url(#mn-rim)"/><circle r="328" fill="#00020c"/><g class="orb__face" clip-path="url(#mn-ball)"></g></svg></div>
+    </div>
     </div>
   </section>
 
@@ -681,43 +732,8 @@ const ticker = (() => {
   kick();
 })();
 
-/* 4a. What is under the mouse. Browsers only update :hover when the mouse moves, so after scrolling (or while the
-      Campaign results card shrinks under a still mouse) the hover look and the cursor colour stayed on the old element.
-      This keeps track of the element under the pointer itself: on mouseover, and again while the page scrolls (at most
-      once per frame, plus two checks after scrolling stops, while the results card is still easing).
-      Results numbers and genre cells get .is-hot from here instead of using :hover; the cursor (part 4) and the click
-      sound (part 6) listen to it too. */
-const pointer = (() => {
-  const subs = new Set();
-  if (!matchMedia('(hover: hover)').matches) return { on: () => {} };   /* same test as the CSS, so .is-hot exists wherever :hover used to */
-  let x = 0, y = 0, inside = false, el = null, hot = null, queued = false, settle = [];
-  const set = (t) => {
-    if (t === el) return;
-    el = t;
-    const h = t && t.closest ? t.closest('.morph__item, .genres > div') : null;
-    if (h !== hot) {
-      if (hot) hot.classList.remove('is-hot');
-      hot = h;
-      if (h) { h.classList.add('is-hot'); h.dispatchEvent(new Event('hot')); }
-    }
-    subs.forEach((f) => f(t));
-  };
-  const recheck = () => { queued = false; if (inside) set(document.elementFromPoint(x, y)); };
-  const soon = () => { if (!queued && inside) { queued = true; requestAnimationFrame(recheck); } };
-  const at = (e) => { x = e.clientX; y = e.clientY; inside = true; };
-  addEventListener('mousemove', at, { passive: true });
-  document.addEventListener('mouseover', (e) => { at(e); set(e.target); }, { passive: true });
-  document.addEventListener('mouseout', (e) => { if (!e.relatedTarget) { inside = false; set(null); } }, { passive: true });
-  addEventListener('scroll', () => {
-    soon();
-    settle.forEach(clearTimeout);
-    settle = [150, 600].map((ms) => setTimeout(soon, ms));
-  }, { passive: true });
-  return { on: (f) => subs.add(f) };
-})();
-
 /* 4. Custom cursor: one inverting dot that stretches with movement (desktop pointers only). Runs in the shared frame loop
-      and sleeps when the mouse stops. Links and inputs are checked when the element under the mouse changes (part 4a), not on every move. */
+      and sleeps when the mouse stops. Links and inputs are checked on mouseover (once per element), not on every move. */
 (() => {
   const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 768px)').matches;
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -741,7 +757,7 @@ const pointer = (() => {
   };
   /* the blend turns the dot yellow on blue, so over blue surfaces it is simply black, like the old black-or-white dot */
   const BLUE = '.end, .btn, .skip, .genres div';
-  pointer.on((t) => { over = t; look(); });   /* also fires when scrolling moves a new element under a still mouse */
+  document.addEventListener('mouseover', (e) => { over = e.target; look(); }, { passive: true });
   document.addEventListener('click', look);
   document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
   function frame() {
@@ -855,7 +871,245 @@ const pointer = (() => {
     src.buffer = buf; band.type = 'bandpass'; band.frequency.value = 2400; band.Q.value = 1.2; vol.gain.value = 0.35;
     src.connect(band).connect(vol).connect(ctx.destination); src.start();
   };
-  document.querySelectorAll('.morph__item').forEach((b) => b.addEventListener('hot', tick));
+  document.querySelectorAll('.morph__item').forEach((b) => b.addEventListener('pointerenter', tick));
+})();
+/* 8. Mascot. The orb's face is flat (2D) but lives on a ball: every point of the eyes and mouth is wrapped around the sphere and
+      turned toward the mouse (or the last tap), so when it looks to one side the far eye and that end of the grin squeeze toward
+      the edge and slide out of sight, like a head turning. Expressions are a few numbers eased every frame: mouth width (the
+      grin starts as a thin slash drawn in from the right), mouth opening, eyelids. The face is redrawn only while it changes.
+      Desktop: mouse close -> the orb comes out of the moon (the full moon stays behind), grins and follows the cursor on a soft
+      spring, slower than you, so you can get away. Mouse far from home -> it gives up and floats back. It catches the cursor ->
+      jaw drops, snaps shut, the cursor is gone for 3 seconds, it chews and floats back looking pleased.
+      While loose it is moved to <body> as a fixed element. Home positions are measured on load, resize and when a mascot
+      comes into view, never inside the frame loop. */
+(() => {
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hunt = !calm && matchMedia('(hover: hover) and (pointer: fine) and (min-width: 768px)').matches;
+  const root = document.documentElement, D = Math.PI / 180, R = 326, NS = 'http://www.w3.org/2000/svg';
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const ease = (a, b, k, dt) => a + (b - a) * (1 - Math.pow(1 - k, dt / 16.7));   /* same feel at any frame rate */
+  const q = (a, c, b, t) => (1 - t) * (1 - t) * a + 2 * (1 - t) * t * c + t * t * b; /* quadratic curve */
+  const n1 = (v) => v.toFixed(1);
+  const logo = { p: document.querySelector('.logo .moon__pupils'), el: document.querySelector('.logo .moon'), cx: 0, cy: 0, px: 0, py: 0 };
+
+  /* ---- face geometry, flat, centred on the face. Eye = the logo's cat eye (local coords around its centre). ---- */
+  const EYE = []; {
+    for (let i = 0; i <= 10; i++) { const t = i / 10; EYE.push([q(-84, -2, 84, t), q(-51, -9, 51, t)]); }   /* top edge, sloping down to the nose */
+    for (let i = 1; i <= 10; i++) { const t = i / 10; EYE.push([q(-16, -60, -84, t), q(51, 17, -51, t)]); } /* round underside back to the tip */
+    EYE.splice(11, 0, [-16, 51]);
+  }
+  const PUPIL = []; for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2; PUPIL.push([Math.sin(a) * 9, Math.cos(a) * 46]); }
+  /* grin: corners up near eye level and almost at the edge of the ball, like the reference video */
+  const LC = [-312, -58], RC = [306, -52], UPC = 222, LOWC = 556, TEETH = 8;
+
+  /* wrap a flat face point onto the ball and turn it: yaw left/right, pitch up/down (radians). Points that turn past the edge stick to it. */
+  const proj = (x, y, yaw, pitch) => {
+    const lat = Math.asin(clamp(y / R, -.999, .999)), rl = R * Math.cos(lat), lon = Math.asin(clamp(x / rl, -.999, .999));
+    const la = clamp(lat + pitch, -1.5, 1.5), lo = clamp(lon + yaw, -1.5708, 1.5708);
+    return [R * Math.cos(la) * Math.sin(lo), R * Math.sin(la)];
+  };
+  const pathOf = (pts) => 'M' + pts.map((p) => n1(p[0]) + ' ' + n1(p[1])).join('L') + 'Z';
+
+  const ms = [...document.querySelectorAll('.mascot')].map((el, idx) => {
+    const orb = el.querySelector('.orb'), face = orb.querySelector('.orb__face');
+    const mk = (tag, attrs, parent = face) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.append(e); return e; };
+    const defs = mk('defs', {});
+    const eyes = [-1, 1].map((side) => {
+      const id = `mn-${idx}-${side < 0 ? 'l' : 'r'}`, cp = mk('clipPath', { id }, defs), cpp = mk('path', {}, cp);
+      return { side, halo: mk('ellipse', { rx: 130, ry: 78, fill: 'url(#mn-halo)' }), shape: mk('path', { fill: 'url(#mn-eye)' }), clip: cpp,
+        pupil: mk('path', { fill: '#050a2a', 'clip-path': `url(#${id})` }) };
+    });
+    const mglow = mk('ellipse', { fill: 'url(#mn-halo)', opacity: 0 }), lips = mk('path', { fill: 'url(#mn-grin)', stroke: '#b9c6ff', 'stroke-width': 6, 'stroke-linejoin': 'round' });
+    const mid = `mn-${idx}-m`, mcp = mk('clipPath', { id: mid }, defs), mclip = mk('path', {}, mcp);
+    const teeth = mk('path', { fill: 'url(#mn-teeth)', stroke: '#00020c', 'stroke-width': 7, 'stroke-linejoin': 'round', 'clip-path': `url(#${mid})` });
+    return { el, orb, eyes, mglow, lips, teeth, mclip, on: false, state: 'home', hx: 0, hy: 0, size: 0, x: 0, y: 0, vx: 0, vy: 0, t0: 0, full: false,
+      f: { yaw: -10, pitch: 4, w: 0, o: 0, lid: 0, lx: 0, ly: 0 }, key: '', blink: 0 };   /* lid 0: eyes open when it first shows */
+  });
+
+  const drawFace = (m) => {
+    const f = m.f, key = [f.yaw, f.pitch, f.w, f.o, f.lid, f.lx, f.ly].map((v) => v.toFixed(2)).join();
+    if (key === m.key) return; m.key = key;
+    const yaw = f.yaw * D, pitch = f.pitch * D, open = clamp(f.o / .6, 0, 1);
+    /* eyes: rise and narrow a little as the grin opens */
+    const c = clamp(f.o / .4, 0, 1), ey = 19 - 48 * c * f.w, lid = f.lid * (1 - .12 * open);
+    for (const e of m.eyes) {
+      const cx = 108 * e.side, flip = e.side, at = (x, y) => proj(cx + x * -flip, ey + y * lid, yaw, pitch);
+      const shape = pathOf(EYE.map(([x, y]) => at(x, y)));
+      e.shape.setAttribute('d', shape); e.clip.setAttribute('d', shape);
+      e.pupil.setAttribute('d', pathOf(PUPIL.map(([x, y]) => at(6 + x + f.lx * -flip, 23 + y + f.ly))));
+      const c = proj(cx, ey, yaw, pitch), sq = Math.max(.05, Math.cos(clamp(Math.asin(cx / R) + yaw, -1.57, 1.57)));
+      e.halo.setAttribute('transform', `translate(${n1(c[0])} ${n1(c[1])}) scale(${sq.toFixed(2)} ${lid.toFixed(2)})`);
+    }
+    /* mouth: upper and lower lip share the same corners; the lower one drops as it opens. w draws it in from the right corner */
+    if (f.w < .03) { m.lips.setAttribute('d', ''); m.teeth.setAttribute('d', ''); m.mglow.setAttribute('opacity', 0); return; }
+    /* closed it is a thin smile under the eyes; opening, the corners rise to eye level and spread to the edge */
+    const lc = [-250 + (LC[0] + 250) * c, 72 + (LC[1] - 72) * c], rc = [244 + (RC[0] - 244) * c, 72 + (RC[1] - 72) * c];
+    const upc = 178 + (UPC - 178) * c, t0 = 1 - f.w, low = upc + (LOWC - UPC) * f.o, N = 28, up = [], dn = [];
+    const X = (t) => q(lc[0], (lc[0] + rc[0]) / 2, rc[0], t), Yu = (t) => q(lc[1], upc, rc[1], t), Yl = (t) => q(lc[1], low, rc[1], t);
+    for (let i = 0; i <= N; i++) { const t = t0 + (1 - t0) * i / N; up.push(proj(X(t), Yu(t), yaw, pitch)); dn.push(proj(X(t), Yl(t), yaw, pitch)); }
+    m.lips.setAttribute('d', pathOf(up.concat(dn.reverse()))); m.lips.setAttribute('stroke-width', n1(Math.max(0, 7 - f.o * 14)));
+    let z = '';
+    if (f.o > .1) {
+      /* every tooth is its own light, slightly rounded triangle. Top teeth hang from the upper lip with their tips on the lower lip,
+         bottom teeth stand in the gaps between them. The dark outlines between rounded teeth give the crossing look. */
+      const U = (k) => { const l = k / TEETH; return t0 + (1 - t0) * (l * .4 + (1 - Math.cos(Math.PI * l)) / 2 * .6); };
+      const ptU = (t) => [X(t), Yu(t)], ptL = (t) => [X(t), Yl(t)];
+      const tooth = (b0, b1, tip, lip) => {                 /* base corners b0..b1 along a lip (t values), tip point */
+        const pts = [];
+        for (let i = 0; i <= 4; i++) pts.push(lip(b0 + (b1 - b0) * i / 4));
+        const side = (a, c) => {                            /* gently bulging side from a to c */
+          const mx = (a[0] + c[0]) / 2, my = (a[1] + c[1]) / 2, nx = c[1] - a[1], ny = a[0] - c[0], k = .1;
+          for (let i = 1; i <= 6; i++) { const t = i / 6; pts.push([q(a[0], mx + nx * k, c[0], t), q(a[1], my + ny * k, c[1], t)]); }
+        };
+        side(pts[4], tip); side(tip, pts[0]); pts.pop();
+        z += pathOf(pts.map(([x, y]) => proj(x, y, yaw, pitch)));
+      };
+      const mid = (k) => k < 0 ? t0 : k >= TEETH ? 1 : (U(k) + U(k + 1)) / 2;
+      for (let k = 0; k < TEETH; k++) tooth(U(k), U(k + 1), ptL(mid(k)), ptU);          /* top teeth */
+      for (let k = 0; k <= TEETH; k++) tooth(mid(k), mid(k - 1), ptU(U(k)), ptL);      /* bottom teeth in the gaps, corners included */
+    }
+    m.mclip.setAttribute('d', m.lips.getAttribute('d'));
+    m.teeth.setAttribute('d', z);
+    const mc = proj(-3, (UPC / 2 + low / 2) / 2 + 10, yaw, pitch);
+    m.mglow.setAttribute('cx', n1(mc[0])); m.mglow.setAttribute('cy', n1(mc[1]));
+    m.mglow.setAttribute('rx', n1(300 * f.w)); m.mglow.setAttribute('ry', n1(60 + 120 * f.o)); m.mglow.setAttribute('opacity', (.3 + .7 * f.o).toFixed(2));
+  };
+
+  let sy = scrollY, mx = innerWidth / 2, my = innerHeight / 2, seen = false, last = 0, wander = 0, rest = 0, prev = 0;
+  const measure = (m) => {                                   /* orb home: top left corner in page coordinates, and its size */
+    const r = m.el.getBoundingClientRect();
+    m.size = r.width * .656; m.hx = r.left + r.width * .297; m.hy = r.top + scrollY + r.width * .114;
+  };
+  const measureLogo = () => { const r = logo.el.getBoundingClientRect(); logo.cx = r.left + r.width * .572; logo.cy = r.top + r.height * .47; };
+  const logoEyes = () => {                                   /* the top bar logo only moves its pupils */
+    const dx = mx - logo.cx, dy = my - logo.cy, d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 60);
+    const gx = dx / d * 26 * k, gy = dy / d * 9 * k; logo.px += (gx - logo.px) * .18; logo.py += (gy - logo.py) * .18;
+    logo.p.style.transform = `translate(${logo.px.toFixed(2)}px, ${logo.py.toFixed(2)}px)`;
+    return Math.abs(gx - logo.px) + Math.abs(gy - logo.py) > .05;
+  };
+  /* The moon is an obstacle: the orb may only overlap it from the right (the side it rests on), so it never ends up over the middle
+     of the moon with a white ring around it. To get round to the other side it arcs around the outside. Units: 1000 = moon box. */
+  const HA = Math.atan2(-30, 129), LANE = 40 * D, wrap = (a) => Math.atan2(Math.sin(a), Math.cos(a));
+  const moonOf = (m, homeX, homeY) => { const u = m.size / 656; return { u, x: homeX + m.size / 2 - 129 * u, y: homeY + m.size / 2 + 30 * u, rf: 716 * u }; };
+  const route = (m, mo, tx, ty) => {                         /* target for the orb's top left corner, going round the moon if needed */
+    const s2 = m.size / 2, ox = m.x + s2 - mo.x, oy = m.y + s2 - mo.y, ao = Math.atan2(oy, ox), d = Math.hypot(ox, oy);
+    const at = Math.atan2(ty + s2 - mo.y, tx + s2 - mo.x), diff = wrap(at - ao);
+    if (d < mo.rf && Math.abs(wrap(ao - HA)) < LANE * .95 && Math.abs(diff) > 45 * D) {                /* still over the moon: first straight out to the right */
+      const a = HA + clamp(wrap(ao - HA), -LANE, LANE);
+      return [mo.x + Math.cos(a) * mo.rf * 1.15 - s2, mo.y + Math.sin(a) * mo.rf * 1.15 - s2];
+    }
+    if (d < mo.rf * 1.25 && Math.abs(diff) > 45 * D) {
+      const a = ao + Math.sign(diff) * 55 * D;
+      return [mo.x + Math.cos(a) * mo.rf * 1.12 - s2, mo.y + Math.sin(a) * mo.rf * 1.12 - s2];
+    }
+    return [tx, ty];
+  };
+  const keepOut = (m, mo) => {                               /* push the orb out of the moon unless it is in the lane on the right */
+    const s2 = m.size / 2, ox = m.x + s2 - mo.x, oy = m.y + s2 - mo.y, d = Math.hypot(ox, oy);
+    if (d >= mo.rf) return;
+    const a = Math.atan2(oy, ox), off = wrap(a - HA);
+    if (Math.abs(off) <= LANE && d >= 125 * mo.u) return;
+    const edge = HA + Math.sign(off || 1) * LANE, dl = Math.max(125 * mo.u, d);  /* nearest allowed spot: lane edge or outside the moon */
+    const c1 = [Math.cos(edge) * dl, Math.sin(edge) * dl], c2 = [Math.cos(a) * mo.rf, Math.sin(a) * mo.rf];
+    const p = Math.hypot(c1[0] - ox, c1[1] - oy) < Math.hypot(c2[0] - ox, c2[1] - oy) ? c1 : c2;
+    m.x = mo.x + p[0] - s2; m.y = mo.y + p[1] - s2;
+    const nx = p[0] / Math.hypot(p[0], p[1]), ny = p[1] / Math.hypot(p[0], p[1]), vin = m.vx * nx + m.vy * ny;
+    if (vin < 0) { m.vx -= vin * nx; m.vy -= vin * ny; }      /* drop the part of the speed that pushes into the moon */
+  };
+  const loosen = (m, t) => {
+    m.state = 'chase'; m.t0 = t; m.x = m.hx; m.y = m.hy - sy; m.vx = m.vy = 0;
+    m.orb.style.width = m.size + 'px'; m.orb.classList.add('is-loose');
+    m.orb.style.transform = `translate3d(${m.x}px, ${m.y}px, 0)`; document.body.append(m.orb);
+  };
+  const settle = (m) => { m.state = 'home'; m.orb.classList.remove('is-loose'); m.orb.style.width = m.orb.style.transform = ''; m.el.append(m.orb); };
+
+  function frame(t) {
+    const dt = Math.min(50, prev ? t - prev : 16.7), sec = dt / 1000; prev = t;
+    let busy = logoEyes();
+    for (const m of ms) {
+      if (!m.on && m.state === 'home') continue;
+      const s = m.size, homeX = m.hx, homeY = m.hy - sy, hcx = homeX + s / 2, hcy = homeY + s / 2;
+      const away = Math.hypot(mx - hcx, my - hcy), f = m.f;
+      if (m.state === 'home') {
+        const near = hunt && seen && away < s * .95;
+        if (near && t > rest) loosen(m, t); else if (near) busy = true;
+      }
+      const since = t - m.t0;
+      /* where it looks: turn toward the target, less when the target is right in front of it */
+      const ox = m.state === 'home' ? hcx : m.x + s / 2, oy = m.state === 'home' ? hcy : m.y + s / 2;
+      const dx = mx - ox, dy = my - oy, d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / (s * 1.2));
+      let yaw = dx / d * 48 * k, pitch = dy / d * 26 * k, w = 0, o = 0, lid = 1, rate = .12;
+      let lx = clamp(dx / d * k, -1, 1) * 10, ly = clamp(dy / d * k, -1, 1) * 5;
+      if (m.state === 'home') { yaw = -10 + yaw * .4; pitch = 4 + pitch * .4; }         /* at home it only peeks a little */
+      else if (m.state === 'chase') {
+        w = since > 100 ? 1 : 0; lid = .9;
+        o = since > 650 ? .82 + Math.sin(t / 300) * .06 : 0;                              /* slash first, then the grin opens */
+        rate = .1;
+      } else if (m.state === 'eat') {
+        w = 1; yaw *= .3; pitch = 6; lx = ly = 0;
+        if (since < 280) { o = 1.08; lid = 1.2; rate = .28; }                              /* jaw drops, eyes wide */
+        else if (since < 440) { o = 0; lid = .1; rate = .5; }                              /* snap */
+        else { o = Math.max(0, Math.sin((since - 440) / 100)) * .12; lid = .45; rate = .25; }  /* chewing, pleased */
+      } else {                                                                            /* back */
+        const left = Math.hypot(homeX - m.x, homeY - m.y);
+        w = m.full && left > s * .3 ? 1 : 0; lid = m.full ? .45 : .95;
+        if (m.full) { yaw = -10; pitch = 4; lx = ly = 0; }
+      }
+      if (t < m.blink) { lid = .05; rate = .5; }
+      f.yaw = ease(f.yaw, yaw, .09, dt); f.pitch = ease(f.pitch, pitch, .09, dt); f.lid = ease(f.lid, lid, Math.min(.6, rate * 1.4), dt);
+      if (w === 0) f.w = f.o = 0; else f.w = ease(f.w, w, .06, dt);   /* the mouth only draws in from the right; closing, it is gone at once */ f.o = ease(f.o, o, rate, dt); f.lx = ease(f.lx, lx, .15, dt); f.ly = ease(f.ly, ly, .15, dt);
+      drawFace(m);
+      if (m.state === 'home') {
+        if (Math.abs(f.yaw - yaw) + Math.abs(f.pitch - pitch) + Math.abs(f.lx - lx) + Math.abs(f.ly - ly) + f.w + f.o + Math.abs(f.lid - 1) > .03 || t < m.blink + 250) busy = true;
+        continue;
+      }
+      /* body: a soft spring toward the target, never faster than about 560px a second */
+      const mo = moonOf(m, homeX, homeY);
+      let tx = mx - s / 2, ty = my - s / 2, K = 12, C = 6.4, cap = 560;
+      if (m.state === 'eat') { tx = m.x; ty = m.y + Math.sin(since / 90) * 2; K = 30; C = 11; }
+      else if (m.state === 'back') { tx = homeX; ty = homeY; K = 16; C = 7.4; cap = 800; }
+      if (m.state !== 'eat') [tx, ty] = route(m, mo, tx, ty);
+      m.vx += ((tx - m.x) * K - m.vx * C) * sec; m.vy += ((ty - m.y) * K - m.vy * C) * sec;
+      const v = Math.hypot(m.vx, m.vy); if (v > cap) { m.vx *= cap / v; m.vy *= cap / v; }
+      m.x += m.vx * sec; m.y += m.vy * sec;
+      keepOut(m, mo);
+      if (m.state === 'chase') {
+        if (away > s * 2.6 + 260) { m.state = 'back'; m.full = false; m.t0 = t; }
+        else if (since > 700 && Math.hypot(mx - (m.x + s / 2), my - (m.y + s / 2)) < s * .17) {
+          m.state = 'eat'; m.t0 = t; root.classList.add('is-eaten'); rest = t + 4400;
+          setTimeout(() => root.classList.remove('is-eaten'), 3000);
+        }
+      } else if (m.state === 'eat' && since > 1200) { m.state = 'back'; m.full = true; m.t0 = t; }
+      else if (m.state === 'back' && Math.abs(homeX - m.x) + Math.abs(homeY - m.y) < .8 && v < 8) { settle(m); continue; }
+      const tilt = clamp(m.vx * .01, -7, 7);
+      m.orb.style.transform = `translate3d(${n1(m.x)}px, ${n1(m.y)}px, 0) rotate(${tilt.toFixed(1)}deg)`;
+      busy = true;
+    }
+    if (!busy) prev = 0;
+    return busy;
+  }
+  const look = (x, y) => { mx = x; my = y; seen = true; last = performance.now(); ticker(frame); };
+  addEventListener('mousemove', (e) => look(e.clientX, e.clientY), { passive: true });
+  addEventListener('pointerdown', (e) => look(e.clientX, e.clientY), { passive: true });
+  addEventListener('scroll', () => { sy = scrollY; if (ms.some((m) => m.on || m.state !== 'home')) ticker(frame); }, { passive: true });
+  /* on touch screens, glance somewhere else every couple of seconds when nobody is tapping */
+  const glance = () => {
+    wander = 0;
+    if (!ms.some((m) => m.on) || document.hidden) return;
+    if (!hunt && performance.now() - last > 3500) { mx = innerWidth * (.1 + Math.random() * .8); my = innerHeight * (.15 + Math.random() * .7); ticker(frame); }
+    wander = setTimeout(glance, 1800 + Math.random() * 1800);
+  };
+  /* blink now and then */
+  const blink = () => { const t = performance.now(); ms.forEach((m) => { if (m.on && m.state !== 'eat') m.blink = t + 140; }); ticker(frame); setTimeout(blink, 3500 + Math.random() * 3500); };
+  if (!calm) setTimeout(blink, 4000);
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    const m = ms.find((n) => n.el === e.target); m.on = e.isIntersecting;
+    if (m.on) { measure(m); ticker(frame); if (!wander) wander = setTimeout(glance, 1500); }
+  }));
+  ms.forEach((m) => { drawFace(m); io.observe(m.el); });
+  const all = () => { ms.forEach(measure); measureLogo(); };
+  addEventListener('resize', all, { passive: true });
+  all(); setTimeout(all, 1300);                               /* again once the hero has finished rising in */
 })();
 </script>
 </body>
