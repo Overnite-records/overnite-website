@@ -12,12 +12,13 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 - Numbers: every number is a `<button class="num">` with `data-kind`, `data-num`, `data-title`, `data-text` and optional `data-media` (edit clip names from `assets/edits`, comma separated). Clicking it opens the drawer with that text, so to change what a number says, edit those attributes.
 - Our creator base (`#numbers`, the starfield zoom): `data-x` / `data-y` on each `<li>` set which corner the number settles in (-1 left, 1 right). Each corner stat is centred on itself (number, label and pill on one middle line). The last stat settles at about 3/4 of the scroll run, so there is little dead scrolling after it.
 - Campaign results (`#results`, the shrinking card): the list items. The clips sliding behind it are `assets/morph/m01.mp4` to `m19.mp4` (320px, 6 second loops) with `assets/wall/w01.webp` to `w19.webp` as their posters. Only the clips on screen play, at most 8 at once (4 on phones).
+- Hover click: moving the mouse onto a Campaign results number plays a short click, generated in the browser (script part 6, no audio file). Browsers only allow it after the first click or key press on the page.
 - "Press to show more stats": the small blue pill on every number. It shows on hover (centred under the line in Campaign results), and always on touch screens, so people know a number opens more.
 - Numbers as of November 2026: platform data from Metabase, streams and TikTok creates from Chartex. Update them when they move.
 - Colours: the `:root` block at the top of the `<style>` tag. `--accent` is for filled things (buttons), `--accent-hi` for blue text and outlines on the dark background. Keep both bright, the old navy blue was nearly invisible on black.
 
-- Fonts: self-hosted in `assets/fonts/` (Anton for headlines, Archivo for text, JetBrains Mono for small labels, latin only, SIL Open Font License), so the page never waits on Google Fonts.
-- Hero rows on phones: `hero-row-a-sm.mp4` / `hero-row-b-sm.mp4`, a lighter copy of the same rows. Rebuild both if you change a row.
+- Fonts: self-hosted in `assets/fonts/` (Anton for headlines, Archivo for everything else including the small labels, latin only, SIL Open Font License), so the page never waits on Google Fonts.
+- Hero rows: two rows, each half the screen tall, so together they fill the hero. Phones load `hero-row-a-sm.mp4` / `hero-row-b-sm.mp4`: same 2560x240 size, lower bitrate and 24fps (the old 128px phone rows were too blurry at the bigger size). Rebuild both if you change a row. The rows are 240px tall, so they are upscaled about 2x on a laptop; sharper source edits would make them crisper.
 
 Preview locally by opening `index.html` in a browser, or run `python -m http.server` in this folder.
 

@@ -21,19 +21,17 @@
 @font-face { font-family: "Anton"; font-weight: 400; font-display: swap; src: url(assets/fonts/anton-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: "Archivo"; font-weight: 400; font-display: swap; src: url(assets/fonts/archivo-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: "Archivo"; font-weight: 500; font-display: swap; src: url(assets/fonts/archivo-latin-500-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: swap; src: url(assets/fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 :root {
   /* Neon blue on deep navy. Same hue as before (about 230), pushed bright enough to read on black:
      --accent is for fills (white text on it is 5.9:1), --accent-hi is for text and strokes on the background (5.5:1). */
   --bg: #00020c; --bg-2: #01051a; --ink: #f2f4fb; --grey: #7f87a6; --line: rgba(90,110,255,.18);
   --accent: #2a4bff; --accent-hi: #5b78ff; --accent-ink: #ffffff; --glow: rgba(42,75,255,.55);
-  --display: "Anton", "Impact", sans-serif; --text: "Archivo", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+  --display: "Anton", "Impact", sans-serif; --text: "Archivo", system-ui, sans-serif;
   --gut: clamp(20px, 2.4vw, 32px); --max: 1440px;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .rise { opacity: 1 !important; transform: none !important; } }
-@media (prefers-reduced-motion: reduce) { .reel__track { transform: translateX(-12%); } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .rise { opacity: 1 !important; transform: none !important; } .reel__track { transform: translateX(-12%); } }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--text); -webkit-font-smoothing: antialiased; }
 ::selection { background: var(--accent); color: #fff; }
 img { display: block; max-width: 100%; }
@@ -41,10 +39,10 @@ a { color: inherit; }
 .wrap { width: min(100% - 2 * var(--gut), var(--max)); margin-inline: auto; }
 .skip { position: absolute; left: -9999px; top: 8px; z-index: 50; background: var(--accent); color: var(--accent-ink); padding: 10px 14px; font: 500 14px var(--text); }
 .skip:focus { left: 8px; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 3px; }
 
 /* type */
-.label { font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); margin: 0; }
+.label { font: 500 14px/1.5 var(--text); color: var(--grey); margin: 0; }
 .display { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: -.01em; line-height: .9; margin: 0; }
 .outline { color: transparent; -webkit-text-stroke: 2px var(--accent-hi); filter: drop-shadow(0 0 14px var(--glow)); }
 .accent { color: var(--accent-hi); }
@@ -71,13 +69,14 @@ p { margin: 0; }
 
 /* hero */
 .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; padding: 120px 0 clamp(40px, 7vh, 80px); }
-/* hero background: two rows of edits drifting in opposite directions, tilted like the 99Eyes rows.
+/* hero background: two big rows of edits (half the screen height each) drifting in opposite directions, tilted like the 99Eyes rows.
    Each row is ONE video (10 edits stitched side by side) shown twice, so the loop is seamless and only 4 videos decode. */
 .reel { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.reel__rows { position: absolute; left: -15%; right: -15%; top: 50%; display: grid; gap: 14px; opacity: .55; transform: translateY(-58%) rotate(-5deg); transform-origin: 50% 50%; will-change: transform; }
+.reel__rows { position: absolute; left: -15%; right: -15%; top: 50%; display: grid; gap: 12px; opacity: .55; transform: translateY(-50%) rotate(-3deg); transform-origin: 50% 50%; will-change: transform; }
 .reel__track { display: flex; width: max-content; animation: drift 55s linear infinite; }
 .reel__track--b { animation-duration: 65s; animation-direction: reverse; }
-.reel video { display: block; height: clamp(120px, 14vw, 240px); width: auto; aspect-ratio: 2560 / 240; background: var(--bg-2); }
+/* two big rows that together fill the whole hero, on phones too */
+.reel video { display: block; height: clamp(150px, calc(50svh - 6px), 520px); width: auto; aspect-ratio: 2560 / 240; background: var(--bg-2); }
 .reel.is-off .reel__track { animation-play-state: paused; }
 @keyframes drift { to { transform: translateX(-50%); } }
 .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -85,9 +84,9 @@ p { margin: 0; }
 .hero .wrap { position: relative; z-index: 1; transform-origin: 0 100%; will-change: transform, opacity; }
 .hero h1 { font-size: clamp(76px, 15.6vw, 236px); line-height: .82; letter-spacing: -.012em; }
 .hero h1 > span { display: block; }
-.hero h1 .outline, .h2 .outline { -webkit-text-stroke-width: 3px; }
+.hero h1 .outline, .h2 .outline, .warp__big .outline { -webkit-text-stroke-width: 3px; }
 @media (max-width: 640px) { .hero h1 { font-size: 21.5vw; } }
-.hero__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; margin-top: clamp(24px, 3.5vw, 40px); }
+.hero__cta { margin-top: clamp(24px, 3.5vw, 40px); }
 .hero__line { font: 400 clamp(17px, 1.6vw, 22px)/1.25 var(--display); text-transform: uppercase; letter-spacing: .01em; }
 .hero h1 + .hero__line { margin-top: clamp(20px, 3vw, 34px); }
 .rise { opacity: 0; transform: translateY(18px); animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
@@ -96,7 +95,7 @@ p { margin: 0; }
 
 /* sections */
 section { padding: clamp(72px, 10vw, 140px) 0; }
-.head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: clamp(28px, 4vw, 48px); flex-wrap: wrap; }
+.faq__h { margin: 0 0 clamp(28px, 4vw, 48px); }
 .h2 { font-size: clamp(44px, 6.4vw, 96px); margin-top: 14px; }
 .lede { max-width: 56ch; color: var(--grey); font-size: 17px; }
 
@@ -110,18 +109,17 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 
 /* warp: scroll zoom through a starfield, numbers fly out of the centre (after the Polaris Records about section).
    Without JS, or with reduced motion, it is a plain list. script adds .warp--live */
-.warp { position: relative; padding: clamp(72px, 10vw, 140px) 0; overflow: clip; } /* clip, not hidden: hidden would break the sticky stage */
-.warp__stage { position: relative; }
-.warp__stars { display: none; }
+.warp, .morph { position: relative; overflow: clip; }   /* clip, not hidden: hidden would break the sticky stages */
+.warp__stage, .morph__stage { position: relative; }
+.warp__stars, .morph__cols { display: none; }
 .warp__center { text-align: center; }
 .warp__big { font-size: clamp(72px, 12vw, 190px); line-height: .82; }
-.warp__big .outline { -webkit-text-stroke-width: 3px; }
 .warp__sub { max-width: 34ch; margin: 22px auto 0; color: var(--grey); font-size: 17px; }
 .warp__stats { list-style: none; margin-top: clamp(48px, 7vw, 88px); margin-bottom: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 32px 24px; }
 .warp__stats li { border-top: 1px solid var(--accent); padding-top: 16px; }
 /* every number is a button that opens the detail window */
 .num { all: unset; box-sizing: border-box; display: block; cursor: pointer; color: inherit; text-align: inherit; }
-.num:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 6px; }
+.num:focus-visible { outline-offset: 6px; }
 .num--title { display: inline; text-transform: inherit; }
 .num--title:hover .outline { -webkit-text-stroke-color: var(--ink); }
 .warp__stats .num:hover b { color: var(--ink); }
@@ -129,7 +127,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .warp__stats span { display: block; margin-top: 10px; color: var(--grey); font-size: 15px; }
 
 .warp--live { height: 170vh; padding: 0; }
-.warp--live .warp__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.warp--live .warp__stage, .morph--live .morph__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .warp--live .warp__stars { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
 .warp--live .warp__center { position: absolute; left: 50%; top: 50%; width: min(92vw, 1100px); transform: translate(-50%, -50%); will-change: transform, opacity; opacity: 0; }
 .warp--live .warp__stats { margin-top: 0; display: block; }
@@ -146,11 +144,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 /* campaign results (after the Broke Records services block): a card that starts full screen and shrinks as you scroll,
    uncovering columns of edit stills that slide up and down. Each number opens the drawer.
    Without JS or with reduced motion it is a plain card. script adds .morph--live */
-.morph { position: relative; padding: clamp(72px, 10vw, 140px) 0; overflow: clip; }
-.morph__stage { position: relative; }
-.morph__cols { display: none; }
 .morph__card { position: relative; z-index: 1; width: min(100% - 2 * var(--gut), 1100px); margin-inline: auto; padding: clamp(40px, 7vw, 96px) 20px; text-align: center; }
-.morph__label { margin: 0; font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--grey); }
 .morph__list { list-style: none; margin: clamp(28px, 5vw, 56px) 0 0; padding: 0; display: grid; gap: 6px; justify-items: center; }
 .morph__item { position: relative; font: 400 clamp(40px, 7.4vw, 104px)/.86 var(--display); text-transform: uppercase; letter-spacing: -.005em; transition: opacity .3s ease; }
 .morph__roll { display: grid; overflow: hidden; }
@@ -162,8 +156,8 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 @media (hover: hover) { .morph__list { gap: clamp(14px, 2.8vw, 40px); } }   /* room for the hint under the hovered line */
 
 /* "Press to show more stats": tells people a number opens more. Appears on hover, always visible on touch screens */
-.more { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 5px; border-radius: 999px; background: var(--accent); color: #fff; font: 400 11px/1 var(--mono); font-style: normal; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; pointer-events: none; }
-.morph__item .more { position: absolute; left: 50%; top: 100%; z-index: 1; font-size: 14px; padding: 8px 14px 7px; opacity: 0; transform: translate(-50%, -4px); transition: opacity .25s ease, transform .25s ease; }
+.more { display: inline-flex; padding: 7px 13px; border-radius: 999px; background: var(--accent); color: #fff; font: 500 13px/1 var(--text); font-style: normal; text-transform: none; white-space: nowrap; pointer-events: none; }
+.morph__item .more { position: absolute; left: 50%; top: 100%; z-index: 1; font-size: 15px; padding: 9px 15px; opacity: 0; transform: translate(-50%, -4px); transition: opacity .25s ease, transform .25s ease; }
 .morph__item:hover .more, .morph__item:focus-visible .more { opacity: 1; transform: translate(-50%, 2px); }
 .warp__stats .more { display: flex; margin: 12px auto 0; width: max-content; opacity: 0; transform: translateY(4px); transition: opacity .25s ease, transform .25s ease; }
 .warp__stats .num:hover .more, .warp__stats .num:focus-visible .more { opacity: 1; transform: none; }
@@ -173,7 +167,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 }
 
 .morph--live { height: 300vh; padding: 0; }
-.morph--live .morph__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .morph--live .morph__cols { position: absolute; left: 50%; top: 50%; display: flex; gap: 18px; transform: translate(-50%, -50%) scale(1.2); }
 .morph__col { display: flex; flex-direction: column; gap: 18px; will-change: transform; }
 .morph__col:nth-child(even) { margin-top: -160px; }
@@ -197,7 +190,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .drawer__media video { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; background: var(--bg); }
 .drawer__back { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); min-height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--ink); color: var(--bg); font: 400 16px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; cursor: pointer; }
 .drawer__back:hover { background: #fff; }
-.drawer__back:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 3px; }
 .is-locked { overflow: hidden; }
 
 /* split */
@@ -225,16 +217,14 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .field { display: grid; gap: 8px; }
 .field--full { grid-column: 1 / -1; }
-.field label { font-size: 15px; color: #c4c9de; }
-.field textarea { min-height: 96px; padding: 14px 16px; resize: vertical; line-height: 1.5; }
-.field input, .field select { height: 52px; padding: 0 16px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: 400 16px var(--text); border-radius: 0; appearance: none; width: 100%; }
+.field label, .files__label { font-size: 15px; color: #c4c9de; }
+.field input, .field select, .field textarea { height: 52px; padding: 0 16px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: 400 16px/1.5 var(--text); border-radius: 0; appearance: none; width: 100%; }
+.field textarea { height: auto; min-height: 96px; padding: 14px 16px; resize: vertical; }
 .field select { background-image: linear-gradient(45deg, transparent 50%, var(--grey) 50%), linear-gradient(135deg, var(--grey) 50%, transparent 50%); background-position: calc(100% - 22px) 23px, calc(100% - 17px) 23px; background-size: 5px 5px; background-repeat: no-repeat; }
-.field textarea { background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: 400 16px/1.5 var(--text); border-radius: 0; width: 100%; }
 .field input::placeholder, .field textarea::placeholder { color: #4e5677; }
 .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent-hi); outline: none; }
 /* file picker: the native input stays in the page (keyboard and screen readers use it), the label is what people see */
 .files { justify-items: start; }
-.files__label { font-size: 15px; color: #c4c9de; }
 .files input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .files__pick { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border: 1px dashed var(--accent-hi); color: var(--ink); font-size: 15px; cursor: pointer; transition: background-color .15s; }
 .files__pick:hover, .files input:focus-visible + .files__pick { background: rgba(42,75,255,.14); }
@@ -273,7 +263,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 /* close + footer */
 .close { background: radial-gradient(120% 140% at 50% 0%, #2a4bff 0%, #1631c4 32%, #0a1a6e 62%, #00020c 100%); color: var(--ink); padding: clamp(64px, 9vw, 128px) 0; }
 .close .outline { -webkit-text-stroke-color: var(--ink); filter: none; }
-.close .wrap { display: flex; justify-content: space-between; align-items: center; gap: 28px; flex-wrap: wrap; }
 .close .display { font-size: clamp(64px, 11vw, 176px); line-height: .85; }
 .foot { padding: 24px 0 32px; }
 .foot .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -317,9 +306,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     <div class="wrap">
       <h1 class="display" id="hero-h"><span class="rise">Viral</span><span class="rise d2 outline">Overnite.</span></h1>
       <p class="hero__line rise d3">Phonk, Hardtekk and internet music.</p>
-      <div class="hero__foot rise d3">
-        <a class="btn" href="#demo">Send a demo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
-      </div>
+      <a class="btn hero__cta rise d3" href="#demo">Send a demo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
     </div>
   </section>
 
@@ -366,7 +353,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
         <div class="morph__col"><video data-src="assets/morph/m06.mp4" data-poster="assets/wall/w06.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m12.mp4" data-poster="assets/wall/w12.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m01.mp4" data-poster="assets/wall/w01.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m02.mp4" data-poster="assets/wall/w02.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m16.mp4" data-poster="assets/wall/w16.webp" width="320" height="320" muted loop playsinline preload="none"></video><video data-src="assets/morph/m17.mp4" data-poster="assets/wall/w17.webp" width="320" height="320" muted loop playsinline preload="none"></video></div>
       </div>
       <div class="morph__card">
-        <h2 class="morph__label" id="results-h">Campaign results</h2>
+        <h2 class="label" id="results-h">Campaign results</h2>
         <ul class="morph__list">
           <li><button class="num morph__item" type="button" data-kind="Campaign results" data-num="9.2B" data-title="Spotify streams"
             data-text="Spotify streams the songs picked up from the day a campaign launched until six weeks after it ended, tracked with Chartex across 1,309 songs. Other promotion running at the same time counts in there too." data-media="spider-man,montagem-uranium,chemical"><span class="morph__roll"><span>9.2B Spotify streams</span><span aria-hidden="true">9.2B Spotify streams</span></span><em class="more">Press to show more stats</em></button></li>
@@ -442,7 +429,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 
   <section class="faq" id="questions" aria-labelledby="faq-h">
     <div class="wrap">
-      <div class="head"><h2 class="label" id="faq-h">Questions</h2></div>
+      <h2 class="display h2 faq__h" id="faq-h">Questions</h2>
       <details><summary>What do you release?</summary><p>Phonk and Hardtekk first, plus any internet music made for edits.</p></details>
       <details><summary>What does a deal look like?</summary><p>Clear splits, nothing predatory. You see the same numbers we do, including how your song does in edits.</p></details>
       <details><summary>Do you check samples?</summary><p>Yes. Every sample and vocal gets checked before we sign, so your release doesn't get taken down later.</p></details>
@@ -492,7 +479,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     if (!playable) return;
     const group = v.closest('.reel__track') ? v.parentElement.querySelectorAll('video') : [v];
     group.forEach((g) => { if (!g.src) { g.preload = 'auto'; g.src = (small && g.dataset.srcSm) || g.dataset.src; } });   /* phones get the lighter hero rows */
-    const p = v.play(); if (p) p.catch(() => {});
+    v.play().catch(() => {});
   };
   const onScreen = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
   const videos = [...document.querySelectorAll('.reel video')];
@@ -518,7 +505,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     dKind.textContent = d.kind || ''; dNum.textContent = d.num || ''; dTitle.textContent = d.title || ''; dText.textContent = d.text || '';
     dMedia.replaceChildren(...(d.media ? d.media.split(',') : []).map((name) => {
       const v = document.createElement('video');
-      v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'none';
+      v.muted = v.loop = v.playsInline = true; v.preload = 'none';
       v.poster = `assets/edits/${name}.jpg`; v.dataset.src = `assets/edits/${name}.mp4`; v.width = 432; v.height = 432;
       return v;
     }));
@@ -533,13 +520,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     if (!drawer.open) return;
     drawer.classList.remove('is-in');
     dMedia.querySelectorAll('video').forEach((v) => v.pause());
-    const done = () => { drawer.close(); };
-    if (calm) done(); else setTimeout(done, 450);
+    setTimeout(() => drawer.close(), calm ? 0 : 450);
   }
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('button.num');
-    if (btn) openDrawer(btn);
-  });
+  document.addEventListener('click', (e) => { const btn = e.target.closest('button.num'); if (btn) openDrawer(btn); });
   drawer.querySelector('.drawer__back').addEventListener('click', closeDrawer);
   drawer.addEventListener('click', (e) => { if (e.target === drawer) closeDrawer(); });           /* click on the dimmed page */
   drawer.addEventListener('cancel', (e) => { e.preventDefault(); closeDrawer(); });                 /* Esc, with the slide-out */
@@ -599,13 +582,12 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       if (live.size >= cap) break;
       if (live.has(v)) continue;
       if (!v.src) v.src = v.dataset.src;
-      live.add(v); const p = v.play(); if (p) p.catch(() => {});
+      live.add(v); v.play().catch(() => {});
     }
   }
   const morphIO = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      const v = e.target;
-      if (e.isIntersecting) seen.add(v);
+    for (const { target: v, isIntersecting } of entries) {
+      if (isIntersecting) seen.add(v);
       else { seen.delete(v); if (live.delete(v)) v.pause(); }
     }
     fillMorph();
@@ -646,7 +628,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       const k = clamp(scrollY / hero.offsetHeight);
       heroText.style.transform = `translateY(${k * 60}px) scale(${1 - k * 0.12})`;
       heroText.style.opacity = 1 - k * 1.15;
-      rows.style.transform = `translateY(-58%) rotate(-5deg) scale(${1 + k * 0.35})`;
+      rows.style.transform = `translateY(-50%) rotate(-3deg) scale(${1 + k * 0.25})`;
     }
     if (warpOn) {
       const target = progress(warp), prev = warpP;
@@ -660,7 +642,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       for (const s of stats) {
         const q = clamp((warpP - s.start) / 0.22);           /* 0 = still in the centre, 1 = settled in its corner */
         const come = easeOut(q);
-        const w = s.w, h = s.h;
+        const { w, h } = s;
         const end = s.x < 0 ? -(W / 2 - m) : W / 2 - m - w;   /* x of the block's left edge once it sits in its corner */
         const left = end * come - (w / 2) * (1 - come);      /* starts centred on the middle of the screen */
         const settled = Math.min(Math.max(s.y * ry - h / 2, 96 - H / 2), H / 2 - h - 28);   /* never under the header, never off the bottom */
@@ -705,7 +687,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   }, { passive: true });
   document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
   function frame() {
-    const px = pos.x, py = pos.y, ease = calm ? 1 : 0.16;
+    const px = pos.x, py = pos.y, ease = calm ? 1 : 0.185;
     pos.x += (target.x - pos.x) * ease; pos.y += (target.y - pos.y) * ease;
     const dx = pos.x - px, dy = pos.y - py, speed = Math.hypot(dx, dy);
     const angle = Math.atan2(dy, dx) * 180 / Math.PI;
@@ -744,6 +726,30 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent('Demo: ' + data.get('title'))}&body=${encodeURIComponent(lines.join('\n'))}`;
     if (files.files.length) msg.textContent = 'Your email app opened with the details. Attach your files there and hit send.';
   });
+})();
+/* 6. Campaign results: a short click when the mouse moves onto a number. The click is made in the browser (no audio file to load).
+      Browsers only allow sound after the visitor's first click or key press, so it starts working from then on. */
+(() => {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  let ctx = null, buf = null;
+  const unlock = () => {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const len = Math.floor(ctx.sampleRate * 0.03);
+      buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 6;   /* noise that dies away in 30 ms */
+    }
+    ctx.resume();
+  };
+  addEventListener('pointerdown', unlock); addEventListener('keydown', unlock);
+  const tick = () => {
+    if (!ctx || ctx.state !== 'running') return;
+    const src = ctx.createBufferSource(), band = ctx.createBiquadFilter(), vol = ctx.createGain();
+    src.buffer = buf; band.type = 'bandpass'; band.frequency.value = 2400; band.Q.value = 1.2; vol.gain.value = 0.35;
+    src.connect(band).connect(vol).connect(ctx.destination); src.start();
+  };
+  document.querySelectorAll('.morph__item').forEach((b) => b.addEventListener('pointerenter', tick));
 })();
 </script>
 </body>
