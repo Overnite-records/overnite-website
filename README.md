@@ -40,7 +40,7 @@ Videos only load and play while they are on screen. With reduced motion or Save-
 
 ## Open items
 
-- Demo form: people paste links (one per line) and/or add several MP3 or WAV files. `data-endpoint` on the form is empty, so for now submitting opens an email to `data-to` (still the placeholder `demos@overnite.example`) and people attach their files there. Set `data-endpoint` to a form service that accepts audio files and it posts everything there instead. The form has no `mailto:` action on purpose: Chrome marks that as not secure and turns autofill off.
+- Demo form: picking "Something else" as genre opens a "Which genre?" field. Track links and TikTok links are lists of boxes: once a box has something in it, a new empty one appears below (up to 10). Every file pick adds to the list (no replacing), each file can be removed with its ×, and the button then reads "Add another file". All of it is script part 5. `data-endpoint` on the form is empty, so for now submitting opens an email to `data-to` (still the placeholder `demos@overnite.example`) and people attach their files there. Set `data-endpoint` to a form service that accepts audio files and it posts everything there instead. The form has no `mailto:` action on purpose: Chrome marks that as not secure and turns autofill off.
 - The logo in "Why Overnite" is the placeholder mark until the real logo is done.
 
 ## Deploy

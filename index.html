@@ -250,11 +250,16 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .field input::placeholder, .field textarea::placeholder { color: #4e5677; }
 .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent-hi); outline: none; }
 /* file picker: the native input stays in the page (keyboard and screen readers use it), the label is what people see */
+.field[hidden] { display: none; }
+.multi { display: grid; gap: 8px; }
 .files { justify-items: start; }
 .files input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .files__pick { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border: 1px dashed var(--accent-hi); color: var(--ink); font-size: 15px; cursor: pointer; transition: background-color .15s; }
 .files__pick:hover, .files input:focus-visible + .files__pick { background: rgba(42,75,255,.14); }
 .files__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14px; color: var(--grey); }
+.files__list li { display: flex; align-items: center; gap: 6px; }
+.files__list button { padding: 2px 6px; background: none; border: 0; color: var(--grey); font: 400 18px/1 var(--text); cursor: pointer; }
+.files__list button:hover { color: var(--ink); }
 .form__msg { grid-column: 1 / -1; font-size: 15px; color: var(--accent-hi); }
 .form__msg:empty { display: none; }
 .field__hint { font-size: 13px; color: var(--grey); }
@@ -479,14 +484,15 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
         <div class="field"><label for="f-title">Song title</label><input id="f-title" name="title" type="text" placeholder="Just the title" required></div>
         <div class="field"><label for="f-genre">Genre</label>
           <select id="f-genre" name="genre" required>
-            <option value="">Choose one</option><option>Phonk</option><option>Brazilian phonk</option><option>Funk</option><option>Hardtekk</option><option>Something else</option>
+            <option value="">Choose one</option><option>Phonk</option><option>Brazilian phonk</option><option>Funk</option><option>Hardtekk</option><option value="other">Something else</option>
           </select></div>
-        <div class="field field--full"><label for="f-link">Your tracks</label><textarea id="f-link" name="links" rows="3" autocomplete="url" placeholder="Paste links here, one per line (SoundCloud, Drive, Dropbox...)"></textarea></div>
+        <div class="field field--full" id="genre-other" hidden><label for="f-genre-other">Which genre?</label><input id="f-genre-other" name="genre_other" type="text" placeholder="Type your genre"></div>
+        <div class="field field--full"><label for="f-link">Your tracks</label><div class="multi"><input id="f-link" name="links" type="text" inputmode="url" autocomplete="off" placeholder="Paste a link (SoundCloud, Drive, Dropbox...)"></div></div>
         <div class="field field--full files"><span class="files__label">Or upload the files</span>
           <input id="f-files" name="files" type="file" accept=".mp3,.wav,audio/mpeg,audio/wav,audio/x-wav" multiple><label class="files__pick" for="f-files">Add MP3 or WAV</label>
           <ul class="files__list" aria-live="polite"></ul>
           <span class="field__hint">You can add more than one, like the original and a slowed version.</span></div>
-        <div class="field field--full"><label for="f-tt">Already moving on TikTok? (optional)</label><input id="f-tt" name="tiktok" type="text" inputmode="url" autocomplete="url" placeholder="https://www.tiktok.com/..."><span class="field__hint">Paste the video or sound.</span></div>
+        <div class="field field--full"><label for="f-tt">Already moving on TikTok? (optional)</label><div class="multi"><input id="f-tt" name="tiktok" type="text" inputmode="url" autocomplete="off" placeholder="https://www.tiktok.com/..."></div><span class="field__hint">Paste the video or sound.</span></div>
         <label class="check"><input type="checkbox" name="samples" required> All samples and vocals on this track are mine or cleared.</label>
         <label class="check"><input type="checkbox" name="consent" required> I agree that Overnite can use my submission to review the demo and contact me about it.</label>
         <p class="form__msg" role="status"></p>
@@ -768,30 +774,77 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
       No mailto action on the form itself: Chrome flags that as "not secure" and turns autofill off. */
 (() => {
   const form = document.getElementById('demo-form');
-  const links = form.querySelector('#f-link'), files = form.querySelector('#f-files'), list = form.querySelector('.files__list'), msg = form.querySelector('.form__msg');
-  files.addEventListener('change', () => {
-    list.replaceChildren(...[...files.files].map((f) => { const li = document.createElement('li'); li.textContent = f.name; return li; }));
-    links.setCustomValidity('');
+  const genre = form.querySelector('#f-genre'), other = form.querySelector('#genre-other'), otherInput = other.querySelector('input');
+  const files = form.querySelector('#f-files'), pick = form.querySelector('.files__pick'), list = form.querySelector('.files__list'), msg = form.querySelector('.form__msg');
+  const firstLink = form.querySelector('#f-link');
+  let picked = [];
+
+  // "Something else" opens a field for the genre.
+  const syncGenre = () => { other.hidden = genre.value !== 'other'; otherInput.required = !other.hidden; };
+  genre.addEventListener('change', () => { syncGenre(); if (!other.hidden) otherInput.focus(); });
+
+  // Link lists: as soon as the last box has something in it, a new empty one appears below (up to 10).
+  // Emptied boxes go away again, so there is always exactly one empty box at the end.
+  form.querySelectorAll('.multi').forEach((box) => {
+    box.addEventListener('input', () => {
+      [...box.children].slice(1, -1).forEach((i) => { if (!i.value.trim() && document.activeElement !== i) i.remove(); });
+      while (box.children.length > 1 && !box.lastElementChild.value.trim() && !box.lastElementChild.previousElementSibling.value.trim()) box.lastElementChild.remove();
+      const last = box.lastElementChild;
+      if (last.value.trim() && box.children.length < 10) {
+        const next = last.cloneNode(); next.value = ''; next.removeAttribute('id');
+        next.setAttribute('aria-label', 'Another link'); box.append(next);
+      }
+      firstLink.setCustomValidity('');
+    });
+    box.addEventListener('focusout', (e) => {
+      const i = e.target;
+      if (!i.value.trim() && i !== box.lastElementChild && i !== box.firstElementChild) i.remove();
+    });
   });
-  links.addEventListener('input', () => links.setCustomValidity(''));
+
+  // Files: every pick adds to the list instead of replacing it. Each file can be taken out again.
+  const syncFiles = () => {
+    const dt = new DataTransfer(); picked.forEach((f) => dt.items.add(f)); files.files = dt.files;
+    list.replaceChildren(...picked.map((f, n) => {
+      const li = document.createElement('li'), x = document.createElement('button');
+      x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + f.name);
+      x.addEventListener('click', () => { picked.splice(n, 1); syncFiles(); });
+      li.append(f.name, x); return li;
+    }));
+    pick.textContent = picked.length ? 'Add another file' : 'Add MP3 or WAV';
+  };
+  files.addEventListener('change', () => {
+    const seen = new Set(picked.map((f) => f.name + f.size));
+    picked = picked.concat([...files.files].filter((f) => !seen.has(f.name + f.size)));
+    syncFiles(); firstLink.setCustomValidity('');
+  });
+
+  const clear = () => {
+    form.reset(); picked = []; syncFiles(); syncGenre();
+    form.querySelectorAll('.multi').forEach((box) => { while (box.children.length > 1) box.lastElementChild.remove(); });
+  };
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    links.setCustomValidity(links.value.trim() || files.files.length ? '' : 'Paste a link or add a file.');
-    if (!form.reportValidity()) return;
     const data = new FormData(form);
+    const all = (k) => data.getAll(k).map((v) => v.toString().trim()).filter(Boolean);
+    firstLink.setCustomValidity(all('links').length || picked.length ? '' : 'Paste a link or add a file.');
+    if (!form.reportValidity()) return;
     if (form.dataset.endpoint) {
       msg.textContent = 'Sending...';
       try {
         const r = await fetch(form.dataset.endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
         if (!r.ok) throw new Error(r.status);
-        form.reset(); list.replaceChildren(); msg.textContent = 'Got it. We listen to everything and reach out if we want to work together.';
+        clear(); msg.textContent = 'Got it. We listen to everything and reach out if we want to work together.';
       } catch { msg.textContent = 'That did not go through. Try again in a minute.'; }
       return;
     }
-    const lines = ['name', 'email', 'contact', 'title', 'genre', 'links', 'tiktok'].map((k) => `${k}: ${(data.get(k) || '').toString().trim()}`);
-    if (files.files.length) lines.push('', 'Files to attach: ' + [...files.files].map((f) => f.name).join(', '));
+    const g = genre.value === 'other' ? all('genre_other')[0] : genre.value;
+    const lines = [['name', all('name')[0]], ['email', all('email')[0]], ['contact', all('contact')[0]], ['title', all('title')[0]], ['genre', g],
+      ['links', all('links').join('\n  ')], ['tiktok', all('tiktok').join('\n  ')]].map(([k, v]) => `${k}: ${v || ''}`);
+    if (picked.length) lines.push('', 'Files to attach: ' + picked.map((f) => f.name).join(', '));
     location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent('Demo: ' + data.get('title'))}&body=${encodeURIComponent(lines.join('\n'))}`;
-    if (files.files.length) msg.textContent = 'Your email app opened with the details. Attach your files there and hit send.';
+    if (picked.length) msg.textContent = 'Your email app opened with the details. Attach your files there and hit send.';
   });
 })();
 /* 6. Campaign results: a short click when the mouse moves onto a number. The click is made in the browser (no audio file to load).
