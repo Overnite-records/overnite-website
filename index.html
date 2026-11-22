@@ -279,17 +279,19 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .faq details p { color: var(--grey); max-width: 70ch; padding: 0 0 26px; font-size: 16px; }
 
 /* custom cursor: one inverting dot that stretches with movement (desktop pointers only; script adds .has-cursor) */
-.cursor { position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 100; pointer-events: none; opacity: 0; transition: opacity .15s ease; will-change: transform; }
-.cursor span { position: absolute; left: 0; top: 0; width: var(--size, 14px); height: var(--size, 14px); border-radius: 50%; transform: translate(-50%, -50%); background: #fff; mix-blend-mode: difference; transition: width .22s ease, height .22s ease; }
-@supports ((backdrop-filter: invert(1)) or (-webkit-backdrop-filter: invert(1))) {
-  .cursor span { background: transparent; mix-blend-mode: normal; -webkit-backdrop-filter: grayscale(1) brightness(1.5) contrast(9999) invert(1); backdrop-filter: grayscale(1) brightness(1.5) contrast(9999) invert(1); }
-}
+/* two stacked dots: the lower one takes the colour out of what is under it, the upper one inverts it, so the dot reads black or white.
+   The blend sits on .cursor itself (on the inner dot it would only blend inside .cursor's own layer). Blend modes cost far less than a backdrop-filter over playing video */
+.cursor { position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 100; pointer-events: none; opacity: 0; transition: opacity .15s ease; will-change: transform; mix-blend-mode: difference; }
+.cursor span { position: absolute; left: 0; top: 0; width: var(--size, 14px); height: var(--size, 14px); border-radius: 50%; transform: translate(-50%, -50%); background: #fff; transition: width .22s ease, height .22s ease; }
 .has-cursor .cursor { opacity: 1; }
 .has-cursor, .has-cursor a, .has-cursor button, .has-cursor summary, .has-cursor select, .has-cursor label { cursor: none; }
 .has-cursor .drawer, .has-cursor .drawer * { cursor: auto; }
 .has-cursor input { cursor: text; }
 .cursor.is-link { --size: 52px; }
 .cursor.is-text { opacity: 0; }
+.cursor--grey { mix-blend-mode: saturation; }
+.cursor.is-blue { mix-blend-mode: normal; }
+.cursor.is-blue span { background: #000; }
 
 /* closing band + footer */
 .end { background: var(--accent); color: #fff; padding: clamp(96px, 14vw, 200px) 0 clamp(64px, 9vw, 128px); }
@@ -520,7 +522,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   <button class="drawer__back" type="button">Go back</button>
 </dialog>
 
-<div class="cursor" aria-hidden="true"><span></span></div>
+<div class="cursor cursor--grey" aria-hidden="true"><span></span></div><div class="cursor" aria-hidden="true"><span></span></div>
 <script>
 /* shared frame loop: every moving part adds its step here, a step returns true while it still needs frames.
    Nothing runs while nothing moves */
@@ -779,23 +781,33 @@ const ticker = (() => {
   kick();
 })();
 
-/* 4. Custom cursor: one inverting dot that stretches with movement (desktop pointers only). Sleeps when the mouse stops. */
+/* 4. Custom cursor: one inverting dot that stretches with movement (desktop pointers only). Runs in the shared frame loop
+      and sleeps when the mouse stops. Links and inputs are checked on mouseover (once per element), not on every move. */
 (() => {
   const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 768px)').matches;
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!fine) return;
-  const el = document.querySelector('.cursor');
+  const dots = [...document.querySelectorAll('.cursor')];
+  const flag = (name, on) => dots.forEach((d) => d.classList.toggle(name, on));
   const target = { x: innerWidth / 2, y: innerHeight / 2 }, pos = { ...target };
-  let shown = false, onLink = false, running = false;
+  let shown = false, onLink = false;
   addEventListener('mousemove', (e) => {
     target.x = e.clientX; target.y = e.clientY;
     if (!shown) { shown = true; pos.x = target.x; pos.y = target.y; document.documentElement.classList.add('has-cursor'); }
-    const t = e.target;
-    onLink = !!t.closest('a, button, summary, select, label, [role="button"]');
-    el.classList.toggle('is-text', !!t.closest('input'));
-    el.classList.toggle('is-link', onLink);
-    if (!running) { running = true; requestAnimationFrame(frame); }
+    ticker(frame);
   }, { passive: true });
+  let over = null;
+  const look = () => {
+    const t = over; if (!t) return;
+    onLink = !!t.closest('a, button, summary, select, label, [role="button"]');
+    flag('is-text', !!t.closest('input'));
+    flag('is-link', onLink);
+    flag('is-blue', !!t.closest(BLUE));
+  };
+  /* the blend turns the dot yellow on blue, so over blue surfaces it is simply black, like the old black-or-white dot */
+  const BLUE = '.end, .btn, .more, .skip, .genres div, .why__tab[aria-selected="true"]';
+  document.addEventListener('mouseover', (e) => { over = e.target; look(); }, { passive: true });
+  document.addEventListener('click', look);
   document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
   function frame() {
     const px = pos.x, py = pos.y, ease = calm ? 1 : 0.185;
@@ -803,8 +815,9 @@ const ticker = (() => {
     const dx = pos.x - px, dy = pos.y - py, speed = Math.hypot(dx, dy);
     const angle = Math.atan2(dy, dx) * 180 / Math.PI;
     const stretch = calm || onLink ? 1 : Math.min(1 + speed * 0.045, 1.9);
-    el.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${angle}deg) scale(${stretch}, ${1 / Math.sqrt(stretch)})`;
-    if (Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3) requestAnimationFrame(frame); else running = false;
+    const tf = `translate(${pos.x}px, ${pos.y}px) rotate(${angle}deg) scale(${stretch}, ${1 / Math.sqrt(stretch)})`;
+    dots.forEach((d) => { d.style.transform = tf; });
+    return Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3;
   }
 })();
 /* 5. Demo form. Sends to data-endpoint (a form service that takes audio files) once one is set.
