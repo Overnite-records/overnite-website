@@ -6,6 +6,7 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 
 ## Edit
 
+- Several people (and their AI tools) edit this file. Run `git pull` right before you change anything and edit the pulled file, never an older copy: writing back an old copy silently undoes everyone else's changes (this happened twice to the scroll hover fix, see Cursor below).
 - Text: search for the sentence in `index.html` and change it.
 - `assets/edits/`: no longer used. These clips belonged to the number drawer, which was removed (numbers are plain text now). Safe to delete.
 - Hero text: "Viral Overnite." with the motto "Blew up overnite." under it (from the Label Motto page in Notion).
@@ -25,7 +26,7 @@ Plain static HTML, no build step. Everything (text, styles, script) is in `index
 - What we sign: each genre cell turns blue on hover (or keyboard focus), the name moves up and the description appears. On touch screens the description is always shown.
 - How it works: three steps drawn as a timeline, circles and text centred, circles joined by arrows. The circles stay outlines (no hover fill, they are not buttons). On phones it runs top to bottom, left aligned, with down arrows. The space under the section matches the space above it (`#how` padding-bottom). Pure CSS on `.step`.
 - Page end order: Questions, then the blue "We are ready / Are you?" band (Montserrat ExtraBold), whose "Let's talk" arrow jumps down to the demo form, then the form, then the footer. The form is the only contact route (no separate email link).
-- Cursor: on desktop the mouse is a small dot that inverts what is under it and stretches with movement (script part 4). It is two stacked dots with blend modes (`saturation` takes the colour out, `difference` inverts), and over blue surfaces (the closing band, buttons, pills, a hovered genre) it is plain black. The list of blue surfaces is `BLUE` in part 4.
+- Cursor: on desktop the mouse is a small dot that inverts what is under it and stretches with movement (script part 4). It is two stacked dots with blend modes (`saturation` takes the colour out, `difference` inverts), and over blue surfaces (the closing band, buttons, pills, a hovered genre) it is plain black. The list of blue surfaces is `BLUE` in part 4. What is under the mouse comes from part 4a, which also re-checks while scrolling, so the cursor and every hover look follow the page when you scroll without moving the mouse. That is why the CSS uses the `.is-hot` class instead of `:hover`: don't write new `:hover` rules, add the element to `HOT` in part 4a and style `.is-hot`.
 - Hover click: moving the mouse onto a Campaign results number plays a short click, generated in the browser (script part 6, no audio file). Browsers only allow it after the first click or key press on the page.
 - Numbers as of November 2026: platform data from Metabase, streams and TikTok creates from Chartex. Update them when they move.
 - Colours: the `:root` block at the top of the `<style>` tag. `--accent` is for filled things (buttons), `--accent-hi` for blue text and outlines on the dark background. Keep both bright, the old navy blue was nearly invisible on black.
