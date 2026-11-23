@@ -349,15 +349,15 @@ html .hero::after {
 #how, #campaign, #artists, .faq, .demo, .end { overflow-x: clip; }   /* the torn strips may not widen the page */
 .warp__stage::before, #how::before, #campaign::before, #artists::before, .faq::before, .demo::before, .foot::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: var(--scan), linear-gradient(var(--bg) 0, rgba(0,2,12,.28) 20%, rgba(0,2,12,.28) 80%, var(--bg) 100%), var(--img, var(--g2)) var(--pos, 50% 50%) / var(--size, cover) no-repeat;
+  background: var(--scan), linear-gradient(rgba(0,2,12,.55) 0, rgba(0,2,12,.22) 9%, rgba(0,2,12,.22) 91%, rgba(0,2,12,.55) 100%), var(--img, var(--g2)) var(--pos, 50% 50%) / var(--size, cover) no-repeat, var(--under, none) var(--upos, 50% 50%) / cover no-repeat;   /* edges only dimmed, never black, so sections run into each other at the torn strip */
   opacity: var(--o, .8); transform: var(--flip, none); }
-.warp__stage { --img: var(--g3); --size: auto 115%; --pos: 50% 50%; --o: .6; }
+.warp__stage { --img: var(--g3); --size: auto 115%; --pos: 50% 50%; --o: .6; --under: var(--g2); }
 #how { --img: var(--g2); --pos: 50% 35%; --o: .85; }
 #campaign { --img: var(--g1); --pos: 50% 70%; --flip: scaleX(-1); --o: .85; }
-#artists { --img: var(--g3); --size: auto 120%; --pos: 100% 50%; --o: .9; }
+#artists { --img: var(--g3); --size: auto 120%; --pos: 100% 50%; --o: .9; --under: var(--g1); --upos: 30% 60%; }   /* the face sits right, the colour picture fills the rest */
 .faq { --img: var(--g2); --pos: 50% 80%; --flip: scaleX(-1); --o: .8; }
 .demo { --img: var(--g1); --pos: 50% 15%; --o: .6; }
-.foot { --img: var(--g3); --size: auto 300%; --pos: 0 50%; --o: .5; }
+.foot { --img: var(--g2); --pos: 50% 90%; --o: .5; }
 .why__card { background: rgba(0,2,12,.6); }
 
 /* torn strips between sections: a thin slice of the picture, shifted, that twitches now and then */
