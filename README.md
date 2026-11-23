@@ -66,7 +66,7 @@ Videos only load and play while they are on screen. With reduced motion or Save-
 
 - A: the glitch picture (`assets/glitch/glitch.webp`) behind the hero instead of the edit clips.
 - B: the glitch picture with the edit clips faintly on top.
-- C: the glitch look across the page: the picture drifts slowly, scanlines, short RGB-split tears through the hero, red/cyan split on the big headings, the picture shows through the blue closing band.
+- C: the glitch look across the page. Hero: the picture drifts slowly, scanlines, short RGB-split tears (five fixed bands that only jump sideways and blink). Big headings: red/cyan split (text-shadow, and two coloured copies of each outlined word via `data-g`). Every dark section has its own darkened glitch picture with scanlines (`glitch.webp`, `glitch-b.webp` the lower half of the brand board, `face.webp` the blue line face), torn strips sit between sections, and the picture shows through the blue closing band. Only transform and opacity are animated, no filters, so it stays smooth.
 
 Delete the `preview` folder (and `assets/glitch` if no variant is kept) once a decision is made.
 

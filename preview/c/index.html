@@ -309,58 +309,72 @@ html .hero::before { content: ""; position: absolute; inset: 0; pointer-events: 
 html .hero::after { background: linear-gradient(rgba(0,2,12,.7) 0, rgba(0,2,12,0) 16%), linear-gradient(rgba(0,2,12,0) 40%, rgba(0,2,12,.55) 72%, var(--bg) 97%); }
 html .mascot--hero::before { background: radial-gradient(closest-side, rgba(0,2,12,.55) 50%, rgba(0,2,12,0)); }
 html .reel { visibility: hidden; }
-/* C: the glitch look across the page */
-:root { --cy: #2fb9f8; --rd: #ff2d55; }
-html .hero::before { animation: g-drift 22s ease-in-out infinite alternate; }
-@keyframes g-drift { from { transform: scale(1.04); } to { transform: scale(1.13) translate(-1.6%, 1.2%); } }
+/* ===== C: the glitch look across the page. Everything that moves only moves (transform) or fades (opacity),
+   so the browser can do it on the graphics card; no filters, no animated clip-paths. ===== */
+:root { --cy: #2fb9f8; --rd: #ff2d55; --g1: url(/assets/glitch/glitch.webp); --g2: url(/assets/glitch/glitch-b.webp); --g3: url(/assets/glitch/face.webp);
+  --scan: repeating-linear-gradient(0deg, rgba(0,2,12,.34) 0 1px, rgba(0,2,12,0) 1px 3px); }
+html .hero::before { will-change: transform; animation: g-drift 24s ease-in-out infinite alternate; }
+@keyframes g-drift { from { transform: scale(1.04); } to { transform: scale(1.12) translate(-1.5%, 1.1%); } }
 html .hero::after {
-  background: repeating-linear-gradient(0deg, rgba(0,2,12,.32) 0 1px, rgba(0,2,12,0) 1px 3px),
-    radial-gradient(70% 60% at 0% 100%, rgba(0,2,12,.75), rgba(0,2,12,0)),
+  background: var(--scan), radial-gradient(70% 60% at 0% 100%, rgba(0,2,12,.7), rgba(0,2,12,0)),
     linear-gradient(rgba(0,2,12,.7) 0, rgba(0,2,12,0) 16%), linear-gradient(rgba(0,2,12,0) 45%, rgba(0,2,12,.45) 75%, var(--bg) 98%); }
+
+/* hero tears: each band has a fixed cut-out and only jumps sideways and blinks */
 .glitch { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.glitch i { position: absolute; inset: -6%; opacity: 0; mix-blend-mode: screen;
-  background: url(/assets/glitch/glitch.webp) 50% 40% / cover no-repeat, var(--rd); background-blend-mode: multiply;
-  animation: g-tear 3.4s steps(1, end) infinite; }
-.glitch i:nth-child(2) { background-color: var(--cy); animation-duration: 4.3s; animation-delay: -1.7s; }
-.glitch i:nth-child(3) { background-color: #fff; mix-blend-mode: normal; background-blend-mode: normal; animation: g-tear2 5.9s steps(1, end) -2.6s infinite; }
-@keyframes g-tear {
-  0%    { opacity: 0; }
-  14%   { opacity: 1; clip-path: inset(14% 0 62% 0); transform: translateX(-9%); }
-  15.5% { clip-path: inset(58% 0 18% 0); transform: translateX(11%); }
-  17%   { clip-path: inset(34% 0 48% 0); transform: translateX(-5%); }
-  18.5% { clip-path: inset(72% 0 10% 0); transform: translateX(7%); }
-  20%   { opacity: 0; }
-  52%   { opacity: .95; clip-path: inset(6% 0 78% 0); transform: translateX(6%); }
-  53.5% { clip-path: inset(44% 0 30% 0); transform: translateX(-12%); }
-  55%   { clip-path: inset(25% 0 66% 0); transform: translateX(4%); }
-  56.5% { opacity: 0; }
-  82%   { opacity: .9; clip-path: inset(80% 0 4% 0); transform: translateX(-7%); }
-  83.5% { opacity: 0; }
-}
-/* the picture itself tears: a sharp sideways shift of thin bands, no colour */
-@keyframes g-tear2 {
-  0%    { opacity: 0; }
-  30%   { opacity: 1; clip-path: inset(40% 0 52% 0); transform: translateX(-14%); }
-  31.2% { clip-path: inset(22% 0 74% 0); transform: translateX(10%); }
-  32.4% { clip-path: inset(63% 0 30% 0); transform: translateX(-6%); }
-  33.6% { opacity: 0; }
-  76%   { opacity: 1; clip-path: inset(12% 0 83% 0); transform: translateX(16%); }
-  77.2% { clip-path: inset(50% 0 41% 0); transform: translateX(-9%); }
-  78.4% { opacity: 0; }
-}
-/* RGB split on the big type: a red and a cyan copy a few pixels to each side */
-.hero h1 { filter: drop-shadow(3px 0 0 rgba(255,45,85,.6)) drop-shadow(-3px 0 0 rgba(47,185,248,.65)); }
-.hero h1 > span { animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards, g-jit 6.1s steps(1, end) 1.4s infinite; }   /* keeps the entrance */
+.glitch i { position: absolute; inset: 0 -12%; opacity: 0; will-change: transform, opacity;
+  background: var(--g1) 50% 40% / cover no-repeat; animation: g-a 3.6s steps(1, end) infinite; }
+.glitch i:nth-child(1) { clip-path: inset(16% 0 72% 0); background-color: var(--rd); background-blend-mode: multiply; mix-blend-mode: screen; }
+.glitch i:nth-child(2) { clip-path: inset(57% 0 31% 0); background-color: var(--cy); background-blend-mode: multiply; mix-blend-mode: screen; animation-name: g-b; animation-duration: 4.4s; animation-delay: -1.3s; }
+.glitch i:nth-child(3) { clip-path: inset(38% 0 55% 0); animation-name: g-b; animation-duration: 5.1s; animation-delay: -3.2s; }
+.glitch i:nth-child(4) { clip-path: inset(74% 0 19% 0); animation-duration: 6.3s; animation-delay: -2.1s; }
+.glitch i:nth-child(5) { clip-path: inset(6% 0 89% 0); background-color: var(--cy); background-blend-mode: multiply; mix-blend-mode: screen; animation-duration: 2.9s; animation-delay: -.8s; }
+@keyframes g-a { 0% { opacity: 0; transform: none; } 18% { opacity: 1; transform: translateX(-8%); } 20% { transform: translateX(6%); } 22% { opacity: 0; transform: none; }
+  64% { opacity: .9; transform: translateX(11%); } 66% { opacity: 0; transform: none; } }
+@keyframes g-b { 0% { opacity: 0; transform: none; } 31% { opacity: 1; transform: translateX(9%); } 32.5% { transform: translateX(-12%); } 34% { opacity: 0; transform: none; }
+  80% { opacity: 1; transform: translateX(-5%); } 81.5% { opacity: 0; transform: none; } }
+
+/* RGB split on the big type: text-shadow on filled letters, red and cyan copies of the outlined words */
+.display, .end__title { text-shadow: 3px 0 0 rgba(255,45,85,.55), -3px 0 0 rgba(47,185,248,.6); }
+.h2.display, .faq__h { text-shadow: 2px 0 0 rgba(255,45,85,.55), -2px 0 0 rgba(47,185,248,.6); }
+.outline { text-shadow: none !important; filter: none; }   /* the page's glow filter is costly on scaled headings; the colour copies replace it */
+.outline[data-g] { position: relative; }
+.outline[data-g]::before, .outline[data-g]::after { content: attr(data-g); position: absolute; left: 0; top: 0; pointer-events: none; -webkit-text-stroke-color: rgba(255,45,85,.7); transform: translateX(.03em); }
+.outline[data-g]::after { -webkit-text-stroke-color: rgba(47,185,248,.75); transform: translateX(-.03em); }
+.hero h1 > span { animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards, g-jit 6.1s steps(1, end) 1.4s infinite; }
 .hero h1 > span.d2 { animation-delay: .12s, 4.4s; }
 @keyframes g-jit { 0%, 100% { transform: none; } 93% { transform: translate(-6px, 1px) skewX(-6deg); } 94.2% { transform: translate(8px, 0); } 95.4% { transform: none; } }
-.display.h2, .warp__big, .end__title { filter: drop-shadow(2px 0 0 rgba(255,45,85,.55)) drop-shadow(-2px 0 0 rgba(47,185,248,.6)); }
-/* closing band: the glitch picture shows through the blue */
-.end { position: relative; background: url(/assets/glitch/glitch.webp) 50% 30% / cover no-repeat, var(--accent); background-blend-mode: multiply; }
-.end::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,2,12,.22) 0 1px, rgba(0,2,12,0) 1px 3px); }
-/* faint scanlines over the whole page */
-body::after { content: ""; position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .5;
-  background: repeating-linear-gradient(0deg, rgba(0,2,12,.18) 0 1px, rgba(0,2,12,0) 1px 3px); }
-@media (prefers-reduced-motion: reduce) { html .hero::before, .glitch i, .hero h1 > span { animation: none; } .glitch { display: none; } }
+
+/* every dark section gets its own darkened glitch picture with scanlines (painted once, never animated) */
+.warp__stage, #how, #campaign, #artists, .faq, .demo, .foot { position: relative; isolation: isolate; }
+#how, #campaign, #artists, .faq, .demo, .end { overflow-x: clip; }   /* the torn strips may not widen the page */
+.warp__stage::before, #how::before, #campaign::before, #artists::before, .faq::before, .demo::before, .foot::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--scan), linear-gradient(var(--bg) 0, rgba(0,2,12,.28) 20%, rgba(0,2,12,.28) 80%, var(--bg) 100%), var(--img, var(--g2)) var(--pos, 50% 50%) / var(--size, cover) no-repeat;
+  opacity: var(--o, .8); transform: var(--flip, none); }
+.warp__stage { --img: var(--g3); --size: auto 115%; --pos: 50% 50%; --o: .6; }
+#how { --img: var(--g2); --pos: 50% 35%; --o: .85; }
+#campaign { --img: var(--g1); --pos: 50% 70%; --flip: scaleX(-1); --o: .85; }
+#artists { --img: var(--g3); --size: auto 120%; --pos: 100% 50%; --o: .9; }
+.faq { --img: var(--g2); --pos: 50% 80%; --flip: scaleX(-1); --o: .8; }
+.demo { --img: var(--g1); --pos: 50% 15%; --o: .6; }
+.foot { --img: var(--g3); --size: auto 300%; --pos: 0 50%; --o: .5; }
+.why__card { background: rgba(0,2,12,.6); }
+
+/* torn strips between sections: a thin slice of the picture, shifted, that twitches now and then */
+#how::after, #campaign::after, #artists::after, .faq::after, .demo::after, .end::after {
+  content: ""; position: absolute; left: -4%; right: -4%; top: -9px; height: 18px; z-index: 2; pointer-events: none; will-change: transform;
+  background: linear-gradient(90deg, rgba(255,45,85,.55), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(47,185,248,.6)), var(--g1) 0 var(--ty, 40%) / 100% auto;
+  clip-path: polygon(0 0, 18% 0, 18% 45%, 41% 45%, 41% 0, 63% 0, 63% 70%, 79% 70%, 79% 10%, 100% 10%, 100% 100%, 0 100%);
+  animation: g-strip 4.9s steps(1, end) infinite; }
+#campaign::after { --ty: 70%; animation-delay: -1.7s; } #artists::after { --ty: 20%; animation-delay: -3.1s; }
+.faq::after { --ty: 55%; animation-delay: -.6s; } .demo::after { --ty: 85%; animation-delay: -2.4s; } .end::after { --ty: 30%; animation-delay: -4s; }
+@keyframes g-strip { 0% { transform: none; } 70% { transform: translateX(3%); } 72% { transform: translateX(-2%); } 74% { transform: none; } }
+
+/* closing band: the picture shows through the blue */
+.end { position: relative; background: var(--g1) 50% 30% / cover no-repeat, var(--accent); background-blend-mode: multiply; }
+.end::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: var(--scan); }
+
+@media (prefers-reduced-motion: reduce) { html .hero::before, .hero h1 > span, [id]::after, .faq::after, .demo::after, .end::after { animation: none !important; } .glitch { display: none; } }
 </style>
 </head>
 <body>
@@ -400,7 +414,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 90; pointer-event
 
 <main id="main">
   <section class="hero" id="top" aria-labelledby="hero-h">
-    <div class="glitch" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="glitch" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
     <div class="reel" aria-hidden="true">
       <div class="reel__rows">
         <div class="reel__track" data-speed=".19">
@@ -434,7 +448,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 90; pointer-event
       <div class="orb"><svg viewBox="-330 -330 660 660" focusable="false"><circle class="orb__rim" r="380" fill="url(#mn-rim)"/><circle r="328" fill="#00020c"/><g class="orb__face" clip-path="url(#mn-ball)"></g></svg></div>
     </div>
     <div class="wrap">
-      <h1 class="display" id="hero-h"><span class="rise">Viral</span><span class="rise d2 outline">Overnite.</span></h1>
+      <h1 class="display" id="hero-h"><span class="rise">Viral</span><span class="rise d2 outline" data-g="Overnite.">Overnite.</span></h1>
       <p class="hero__line rise d3">Blew up overnite.</p>
       <a class="btn hero__cta rise d3" href="#demo">Send a demo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
     </div>
@@ -444,7 +458,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 90; pointer-event
     <div class="warp__stage">
       <canvas class="warp__stars" aria-hidden="true"></canvas>
       <div class="wrap warp__center">
-        <h2 class="display warp__big" id="warp-h">142B <span class="outline">views</span></h2>
+        <h2 class="display warp__big" id="warp-h">142B <span class="outline" data-g="views">views</span></h2>
         <p class="warp__sub">from the creator base behind Overnite.</p>
       </div>
       <ul class="wrap warp__stats">
@@ -538,7 +552,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 90; pointer-event
   <section class="demo" id="demo" aria-labelledby="demo-h">
     <div class="wrap split">
       <div>
-        <h2 class="display h2" id="demo-h">Send us a <span class="outline">demo</span></h2>
+        <h2 class="display h2" id="demo-h">Send us a <span class="outline" data-g="demo">demo</span></h2>
         <p class="lede">We listen to every demo and reach out if we want to work together.</p>
       </div>
       <form class="form" id="demo-form" data-to="demos@overnite.example" data-endpoint="" novalidate>
