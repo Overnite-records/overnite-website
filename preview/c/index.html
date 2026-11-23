@@ -317,7 +317,7 @@ html .hero::before { will-change: transform; animation: g-drift 24s ease-in-out 
 @keyframes g-drift { from { transform: scale(1.04); } to { transform: scale(1.12) translate(-1.5%, 1.1%); } }
 html .hero::after {
   background: var(--scan), radial-gradient(70% 60% at 0% 100%, rgba(0,2,12,.7), rgba(0,2,12,0)),
-    linear-gradient(rgba(0,2,12,.7) 0, rgba(0,2,12,0) 16%), linear-gradient(rgba(0,2,12,0) 45%, rgba(0,2,12,.45) 75%, var(--bg) 98%); }
+    linear-gradient(rgba(0,2,12,.7) 0, rgba(0,2,12,0) 16%), linear-gradient(rgba(0,2,12,0) 45%, rgba(0,2,12,.4) 78%, rgba(0,2,12,.25) 100%); }
 
 /* hero tears: each band has a fixed cut-out and only jumps sideways and blinks */
 .glitch { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
@@ -344,23 +344,30 @@ html .hero::after {
 .hero h1 > span.d2 { animation-delay: .12s, 4.4s; }
 @keyframes g-jit { 0%, 100% { transform: none; } 93% { transform: translate(-6px, 1px) skewX(-6deg); } 94.2% { transform: translate(8px, 0); } 95.4% { transform: none; } }
 
-/* every dark section gets its own darkened glitch picture with scanlines (painted once, never animated) */
-.warp__stage, #how, #campaign, #artists, .faq, .demo, .foot { position: relative; isolation: isolate; }
-#how, #campaign, #artists, .faq, .demo, .end { overflow-x: clip; }   /* the torn strips may not widen the page */
-.warp__stage::before, #how::before, #campaign::before, #artists::before, .faq::before, .demo::before, .foot::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: var(--scan), linear-gradient(rgba(0,2,12,.55) 0, rgba(0,2,12,.22) 9%, rgba(0,2,12,.22) 91%, rgba(0,2,12,.55) 100%), var(--img, var(--g2)) var(--pos, 50% 50%) / var(--size, cover) no-repeat, var(--under, none) var(--upos, 50% 50%) / cover no-repeat;   /* edges only dimmed, never black, so sections run into each other at the torn strip */
-  opacity: var(--o, .8); transform: var(--flip, none); }
-.warp__stage { --img: var(--g3); --size: auto 115%; --pos: 50% 50%; --o: .6; --under: var(--g2); }
-#how { --img: var(--g2); --pos: 50% 35%; --o: .85; }
-#campaign { --img: var(--g1); --pos: 50% 70%; --flip: scaleX(-1); --o: .85; }
-#artists { --img: var(--g3); --size: auto 120%; --pos: 100% 50%; --o: .9; --under: var(--g1); --upos: 30% 60%; }   /* the face sits right, the colour picture fills the rest */
-.faq { --img: var(--g2); --pos: 50% 80%; --flip: scaleX(-1); --o: .8; }
-.demo { --img: var(--g1); --pos: 50% 15%; --o: .6; }
-.foot { --img: var(--g2); --pos: 50% 90%; --o: .5; }
-.why__card { background: rgba(0,2,12,.6); }
+/* one glitch picture behind the whole page (fixed). While you scroll it slowly crossfades between three framings
+   of the brand-board pictures, so there are no hard cuts between sections. Scroll-driven, opacity and transform only;
+   browsers without scroll timelines keep the first picture. */
+.gx-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.gx-bg i { position: absolute; inset: -6% 0; opacity: 0; will-change: opacity, transform; background: var(--g1) 50% 40% / cover no-repeat; }
+.gx-bg i:nth-child(1) { opacity: 1; }
+.gx-bg i:nth-child(2) { background-image: var(--g2); background-position: 50% 60%; }
+.gx-bg i:nth-child(3) { background-position: 30% 75%; transform: scaleX(-1); }
+.gx-bg::after { content: ""; position: absolute; inset: 0; background: var(--scan), radial-gradient(120% 90% at 50% 45%, rgba(0,2,12,.4), rgba(0,2,12,.78)); }
+@supports (animation-timeline: scroll()) {
+  .gx-bg i { animation: linear both; animation-timeline: scroll(root); }
+  .gx-bg i:nth-child(1) { animation-name: gx-1; } .gx-bg i:nth-child(2) { animation-name: gx-2; } .gx-bg i:nth-child(3) { animation-name: gx-3; }
+}
+@keyframes gx-1 { 0%, 28% { opacity: 1; transform: translateY(0); } 46%, 100% { opacity: 0; transform: translateY(-3%); } }
+@keyframes gx-2 { 0%, 28% { opacity: 0; transform: translateY(3%); } 46%, 60% { opacity: 1; transform: translateY(0); } 78%, 100% { opacity: 0; transform: translateY(-3%); } }
+@keyframes gx-3 { 0%, 60% { opacity: 0; transform: scaleX(-1) translateY(3%); } 78%, 100% { opacity: 1; transform: scaleX(-1) translateY(0); } }
+.demo { background: rgba(1,5,26,.55); }
+.why__card { background: rgba(0,2,12,.55); }
+/* the hero picture fades out at the bottom into the page background instead of ending in black */
+html .hero::before { -webkit-mask-image: linear-gradient(#000 62%, transparent 100%); mask-image: linear-gradient(#000 62%, transparent 100%); }
 
 /* torn strips between sections: a thin slice of the picture, shifted, that twitches now and then */
+#how, #campaign, #artists, .faq, .demo { position: relative; }
+#how, #campaign, #artists, .faq, .demo, .end { overflow-x: clip; }   /* the torn strips may not widen the page */
 #how::after, #campaign::after, #artists::after, .faq::after, .demo::after, .end::after {
   content: ""; position: absolute; left: -4%; right: -4%; top: -9px; height: 18px; z-index: 2; pointer-events: none; will-change: transform;
   background: linear-gradient(90deg, rgba(255,45,85,.55), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(47,185,248,.6)), var(--g1) 0 var(--ty, 40%) / 100% auto;
@@ -374,10 +381,20 @@ html .hero::after {
 .end { position: relative; background: var(--g1) 50% 30% / cover no-repeat, var(--accent); background-blend-mode: multiply; }
 .end::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: var(--scan); }
 
+/* moon and orb: red and cyan copies behind them (RGB split edges), scanlines, the moon carries the glitch picture,
+   and now and then a slice of the moon tears sideways and the orb twitches. All in the SVG, no filters. */
+.gx-cut { opacity: 0; animation: gx-cut 4.6s steps(1, end) infinite; }
+.gx-cut + .gx-cut { animation-duration: 6.1s; animation-delay: -2.2s; }
+@keyframes gx-cut { 0% { opacity: 0; transform: none; } 22% { opacity: 1; transform: translateX(-70px); } 24% { transform: translateX(55px); } 26% { opacity: 0; transform: none; }
+  71% { opacity: 1; transform: translateX(85px); } 73% { opacity: 0; transform: none; } }
+.orb svg { animation: gx-orb 5.3s steps(1, end) infinite; }
+@keyframes gx-orb { 0%, 100% { transform: none; } 88% { transform: translate(-7px, 0) skewX(-8deg); } 89.5% { transform: translate(9px, 2px); } 91% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .gx-cut, .orb svg, .gx-bg i { animation: none !important; } }
 @media (prefers-reduced-motion: reduce) { html .hero::before, .hero h1 > span, [id]::after, .faq::after, .demo::after, .end::after { animation: none !important; } .glitch { display: none; } }
 </style>
 </head>
 <body>
+<div class="gx-bg" aria-hidden="true"><i></i><i></i><i></i></div>
 <a class="skip" href="#main">Skip to content</a>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <radialGradient id="mn-moon" cx=".38" cy=".42" r=".7"><stop offset="0" stop-color="#fbf8f1"/><stop offset="1" stop-color="#ece5d6"/></radialGradient>
@@ -392,7 +409,7 @@ html .hero::after {
   <clipPath id="mn-eye-l"><path d="M-84-51Q-2-9 84 51H-16Q-60 17-84-51Z"/></clipPath>
   <clipPath id="mn-eye-r"><path d="M84-51Q2-9-84 51H16Q60 17 84-51Z"/></clipPath>
   <clipPath id="mn-clip"><path d="M-245-32Q-163 10-77 70H-177Q-221 36-245-32ZM139-32Q57 10-29 70H71Q115 36 139-32Z"/></clipPath>
-</defs></svg>
+<pattern id="gx-scan" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="4" fill="#00020c" fill-opacity=".38"/></pattern><clipPath id="gx-moon"><circle cx="496" cy="472" r="388"/></clipPath><clipPath id="gx-b1"><rect x="0" y="330" width="1000" height="70"/></clipPath><clipPath id="gx-b2"><rect x="0" y="610" width="1000" height="45"/></clipPath></defs></svg>
 
 <header class="top">
   <div class="wrap">
@@ -444,8 +461,8 @@ html .hero::after {
       </div>
     </div>
     <div class="mascot mascot--hero rise d2" aria-hidden="true">
-      <svg class="moon" viewBox="0 0 1000 1000" focusable="false"><circle cx="496" cy="472" r="388" fill="url(#mn-moon)"/></svg>
-      <div class="orb"><svg viewBox="-330 -330 660 660" focusable="false"><circle class="orb__rim" r="380" fill="url(#mn-rim)"/><circle r="328" fill="#00020c"/><g class="orb__face" clip-path="url(#mn-ball)"></g></svg></div>
+      <svg class="moon" viewBox="0 0 1000 1000" focusable="false"><circle cx="480" cy="472" r="388" fill="#ff2d55" opacity=".8"/><circle cx="512" cy="472" r="388" fill="#2fb9f8" opacity=".85"/><circle cx="496" cy="472" r="388" fill="url(#mn-moon)"/><image href="/assets/glitch/glitch.webp" x="108" y="84" width="776" height="776" preserveAspectRatio="xMidYMid slice" clip-path="url(#gx-moon)" opacity=".32" style="mix-blend-mode:multiply"/><circle cx="496" cy="472" r="388" fill="url(#gx-scan)"/><g class="gx-cut" clip-path="url(#gx-b1)"><circle cx="496" cy="472" r="388" fill="url(#mn-moon)"/></g><g class="gx-cut" clip-path="url(#gx-b2)"><circle cx="496" cy="472" r="388" fill="#2fb9f8" opacity=".9"/></g></svg>
+      <div class="orb"><svg viewBox="-330 -330 660 660" focusable="false"><circle class="orb__rim" r="380" fill="url(#mn-rim)"/><circle cx="-8" r="328" fill="#ff2d55" opacity=".85"/><circle cx="8" r="328" fill="#2fb9f8" opacity=".9"/><circle r="328" fill="#00020c"/><g class="orb__face" clip-path="url(#mn-ball)"></g><circle r="328" fill="url(#gx-scan)"/></svg></div>
     </div>
     <div class="wrap">
       <h1 class="display" id="hero-h"><span class="rise">Viral</span><span class="rise d2 outline" data-g="Overnite.">Overnite.</span></h1>
@@ -543,8 +560,8 @@ html .hero::after {
       <h2 class="end__title" id="end-h"><span>We are ready</span> <span>Are you?</span></h2>
       <a class="end__talk" href="#demo">Let's talk <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg></a>
       <div class="mascot mascot--end" aria-hidden="true">
-      <svg class="moon" viewBox="0 0 1000 1000" focusable="false"><circle cx="496" cy="472" r="388" fill="url(#mn-moon)"/></svg>
-      <div class="orb"><svg viewBox="-330 -330 660 660" focusable="false"><circle class="orb__rim" r="380" fill="url(#mn-rim)"/><circle r="328" fill="#00020c"/><g class="orb__face" clip-path="url(#mn-ball)"></g></svg></div>
+      <svg class="moon" viewBox="0 0 1000 1000" focusable="false"><circle cx="480" cy="472" r="388" fill="#ff2d55" opacity=".8"/><circle cx="512" cy="472" r="388" fill="#2fb9f8" opacity=".85"/><circle cx="496" cy="472" r="388" fill="url(#mn-moon)"/><image href="/assets/glitch/glitch.webp" x="108" y="84" width="776" height="776" preserveAspectRatio="xMidYMid slice" clip-path="url(#gx-moon)" opacity=".32" style="mix-blend-mode:multiply"/><circle cx="496" cy="472" r="388" fill="url(#gx-scan)"/><g class="gx-cut" clip-path="url(#gx-b1)"><circle cx="496" cy="472" r="388" fill="url(#mn-moon)"/></g><g class="gx-cut" clip-path="url(#gx-b2)"><circle cx="496" cy="472" r="388" fill="#2fb9f8" opacity=".9"/></g></svg>
+      <div class="orb"><svg viewBox="-330 -330 660 660" focusable="false"><circle class="orb__rim" r="380" fill="url(#mn-rim)"/><circle cx="-8" r="328" fill="#ff2d55" opacity=".85"/><circle cx="8" r="328" fill="#2fb9f8" opacity=".9"/><circle r="328" fill="#00020c"/><g class="orb__face" clip-path="url(#mn-ball)"></g><circle r="328" fill="url(#gx-scan)"/></svg></div>
     </div>
     </div>
   </section>
