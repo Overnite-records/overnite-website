@@ -54,10 +54,10 @@ p { margin: 0; }
 
 /* buttons */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 22px; background: var(--accent); color: var(--accent-ink); font: 400 17px/1 var(--display); text-transform: uppercase; letter-spacing: .02em; text-decoration: none; border: 0; cursor: pointer; box-shadow: 0 0 0 rgba(42,75,255,0); transition: transform .15s ease, background-color .15s ease, box-shadow .2s ease; }
-.btn:hover { transform: translateY(-2px); background: #3a59ff; box-shadow: 0 0 28px var(--glow); }
+.btn.is-hot { transform: translateY(-2px); background: #3a59ff; box-shadow: 0 0 28px var(--glow); }
 .btn:active { transform: translateY(0); }
 .btn svg { width: 14px; height: 14px; transition: transform .15s ease; }
-.btn:hover svg { transform: translateX(3px); }
+.btn.is-hot svg { transform: translateX(3px); }
 
 /* header */
 .top { position: fixed; inset: 0 0 auto; z-index: 20; background: linear-gradient(var(--bg) 0, rgba(0,2,12,.85) 70%, rgba(0,2,12,0)); }
@@ -67,7 +67,7 @@ p { margin: 0; }
 .logo .moon { width: 30px; height: 30px; margin: -4px 0; }
 .top nav { display: flex; align-items: center; gap: 28px; }
 .top nav a:not(.btn) { font-size: 14px; color: var(--grey); text-decoration: none; transition: color .15s; }
-.top nav a:not(.btn):hover { color: var(--ink); }
+.top nav a:not(.btn).is-hot { color: var(--ink); }
 .top .btn { min-height: 38px; font-size: 15px; padding: 0 16px; }
 @media (max-width: 760px) { .top nav a:not(.btn) { display: none; } }
 
@@ -159,9 +159,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .morph__roll { display: grid; overflow: hidden; }
 .morph__roll > span { grid-area: 1 / 1; padding-block: .04em; transition: transform .35s cubic-bezier(.65,0,.35,1); white-space: nowrap; }
 .morph__roll > span + span { transform: translateY(100%); color: var(--accent-hi); text-shadow: 0 0 24px var(--glow); }   /* the glow is always on the hidden line, so hovering only slides, nothing repaints */
-.morph__item:hover .morph__roll > span:first-child { transform: translateY(-100%); }
-.morph__item:hover .morph__roll > span + span { transform: translateY(0); }
-.morph__list:has(.morph__item:hover) .morph__item:not(:hover) { opacity: .2; }
+.morph__item.is-hot .morph__roll > span:first-child { transform: translateY(-100%); }
+.morph__item.is-hot .morph__roll > span + span { transform: translateY(0); }
+.morph__list:has(.is-hot) .morph__item:not(.is-hot) { opacity: .2; }
 @media (hover: hover) { .morph__list { gap: clamp(6px, .6vw, 10px); } }
 
 .morph--live { height: 130vh; padding: 0; }
@@ -198,9 +198,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .genres div + div { border-left: 1px solid var(--line); }
 .genres h3 { font: 400 clamp(32px, 3.6vw, 52px)/.95 var(--display); text-transform: uppercase; margin: 0; transition: transform .4s cubic-bezier(.2,.8,.2,1); }
 .genres p { position: absolute; left: 50%; top: 50%; width: min(30ch, 86%); margin: 0; color: #e8ebff; font-size: 16px; opacity: 0; transform: translate(-50%, 34px); transition: opacity .3s ease, transform .4s cubic-bezier(.2,.8,.2,1); }
-.genres div:hover, .genres div:focus-visible { background: var(--accent); outline: 0; }
-.genres div:hover h3, .genres div:focus-visible h3 { transform: translateY(-.75em); }
-.genres div:hover p, .genres div:focus-visible p { opacity: 1; transform: translate(-50%, 10px); }
+.genres div.is-hot, .genres div:focus-visible { background: var(--accent); outline: 0; }
+.genres div.is-hot h3, .genres div:focus-visible h3 { transform: translateY(-.75em); }
+.genres div.is-hot p, .genres div:focus-visible p { opacity: 1; transform: translate(-50%, 10px); }
 @media (hover: none) { .genres h3 { transform: translateY(-.75em); } .genres p { opacity: 1; color: var(--grey); transform: translate(-50%, 10px); } }   /* phones: the description is always there */
 @media (max-width: 760px) { .genres { grid-template-columns: 1fr; } .genres div + div { border-left: 0; border-top: 1px solid var(--line); } }
 
@@ -221,11 +221,11 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .files { justify-items: start; }
 .files input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .files__pick { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border: 1px dashed var(--accent-hi); color: var(--ink); font-size: 15px; cursor: pointer; transition: background-color .15s; }
-.files__pick:hover, .files input:focus-visible + .files__pick { background: rgba(42,75,255,.14); }
+.files__pick.is-hot, .files input:focus-visible + .files__pick { background: rgba(42,75,255,.14); }
 .files__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14px; color: var(--grey); }
 .files__list li { display: flex; align-items: center; gap: 6px; }
 .files__list button { padding: 2px 6px; background: none; border: 0; color: var(--grey); font: 400 18px/1 var(--text); cursor: pointer; }
-.files__list button:hover { color: var(--ink); }
+.files__list button.is-hot { color: var(--ink); }
 .form__msg { grid-column: 1 / -1; font-size: 15px; color: var(--accent-hi); }
 .form__msg:empty { display: none; }
 .field__hint { font-size: 13px; color: var(--grey); }
@@ -241,7 +241,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .faq summary::-webkit-details-marker { display: none; }
 .faq summary::after { content: "+"; font: 400 30px/1 var(--display); color: var(--accent-hi); transition: transform .2s; flex: none; }
 .faq details[open] summary::after { transform: rotate(45deg); }
-.faq summary:hover { color: var(--accent-hi); }
+.faq summary.is-hot { color: var(--accent-hi); }
 .faq details p { color: var(--grey); max-width: 70ch; padding: 0 0 26px; font-size: 16px; }
 
 /* custom cursor: one inverting dot that stretches with movement (desktop pointers only; script adds .has-cursor) */
@@ -266,7 +266,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 .end__title span + span { margin-top: .3em; }
 .end__talk { display: inline-flex; align-items: center; gap: .3em; margin-top: clamp(32px, 4.5vw, 64px); padding-bottom: 6px; border-bottom: 3px solid currentColor; color: #fff; font: 800 clamp(22px, 2.2vw, 34px)/1 var(--heavy); letter-spacing: -.02em; text-transform: uppercase; text-decoration: none; }
 .end__talk svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2.6; transition: transform .2s ease; }
-.end__talk:hover svg { transform: translateY(4px); }
+.end__talk.is-hot svg { transform: translateY(4px); }
 /* the mascot: a crescent moon with a black orb resting in its hollow, the orb has the eyes. Only in the top bar logo, the hero and the
    blue band. The moon is a full white circle and the orb sits in front of its right side, which makes the crescent. On desktop,
    when the mouse comes close, the orb comes out (leaving the full moon behind), grins and chases the cursor. If it catches it,
@@ -296,7 +296,7 @@ html.is-eaten, html.is-eaten * { cursor: none !important; }
 .foot { padding: 24px 0 32px; }
 .foot .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .foot a { text-decoration: none; }
-.foot a:hover { color: var(--ink); }
+.foot a.is-hot { color: var(--ink); }
 .foot nav { display: flex; gap: 18px; flex-wrap: wrap; }
 </style>
 </head>
@@ -736,8 +736,44 @@ const ticker = (() => {
   kick();
 })();
 
+/* 4a. What is under the mouse. Browsers only update :hover when the mouse moves, so after scrolling (or while the
+      Campaign results card shrinks under a still mouse) hover looks and the cursor colour stayed on the old element.
+      This tracks the element under the pointer itself: on mouseover, and again while the page scrolls (at most once per
+      frame, plus two checks after scrolling stops, while the results card is still easing).
+      Every hover look on the page uses .is-hot from here instead of :hover (elements in HOT; add new hover targets there).
+      The cursor (part 4) and the click sound (part 6, 'hot' event) listen to it too. */
+const pointer = (() => {
+  const subs = new Set();
+  if (!matchMedia('(hover: hover)').matches) return { on: () => {} };   /* touch screens: no hover looks, like :hover */
+  const HOT = '.btn, .top nav a, .morph__item, .genres > div, .files__pick, .files__list button, .faq summary, .end__talk, .foot a';
+  let x = 0, y = 0, inside = false, el = null, hot = [], queued = false, settle = [];
+  const set = (t) => {
+    if (t === el) return;
+    el = t;
+    const now = [];
+    for (let n = t && t.closest ? t.closest(HOT) : null; n; n = n.parentElement && n.parentElement.closest(HOT)) now.push(n);
+    hot.forEach((n) => { if (!now.includes(n)) n.classList.remove('is-hot'); });
+    now.forEach((n) => { if (!hot.includes(n)) { n.classList.add('is-hot'); n.dispatchEvent(new Event('hot')); } });
+    hot = now;
+    subs.forEach((f) => f(t));
+  };
+  const recheck = () => { queued = false; if (inside) set(document.elementFromPoint(x, y)); };
+  const soon = () => { if (!queued && inside) { queued = true; requestAnimationFrame(recheck); } };
+  const at = (e) => { x = e.clientX; y = e.clientY; inside = true; };
+  addEventListener('mousemove', at, { passive: true });
+  document.addEventListener('mouseover', (e) => { at(e); set(e.target); }, { passive: true });
+  document.addEventListener('mouseout', (e) => { if (!e.relatedTarget) { inside = false; set(null); } }, { passive: true });
+  addEventListener('scroll', () => {
+    soon();
+    settle.forEach(clearTimeout);
+    settle = [150, 600].map((ms) => setTimeout(recheck, ms));   /* direct, so it lands even when frames are throttled */
+  }, { passive: true });
+  document.addEventListener('toggle', () => setTimeout(recheck, 50), true);   /* an opening FAQ answer pushes the rows below */
+  return { on: (f) => subs.add(f) };
+})();
+
 /* 4. Custom cursor: one inverting dot that stretches with movement (desktop pointers only). Runs in the shared frame loop
-      and sleeps when the mouse stops. Links and inputs are checked on mouseover (once per element), not on every move. */
+      and sleeps when the mouse stops. Links and inputs are checked when the element under the mouse changes (part 4a), not on every move. */
 (() => {
   const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 768px)').matches;
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -761,7 +797,7 @@ const ticker = (() => {
   };
   /* the blend turns the dot yellow on blue, so over blue surfaces it is simply black, like the old black-or-white dot */
   const BLUE = '.end, .btn, .skip, .genres div';
-  document.addEventListener('mouseover', (e) => { over = e.target; look(); }, { passive: true });
+  pointer.on((t) => { over = t; look(); });   /* also fires when scrolling moves a new element under a still mouse */
   document.addEventListener('click', look);
   document.addEventListener('mouseleave', () => { shown = false; document.documentElement.classList.remove('has-cursor'); });
   function frame() {
@@ -875,7 +911,7 @@ const ticker = (() => {
     src.buffer = buf; band.type = 'bandpass'; band.frequency.value = 2400; band.Q.value = 1.2; vol.gain.value = 0.35;
     src.connect(band).connect(vol).connect(ctx.destination); src.start();
   };
-  document.querySelectorAll('.morph__item').forEach((b) => b.addEventListener('pointerenter', tick));
+  document.querySelectorAll('.morph__item').forEach((b) => b.addEventListener('hot', tick));   /* part 4a, also on scroll */
 })();
 /* 8. Mascot. The orb's face is flat (2D) but lives on a ball: every point of the eyes and mouth is wrapped around the sphere and
       turned toward the mouse (or the last tap), so when it looks to one side the far eye and that end of the grin squeeze toward
