@@ -308,7 +308,7 @@ html .hero::before { content: ""; position: absolute; inset: 0; pointer-events: 
   background: url(/assets/glitch/glitch.webp) 50% 40% / cover no-repeat, #00020c; }
 html .hero::after { background: linear-gradient(rgba(0,2,12,.7) 0, rgba(0,2,12,0) 16%), linear-gradient(rgba(0,2,12,0) 40%, rgba(0,2,12,.55) 72%, var(--bg) 97%); }
 html .mascot--hero::before { background: radial-gradient(closest-side, rgba(0,2,12,.55) 50%, rgba(0,2,12,0)); }
-html .reel { visibility: hidden; }
+/* the edit clips run in the hero as on the live page, over the glitch picture */
 /* ===== C: the hero look for the whole page. One fixed glitch picture (the hero's) sits behind everything: it drifts,
    tears now and then, has scanlines, and gets a bit darker once you scroll past the hero so text stays readable.
    No section has its own picture or hard edge; the clip wall, the blue band and the form fade in and out.
@@ -316,7 +316,9 @@ html .reel { visibility: hidden; }
 :root { --cy: #2fb9f8; --rd: #ff2d55; --g1: url(/assets/glitch/glitch.webp);
   --scan: repeating-linear-gradient(0deg, rgba(0,2,12,.34) 0 1px, rgba(0,2,12,0) 1px 3px); }
 html .hero::before { content: none; }
-html .hero::after { background: radial-gradient(55% 30% at 18% 70%, rgba(0,2,12,.6), rgba(0,2,12,0)); }   /* only behind the headline, gone by the hero's edge */
+html .hero::after { background: radial-gradient(55% 30% at 18% 70%, rgba(0,2,12,.6), rgba(0,2,12,0)),
+  linear-gradient(rgba(0,2,12,.75) 0, rgba(0,2,12,0) 22%), linear-gradient(rgba(0,2,12,.3) 0, rgba(0,2,12,.5) 45%, rgba(0,2,12,.5) 72%, rgba(0,2,12,0) 100%); }   /* the live page's dimming over the clips, gone by the hero's edge */
+html .reel { -webkit-mask-image: linear-gradient(#000 50%, transparent 92%); mask-image: linear-gradient(#000 50%, transparent 92%); }   /* the clip rows fade out before the hero ends */
 html .mascot--hero::before { background: radial-gradient(closest-side, rgba(0,2,12,.5) 50%, rgba(0,2,12,0)); }
 
 .gx-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: #00020c; }
