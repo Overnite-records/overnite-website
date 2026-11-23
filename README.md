@@ -66,7 +66,7 @@ Videos only load and play while they are on screen. With reduced motion or Save-
 
 - A: the glitch picture (`assets/glitch/glitch.webp`) behind the hero instead of the edit clips.
 - B: the glitch picture with the edit clips faintly on top.
-- C: the glitch look across the page. One fixed glitch picture behind the whole page that slowly crossfades between three framings while you scroll (scroll-driven, `.gx-bg`), so there are no hard cuts between sections; torn strips mark the section edges. Hero: the picture drifts, scanlines, short RGB-split tears. Big headings: red/cyan split (text-shadow, and coloured copies of outlined words via `data-g`). Moon and orb: red/cyan edges, scanlines, the moon carries the glitch picture, a slice of it tears now and then and the orb twitches. Only transform and opacity are animated, no filters.
+- C: the hero look for the whole page. One fixed glitch picture (`.gx-bg`, the hero's picture) sits behind everything: it drifts, tears now and then, has scanlines, and darkens a little once you scroll past the hero (scroll-driven). No section has its own picture or hard edge; the clip wall, the blue band and the form fade in and out. Big headings have a red/cyan split; the moon and the orb have red/cyan edges, scanlines and occasional tears. Only transform and opacity animate, no filters.
 
 Delete the `preview` folder (and `assets/glitch` if no variant is kept) once a decision is made.
 
