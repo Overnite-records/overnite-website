@@ -60,6 +60,16 @@ Videos only load and play while they are on screen. With reduced motion or Save-
 
 - Demo form: picking "Something else" as genre opens a "Which genre?" field. Track links and TikTok links are lists of boxes: once a box has something in it, a new empty one appears below (up to 10). Every file pick adds to the list (no replacing), each file can be removed with its ×, and the button then reads "Add another file". All of it is script part 5. `data-endpoint` on the form is empty, so for now submitting opens an email to `data-to` (still the placeholder `demos@overnite.example`) and people attach their files there. Set `data-endpoint` to a form service that accepts audio files and it posts everything there instead. The form has no `mailto:` action on purpose: Chrome marks that as not secure and turns autofill off.
 
+## Preview pages
+
+`/preview/a`, `/preview/b` and `/preview/c` are snapshot copies of `index.html` (23 November 2026) for trying out the glitch background from the V1 brand board (page 1 of "Overnite V1 Preview.pdf"). They are not linked anywhere and tell search engines not to index them. They do not follow later changes to `index.html`.
+
+- A: the glitch picture (`assets/glitch/glitch.webp`) behind the hero instead of the edit clips.
+- B: the glitch picture with the edit clips faintly on top.
+- C: the glitch look across the page: the picture drifts slowly, scanlines, short RGB-split tears through the hero, red/cyan split on the big headings, the picture shows through the blue closing band.
+
+Delete the `preview` folder (and `assets/glitch` if no variant is kept) once a decision is made.
+
 ## Deploy
 
 Hosted on Vercel (project `overnite-records`). Every push to `main` goes live automatically within about a minute. Other branches get their own preview URL.
